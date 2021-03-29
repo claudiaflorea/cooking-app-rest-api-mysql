@@ -23,6 +23,7 @@ public class RecipeConverter implements Converter<Recipe, RecipeDto> {
         recipeDto.setId(source.getId());
         recipeDto.setName(source.getName());
         recipeDto.setDifficulty(source.getDifficulty());
+        recipeDto.setCookingTime(source.getCookingTime());
         recipeDto.setRecipeType(source.getRecipeType());
         if (source.getIngredients() != null) {
             recipeDto.setIngredients(
@@ -42,6 +43,7 @@ public class RecipeConverter implements Converter<Recipe, RecipeDto> {
         }
         recipe.setName(source.getName());
         recipe.setDifficulty(source.getDifficulty());
+        recipe.setCookingTime(source.getCookingTime());
         recipe.setRecipeType(source.getRecipeType());
         if (source.getIngredients() != null) {
             recipe.setIngredients(
