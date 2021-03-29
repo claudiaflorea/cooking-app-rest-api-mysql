@@ -4,18 +4,17 @@ import java.util.stream.Collectors;
 
 import com.practice.cooking.dto.RestaurantDto;
 import com.practice.cooking.model.Restaurant;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RestaurantConverter implements Converter<Restaurant, RestaurantDto> {
+@RequiredArgsConstructor
+public class RestaurantEntityToDtoConverter implements Converter<Restaurant, RestaurantDto> {
 
-    @Autowired
-    private ChefConverter chefConverter;
+    private final ChefEntityToDtoConverter chefConverter;
 
-    @Autowired
-    private DishConverter dishConverter;
+    private final DishEntityToDtoConverter dishConverter;
 
     @Override
     public RestaurantDto convert(Restaurant source) {
@@ -45,29 +44,4 @@ public class RestaurantConverter implements Converter<Restaurant, RestaurantDto>
         return restaurantDto;
     }
 
-    public Restaurant convertToEntity(RestaurantDto source) {
-        Restaurant restaurant = new Restaurant();
-        if (source.getId() != null) {
-            restaurant.setId(source.getId());
-        }
-        restaurant.setName(source.getName());
-        restaurant.setStars(source.getStars());
-        if (source.getChefs() != null) {
-            restaurant.setChefs(
-                source.getChefs()
-                    .stream()
-                    .map(chef -> chefConverter.convertToEntity(chef))
-                    .collect(Collectors.toList())
-            );
-        }
-        if (source.getDishes() != null) {
-            restaurant.setDishes(
-                source.getDishes()
-                    .stream()
-                    .map(dish -> dishConverter.convertToEntity(dish))
-                    .collect(Collectors.toList())
-            );
-        }
-        return restaurant;
-    }
 }

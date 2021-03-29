@@ -6,21 +6,10 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DishConverter implements Converter<Dish, DishDto> {
-
-    @Override
-    public DishDto convert(Dish source) {
-        DishDto dishDto = new DishDto();
-        if (source.getId() != null) {
-            dishDto.setId(source.getId());
-        }
-        dishDto.setId(source.getId());
-        dishDto.setName(source.getName());
-        dishDto.setRecipe(source.getRecipe());
-        return dishDto;
-    }
+public class DishDtoToEntityConverter implements Converter<DishDto, Dish> {
     
-    public Dish convertToEntity(DishDto source) {
+    @Override
+    public Dish convert(DishDto source) {
         Dish dish = new Dish();
         if (source.getId() != null) {
             dish.setId(source.getId());

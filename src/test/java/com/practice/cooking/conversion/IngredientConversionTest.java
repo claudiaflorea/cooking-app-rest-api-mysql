@@ -2,13 +2,14 @@ package com.practice.cooking.conversion;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.practice.cooking.converter.IngredientConverter;
+import com.practice.cooking.converter.IngredientEntityToDtoConverter;
 import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Unit;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.convert.ConversionService;
 
 @SpringBootTest
 public class IngredientConversionTest {
@@ -19,12 +20,12 @@ public class IngredientConversionTest {
     public static final Unit   INGREDIENT_UNIT     = Unit.KG;
 
     @Autowired
-    private IngredientConverter ingredientConverter;
+    private ConversionService conversionService;
 
     @Test
     public void testDishToDtoConversion() {
         Ingredient ingredient = new Ingredient(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
-        IngredientDto ingredientDto = ingredientConverter.convert(ingredient);
+        IngredientDto ingredientDto = conversionService.convert(ingredient, IngredientDto.class);
 
         assertAll("IngredientDto mapped object",
             () -> assertEquals(INGREDIENT_ID, ingredientDto.getId()),
@@ -37,7 +38,7 @@ public class IngredientConversionTest {
     @Test
     public void testDishDtoToEntityConversion() {
         IngredientDto ingredientDto = new IngredientDto(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
-        Ingredient ingredient = ingredientConverter.convertToEntity(ingredientDto);
+        Ingredient ingredient = conversionService.convert(ingredientDto, Ingredient.class);
 
         assertAll("Ingredient mapped object",
             () -> assertEquals(INGREDIENT_ID, ingredient.getId()),

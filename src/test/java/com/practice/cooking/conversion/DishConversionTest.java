@@ -3,7 +3,6 @@ package com.practice.cooking.conversion;
 import static com.practice.cooking.utils.TestUtils.getRecipeList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.practice.cooking.converter.DishConverter;
 import com.practice.cooking.dto.DishDto;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.Dish;
@@ -11,19 +10,21 @@ import com.practice.cooking.model.RecipeType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.convert.ConversionService;
 
 @SpringBootTest
 public class DishConversionTest {
 
-    public static final Long DISH_ID = 33L;
-    public static final String DISH_NAME = "Risotto";
+    public static final Long              DISH_ID = 33L;
+    public static final String            DISH_NAME = "Risotto";
+    
     @Autowired
-    private DishConverter dishConverter;
+    private             ConversionService conversionService;
     
     @Test
     public void testDishToDtoConversion() {
         Dish dish = new Dish(DISH_ID, DISH_NAME, getRecipeList().get(1));
-        DishDto dishDto = dishConverter.convert(dish);
+        DishDto dishDto = conversionService.convert(dish, DishDto.class);
         assertAll("DishDto mapped object ",
             () -> assertEquals(DISH_ID, dishDto.getId()),
             () -> assertEquals(DISH_NAME, dishDto.getName()),
@@ -38,7 +39,7 @@ public class DishConversionTest {
     @Test
     public void testDishDtoToEntityConversion() {
         DishDto dishDto = new DishDto(DISH_ID, DISH_NAME, getRecipeList().get(1));
-        Dish dish = dishConverter.convertToEntity(dishDto);
+        Dish dish = conversionService.convert(dishDto, Dish.class);
         assertAll("Dish mapped object ",
             () -> assertEquals(DISH_ID, dish.getId()),
             () -> assertEquals(DISH_NAME, dish.getName()),

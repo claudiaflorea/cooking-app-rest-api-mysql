@@ -6,8 +6,7 @@ import java.util.List;
 import static com.practice.cooking.utils.TestUtils.getRisottoIngredients;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.practice.cooking.converter.IngredientConverter;
-import com.practice.cooking.converter.RecipeConverter;
+import com.practice.cooking.converter.RecipeEntityToDtoConverter;
 import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.dto.RecipeDto;
 import com.practice.cooking.model.Difficulty;
@@ -17,6 +16,7 @@ import com.practice.cooking.model.RecipeType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.convert.ConversionService;
 
 @SpringBootTest
 public class RecipeConversionTest {
@@ -28,10 +28,10 @@ public class RecipeConversionTest {
     public static final RecipeType RECIPE_TYPE         = RecipeType.SIDE;
 
     @Autowired
-    private RecipeConverter recipeConverter;
+    private RecipeEntityToDtoConverter recipeConverter;
     
     @Autowired
-    private IngredientConverter ingredientConverter;
+    private ConversionService conversionService;
 
     @Test
     public void testRecipeToDtoConversion() {
@@ -53,11 +53,11 @@ public class RecipeConversionTest {
     public void testRecipeDtoRoEntityConversion() {
         List<IngredientDto> ingredientDtoList = new ArrayList<>();
         for (Ingredient ingredient : getRisottoIngredients()) {
-            ingredientDtoList.add(ingredientConverter.convert(ingredient));
+            ingredientDtoList.add(conversionService.convert(ingredient, IngredientDto.class));
         }
         
         RecipeDto recipeDto = new RecipeDto(RECIPE_ID, RECIPE_NAME, RECIPE_DIFFICULTY, ingredientDtoList, RECIPE_COOKING_TIME, RECIPE_TYPE);
-        Recipe recipe = recipeConverter.convertToEntity(recipeDto);
+        Recipe recipe = conversionService.convert(recipeDto, Recipe.class);
 
         assertAll(
             "Recipe converted object",

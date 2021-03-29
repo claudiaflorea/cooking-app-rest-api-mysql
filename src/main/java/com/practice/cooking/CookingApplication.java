@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Stack;
@@ -137,6 +139,11 @@ public class CookingApplication {
             null
         );
         System.out.println("HashMap: " + recipeIngredientHashMap);
+        Iterator<Map.Entry<Recipe, List<Ingredient>>> recipeListIterator = recipeIngredientHashMap.entrySet().iterator();
+        while (recipeListIterator.hasNext()) {
+            Map.Entry<Recipe, List<Ingredient>> element = recipeListIterator.next();
+            System.out.println("HashMap iterator .... Element with key "+ element.getKey() + " and value " + element.getValue());
+        }
         System.out.println("********************************************");
 
         //TreeMap does not allow neither duplicates nor null values
@@ -158,6 +165,11 @@ public class CookingApplication {
             )
         );
         System.out.println("TreeMap: " + recipeListTreeMap);
+        Iterator<Map.Entry<Recipe, List<Ingredient>>> recipeListTreeMapIterator = recipeListTreeMap.entrySet().iterator();
+        while (recipeListTreeMapIterator.hasNext()) {
+            Map.Entry<Recipe, List<Ingredient>> element = recipeListTreeMapIterator.next();
+            System.out.println("TreeMap iterator ..... KEY: " + element.getKey() + " AND VALUE: " + element.getValue());
+        }
         System.out.println("********************************************");
 
         //LinkedHashMap allows null values, but does not allow duplicates
@@ -190,6 +202,12 @@ public class CookingApplication {
             )
         );
         System.out.println("LinkedHashMap: size " + recipeListTreeMap.size() + "  " + recipeLinkedHashMap);
+        Iterator<Map.Entry<Recipe, List<Ingredient>>> recipeListIterator2 = recipeListTreeMap.entrySet().iterator();
+        while (recipeListIterator2.hasNext()) {
+            Map.Entry<Recipe, List<Ingredient>> element = recipeListIterator2.next();
+            System.out.println("LinkedHashMap iterator..... Element with key " + element.getKey() + " and value " + element.getValue());
+        }
+        
         System.out.println("********************************************");
 
         /**************** List Interface **************/
