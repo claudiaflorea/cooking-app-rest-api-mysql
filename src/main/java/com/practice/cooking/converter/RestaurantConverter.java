@@ -20,41 +20,54 @@ public class RestaurantConverter implements Converter<Restaurant, RestaurantDto>
     @Override
     public RestaurantDto convert(Restaurant source) {
         RestaurantDto restaurantDto = new RestaurantDto();
+        if (source.getId() != null) {
+            restaurantDto.setId(source.getId());
+        }
         restaurantDto.setId(source.getId());
         restaurantDto.setName(source.getName());
         restaurantDto.setStars(source.getStars());
-        restaurantDto.setChefs(
-            source.getChefs()
-                .stream()
-                .map(chef -> chefConverter.convert(chef))
-                .collect(Collectors.toList())
-        );
-        restaurantDto.setDishes(
-            source.getDishes()
-                .stream()
-                .map(dish -> dishConverter.convert(dish))
-                .collect(Collectors.toList())
-        );
+        if (source.getChefs() != null) {
+            restaurantDto.setChefs(
+                source.getChefs()
+                    .stream()
+                    .map(chef -> chefConverter.convert(chef))
+                    .collect(Collectors.toList())
+            );
+        }
+        if (source.getDishes() != null) {
+            restaurantDto.setDishes(
+                source.getDishes()
+                    .stream()
+                    .map(dish -> dishConverter.convert(dish))
+                    .collect(Collectors.toList())
+            );
+        }
         return restaurantDto;
     }
 
     public Restaurant convertToEntity(RestaurantDto source) {
         Restaurant restaurant = new Restaurant();
-        restaurant.setId(source.getId());
+        if (source.getId() != null) {
+            restaurant.setId(source.getId());
+        }
         restaurant.setName(source.getName());
         restaurant.setStars(source.getStars());
-        restaurant.setChefs(
-            source.getChefs()
-                .stream()
-                .map(chef -> chefConverter.convertToEntity(chef))
-                .collect(Collectors.toList())
-        );
-        restaurant.setDishes(
-            source.getDishes()
-                .stream()
-                .map(dish -> dishConverter.convertToEntity(dish))
-                .collect(Collectors.toList())
-        );
+        if (source.getChefs() != null) {
+            restaurant.setChefs(
+                source.getChefs()
+                    .stream()
+                    .map(chef -> chefConverter.convertToEntity(chef))
+                    .collect(Collectors.toList())
+            );
+        }
+        if (source.getDishes() != null) {
+            restaurant.setDishes(
+                source.getDishes()
+                    .stream()
+                    .map(dish -> dishConverter.convertToEntity(dish))
+                    .collect(Collectors.toList())
+            );
+        }
         return restaurant;
     }
 }

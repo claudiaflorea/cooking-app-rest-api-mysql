@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Dish;
+import com.practice.cooking.model.Recipe;
 import com.practice.cooking.repository.DishRepository;
+import com.practice.cooking.repository.RecipeRepository;
 import com.practice.cooking.utils.DatabaseSequenceGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -20,6 +22,9 @@ public class DishService {
     @Autowired
     private DatabaseSequenceGenerator sequenceGenerator;
 
+    @Autowired
+    private RecipeService recipeService;
+    
     @Autowired
     public void setMongoOperations(MongoOperations mongoOperations) {
         this.mongoOperations = mongoOperations;
@@ -40,6 +45,9 @@ public class DishService {
 
     public Dish add(Dish dish) {
         dish.setId(sequenceGenerator.generateSequence(Dish.SEQUENCE_NAME));
+        if (dish.getRecipe() != null) {
+            recipeService.add(dish.getRecipe());
+        }
         return dishRepository.save(dish);
     }
 

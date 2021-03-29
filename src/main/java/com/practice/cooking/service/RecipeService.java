@@ -2,7 +2,9 @@ package com.practice.cooking.service;
 
 import java.util.List;
 import com.practice.cooking.exception.NotFoundException;
+import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Recipe;
+import com.practice.cooking.repository.IngredientRepository;
 import com.practice.cooking.repository.RecipeRepository;
 import com.practice.cooking.utils.DatabaseSequenceGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class RecipeService {
 
     @Autowired
     private DatabaseSequenceGenerator sequenceGenerator;
+    
+    @Autowired
+    private IngredientService ingredientService;
 
     @Autowired
     public void setMongoOperations(MongoOperations mongoOperations) {
@@ -39,6 +44,13 @@ public class RecipeService {
 
     public Recipe add(Recipe recipe) {
         recipe.setId(sequenceGenerator.generateSequence(Recipe.SEQUENCE_NAME));
+        if (recipe.getIngredients() != null) {
+            for (Ingredient ingredient: recipe.getIngredients()) {
+                if (ingredient != null) {
+                    ingredientService.add(ingredient);
+                }
+            }
+        }
         return recipeRepository.save(recipe);
     }
 

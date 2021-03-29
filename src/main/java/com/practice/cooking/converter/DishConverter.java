@@ -11,6 +11,9 @@ public class DishConverter implements Converter<Dish, DishDto> {
     @Override
     public DishDto convert(Dish source) {
         DishDto dishDto = new DishDto();
+        if (source.getId() != null) {
+            dishDto.setId(source.getId());
+        }
         dishDto.setId(source.getId());
         dishDto.setName(source.getName());
         dishDto.setRecipe(source.getRecipe());
@@ -19,7 +22,9 @@ public class DishConverter implements Converter<Dish, DishDto> {
     
     public Dish convertToEntity(DishDto source) {
         Dish dish = new Dish();
-        dish.setId(source.getId());
+        if (source.getId() != null) {
+            dish.setId(source.getId());
+        }
         dish.setName(source.getName());
         dish.setRecipe(source.getRecipe());
         return dish;

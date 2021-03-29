@@ -11,6 +11,9 @@ public class ChefConverter implements Converter<Chef, ChefDto> {
     @Override
     public ChefDto convert(Chef source) {
         ChefDto chefDto = new ChefDto();
+        if (source.getId() != null) {
+            chefDto.setId(source.getId());
+        }
         chefDto.setId(source.getId());
         chefDto.setName(source.getName());
         return chefDto;
@@ -18,7 +21,9 @@ public class ChefConverter implements Converter<Chef, ChefDto> {
     
     public Chef convertToEntity(ChefDto source) {
         Chef chef = new Chef();
-        chef.setId(source.getId());
+        if (source.getId() != null) {
+            chef.setId(source.getId());
+        }
         chef.setName(source.getName());
         return chef;
     }
