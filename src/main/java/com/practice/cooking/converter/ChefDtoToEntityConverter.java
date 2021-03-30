@@ -10,7 +10,7 @@ public class ChefDtoToEntityConverter implements Converter<ChefDto, Chef> {
 
     @Override
     public Chef convert(ChefDto source) {
-        Chef chef = new Chef();
+        Chef chef = Chef.builder().build();
         if (source.getId() != null) {
             chef.setId(source.getId());
         }

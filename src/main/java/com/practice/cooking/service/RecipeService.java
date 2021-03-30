@@ -1,39 +1,32 @@
 package com.practice.cooking.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Recipe;
 import com.practice.cooking.repository.IngredientRepository;
 import com.practice.cooking.repository.RecipeRepository;
 import com.practice.cooking.utils.DatabaseSequenceGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class RecipeService {
 
-    private RecipeRepository recipeRepository;
+    private final RecipeRepository recipeRepository;
 
-    private MongoOperations mongoOperations;
+    private final MongoOperations mongoOperations;
 
-    @Autowired
-    private DatabaseSequenceGenerator sequenceGenerator;
+    private final DatabaseSequenceGenerator sequenceGenerator;
     
-    @Autowired
-    private IngredientService ingredientService;
-
-    @Autowired
-    public void setMongoOperations(MongoOperations mongoOperations) {
-        this.mongoOperations = mongoOperations;
-    }
-
-    @Autowired
-    public void setRecipeRepository(RecipeRepository recipeRepository) {
-        this.recipeRepository = recipeRepository;
-    }
-
+    private final IngredientService ingredientService;
+    
     public List<Recipe> getAll() {
         return recipeRepository.findAll();
     }
@@ -54,7 +47,7 @@ public class RecipeService {
         return recipeRepository.save(recipe);
     }
 
-    public void update(Long id, Recipe recipeDetails) {
+    public Recipe update(Long id, Recipe recipeDetails) {
         Recipe recipe = getById(id);
         recipe.setName(recipeDetails.getName());
         recipe.setCookingTime(recipeDetails.getCookingTime());
@@ -62,10 +55,14 @@ public class RecipeService {
         recipe.setRecipeType(recipeDetails.getRecipeType());
         recipe.setIngredients(recipeDetails.getIngredients());
         recipeRepository.save(recipe);
+        return recipe;
     }
 
-    public void delete(Long id) {
+    public Map<String, Boolean> delete(Long id) {
         Recipe recipe = getById(id);
         recipeRepository.delete(recipe);
+        Map<String, Boolean> recipeMap = new HashMap<>();
+        recipeMap.put("Recipe with id " + id + " is deleted ", Boolean.TRUE);
+        return recipeMap;
     }
 }

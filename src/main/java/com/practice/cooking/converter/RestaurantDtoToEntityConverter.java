@@ -4,9 +4,7 @@ import java.util.stream.Collectors;
 
 import com.practice.cooking.dto.RestaurantDto;
 import com.practice.cooking.model.Restaurant;
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +18,7 @@ public class RestaurantDtoToEntityConverter implements Converter<RestaurantDto, 
 
     @Override
     public Restaurant convert(RestaurantDto source) {
-        Restaurant restaurant = new Restaurant();
+        Restaurant restaurant = Restaurant.builder().build();
         if (source.getId() != null) {
             restaurant.setId(source.getId());
         }

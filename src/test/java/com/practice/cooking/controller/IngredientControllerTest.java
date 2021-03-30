@@ -59,7 +59,7 @@ public class IngredientControllerTest {
 
     @Test
     public void addIngredientTest() throws Exception {
-        String url = "/api/ingredients/";
+        String url = "/api/ingredients";
 
         when(ingredientService.add(ingredient)).thenAnswer(
             (Answer<Ingredient>) invocation -> invocation.getArgument(0)
@@ -67,8 +67,8 @@ public class IngredientControllerTest {
 
         mockMvc.perform(post(url)
             .content(om.writeValueAsString(ingredient))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isCreated());
     }
 
@@ -78,7 +78,7 @@ public class IngredientControllerTest {
         when(ingredientService.getById(INGREDIENT_ID)).thenReturn(ingredient);
 
         mockMvc.perform(get(url, "/??"))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().is5xxServerError());
     }
 
     @Test
@@ -88,8 +88,8 @@ public class IngredientControllerTest {
 
         mockMvc.perform(put(url, INGREDIENT_ID)
             .content(om.writeValueAsString(ingredient))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk());
     }
 

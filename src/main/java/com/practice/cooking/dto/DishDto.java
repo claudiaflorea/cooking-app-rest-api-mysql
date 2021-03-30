@@ -1,9 +1,11 @@
 package com.practice.cooking.dto;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 import com.practice.cooking.model.Recipe;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,11 +14,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@Builder
 public class DishDto {
 
-    @NotEmpty
     private Long   id;
-    @NotEmpty
+    @Size(max = 30, min = 3)
     private String name;
+    @Valid
     private Recipe recipe;
 }

@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import com.practice.cooking.dto.RecipeDto;
 import com.practice.cooking.model.Recipe;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,7 @@ public class RecipeEntityToDtoConverter implements Converter<Recipe, RecipeDto> 
 
     @Override
     public RecipeDto convert(Recipe source) {
-        RecipeDto recipeDto = new RecipeDto();
+        RecipeDto recipeDto = RecipeDto.builder().build();
         if (source.getId() != null) {
             recipeDto.setId(source.getId());
         }
@@ -28,8 +27,7 @@ public class RecipeEntityToDtoConverter implements Converter<Recipe, RecipeDto> 
         recipeDto.setRecipeType(source.getRecipeType());
         if (source.getIngredients() != null) {
             recipeDto.setIngredients(
-                source.getIngredients()
-                    .stream()
+                source.getIngredients().stream()
                     .map(ingredient -> ingredientConverter.convert(ingredient))
                     .collect(Collectors.toList())
             );

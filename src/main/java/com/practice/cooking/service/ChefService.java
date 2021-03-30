@@ -1,34 +1,27 @@
 package com.practice.cooking.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Chef;
 import com.practice.cooking.repository.ChefRepository;
 import com.practice.cooking.utils.DatabaseSequenceGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ChefService {
 
-    private ChefRepository chefRepository;
+    private final ChefRepository chefRepository;
 
-    private MongoOperations mongoOperations;
+    private final MongoOperations mongoOperations;
 
-    @Autowired
-    private DatabaseSequenceGenerator sequenceGenerator;
-
-    @Autowired
-    public void setMongoOperations(MongoOperations mongoOperations) {
-        this.mongoOperations = mongoOperations;
-    }
-
-    @Autowired
-    public void setChefRepository(ChefRepository chefRepository) {
-        this.chefRepository = chefRepository;
-    }
+    private final DatabaseSequenceGenerator sequenceGenerator;
 
     public List<Chef> getAll() {
         return chefRepository.findAll();
@@ -43,15 +36,19 @@ public class ChefService {
         return chefRepository.save(chef);
     }
 
-    public void update(Long id, Chef chefDetails) {
+    public Chef update(Long id, Chef chefDetails) {
         Chef chef = getById(id);
         chef.setName(chefDetails.getName());
         chefRepository.save(chef);
+        return chef;
     }
 
-    public void delete(Long id) {
+    public Map<String, Boolean> delete(Long id) {
         Chef chef = getById(id);
         chefRepository.delete(chef);
+        Map<String, Boolean> chefMap = new HashMap<>();
+        chefMap.put("Chef with id " + id + " is deleted ", Boolean.TRUE);
+        return chefMap;
     }
 
 }

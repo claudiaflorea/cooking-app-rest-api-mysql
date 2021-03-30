@@ -17,7 +17,7 @@ public class RecipeDtoToEntityConverter implements Converter<RecipeDto, Recipe> 
     
     @Override
     public Recipe convert(RecipeDto source) {
-        Recipe recipe = new Recipe();
+        Recipe recipe = Recipe.builder().build();
         if (source.getId() != null) {
             recipe.setId(source.getId());
         }
@@ -27,8 +27,7 @@ public class RecipeDtoToEntityConverter implements Converter<RecipeDto, Recipe> 
         recipe.setRecipeType(source.getRecipeType());
         if (source.getIngredients() != null) {
             recipe.setIngredients(
-                source.getIngredients()
-                    .stream()
+                source.getIngredients().stream()
                     .map(ingredientDto -> ingredientConverter.convert(ingredientDto))
                     .collect(Collectors.toList())
             );

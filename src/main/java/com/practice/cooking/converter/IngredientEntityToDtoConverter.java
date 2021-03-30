@@ -10,7 +10,7 @@ public class IngredientEntityToDtoConverter implements Converter<Ingredient, Ing
     
     @Override
     public IngredientDto convert(Ingredient source) {
-        IngredientDto ingredientDto = new IngredientDto();
+        IngredientDto ingredientDto = IngredientDto.builder().build();
         if (source.getId() != null) {
             ingredientDto.setId(source.getId());
         }

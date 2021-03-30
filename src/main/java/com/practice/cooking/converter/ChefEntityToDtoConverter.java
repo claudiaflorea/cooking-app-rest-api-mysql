@@ -10,12 +10,12 @@ public class ChefEntityToDtoConverter implements Converter<Chef, ChefDto> {
 
     @Override
     public ChefDto convert(Chef source) {
-        ChefDto chefDto = new ChefDto();
+        ChefDto chefDtoBuilder = ChefDto.builder().build();
         if (source.getId() != null) {
-            chefDto.setId(source.getId());
+            chefDtoBuilder.setId(source.getId());
         }
-        chefDto.setId(source.getId());
-        chefDto.setName(source.getName());
-        return chefDto;
+        chefDtoBuilder.setId(source.getId());
+        chefDtoBuilder.setName(source.getName());
+        return chefDtoBuilder;
     }
 }

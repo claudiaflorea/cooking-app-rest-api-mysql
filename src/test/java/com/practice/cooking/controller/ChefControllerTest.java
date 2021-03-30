@@ -49,19 +49,18 @@ public class ChefControllerTest {
             .andExpect(jsonPath("$.id").value(CHEF_ID))
             .andExpect(jsonPath("$.name").value(CHEF_NAME));
     }
-    
+
     @Test
-    public void testGetChefByIdWithInvalidParameters() throws Exception {
-        String url = "/api/chefs/{id}";
-        when(chefService.getById(CHEF_ID)).thenReturn(chef);
+    public void testGetChefByIdWithInvalidPath() throws Exception {
+        String url = "/api";
 
         mockMvc.perform(get(url, "/??"))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().is5xxServerError());
     }
 
     @Test
     public void addChefTest() throws Exception {
-        String url = "/api/chefs/";
+        String url = "/api/chefs";
 
         when(chefService.add(chef)).thenAnswer(
             (Answer<Chef>) invocation -> invocation.getArgument(0)
@@ -69,8 +68,8 @@ public class ChefControllerTest {
 
         mockMvc.perform(post(url)
             .content(om.writeValueAsString(chef))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isCreated());
     }
 

@@ -18,7 +18,7 @@ public class RestaurantEntityToDtoConverter implements Converter<Restaurant, Res
 
     @Override
     public RestaurantDto convert(Restaurant source) {
-        RestaurantDto restaurantDto = new RestaurantDto();
+        RestaurantDto restaurantDto = RestaurantDto.builder().build();
         if (source.getId() != null) {
             restaurantDto.setId(source.getId());
         }
@@ -27,8 +27,7 @@ public class RestaurantEntityToDtoConverter implements Converter<Restaurant, Res
         restaurantDto.setStars(source.getStars());
         if (source.getChefs() != null) {
             restaurantDto.setChefs(
-                source.getChefs()
-                    .stream()
+                source.getChefs().stream()
                     .map(chef -> chefConverter.convert(chef))
                     .collect(Collectors.toList())
             );

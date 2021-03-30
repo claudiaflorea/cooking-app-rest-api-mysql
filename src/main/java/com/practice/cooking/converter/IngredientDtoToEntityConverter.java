@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class IngredientDtoToEntityConverter implements Converter<IngredientDto, Ingredient> {
         
     public Ingredient convert(IngredientDto source) {
-        Ingredient ingredient = new Ingredient();
+        Ingredient ingredient = Ingredient.builder().build();
         if (source.getId() != null) {
             ingredient.setId(source.getId());
         }

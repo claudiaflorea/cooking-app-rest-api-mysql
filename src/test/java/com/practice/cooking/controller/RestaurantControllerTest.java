@@ -59,12 +59,12 @@ public class RestaurantControllerTest {
         when(restaurantService.getById(RESTAURANT_ID)).thenReturn(restaurant);
 
         mockMvc.perform(get(url, "/??"))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().is5xxServerError());
     }
     
     @Test
     public void addRestaurantTest() throws Exception {
-        String url = "/api/restaurants/";
+        String url = "/api/restaurants";
 
         when(restaurantService.add(restaurant)).thenAnswer(
             (Answer<Restaurant>) invocation -> invocation.getArgument(0)
@@ -72,8 +72,8 @@ public class RestaurantControllerTest {
 
         mockMvc.perform(post(url)
             .content(om.writeValueAsString(restaurant))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isCreated());
     }
 
@@ -84,8 +84,8 @@ public class RestaurantControllerTest {
 
         mockMvc.perform(put(url, RESTAURANT_ID)
             .content(om.writeValueAsString(restaurant))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk());
     }
 

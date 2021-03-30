@@ -10,7 +10,7 @@ public class DishDtoToEntityConverter implements Converter<DishDto, Dish> {
     
     @Override
     public Dish convert(DishDto source) {
-        Dish dish = new Dish();
+        Dish dish = Dish.builder().build();
         if (source.getId() != null) {
             dish.setId(source.getId());
         }

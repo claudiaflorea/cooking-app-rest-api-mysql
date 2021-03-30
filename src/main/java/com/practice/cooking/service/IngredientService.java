@@ -1,34 +1,28 @@
 package com.practice.cooking.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.repository.IngredientRepository;
 import com.practice.cooking.utils.DatabaseSequenceGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class IngredientService {
 
-    private IngredientRepository ingredientRepository;
+    private final IngredientRepository ingredientRepository;
 
-    private MongoOperations mongoOperations;
+    private final MongoOperations mongoOperations;
 
-    @Autowired
-    private DatabaseSequenceGenerator sequenceGenerator;
+    private final DatabaseSequenceGenerator sequenceGenerator;
     
-    @Autowired
-    public void setMongoOperations(MongoOperations mongoOperations) {
-        this.mongoOperations = mongoOperations;
-    }
-
-    @Autowired
-    public void setIngredientRepository(IngredientRepository ingredientRepository) {
-        this.ingredientRepository = ingredientRepository;
-    }
-
     public List<Ingredient> getAll() {
         return ingredientRepository.findAll();
     }
@@ -42,16 +36,20 @@ public class IngredientService {
         return ingredientRepository.save(ingredient);
     }
 
-    public void update(Long id, Ingredient ingredientDetails) {
+    public Ingredient update(Long id, Ingredient ingredientDetails) {
         Ingredient ingredient = getById(id);
         ingredient.setName(ingredientDetails.getName());
         ingredient.setUnit(ingredientDetails.getUnit());
         ingredient.setQuantity(ingredientDetails.getQuantity());
         ingredientRepository.save(ingredient);
+        return ingredient;
     }
     
-    public void delete(Long id) {
+    public Map<String, Boolean> delete(Long id) {
         Ingredient ingredient = getById(id);
         ingredientRepository.delete(ingredient);
+        Map<String, Boolean> ingredientMap = new HashMap<>();
+        ingredientMap.put("Ingredient with id " + id + " is deleted ", Boolean.TRUE);
+        return ingredientMap;
     }
 }

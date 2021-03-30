@@ -62,12 +62,12 @@ public class DishControllerTest {
         when(dishService.getById(DISH_ID)).thenReturn(dish);
 
         mockMvc.perform(get(url, "/??"))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().is5xxServerError());
     }
 
     @Test
     public void addDishTest() throws Exception {
-        String url = "/api/dishes/";
+        String url = "/api/dishes";
 
         when(dishService.add(dish)).thenAnswer(
             (Answer<Dish>) invocation -> invocation.getArgument(0)
@@ -75,8 +75,8 @@ public class DishControllerTest {
 
         mockMvc.perform(post(url)
             .content(om.writeValueAsString(dish))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isCreated());
     }
 
@@ -88,8 +88,8 @@ public class DishControllerTest {
 
         mockMvc.perform(put(url, DISH_ID)
             .content(om.writeValueAsString(dish))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk());
     }
 
