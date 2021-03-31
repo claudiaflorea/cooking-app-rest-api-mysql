@@ -10,14 +10,17 @@ import com.practice.cooking.dto.ChefDto;
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Chef;
 import com.practice.cooking.service.ChefService;
+import com.practice.cooking.validator.ChefDtoValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,7 +37,12 @@ public class ChefController {
     private final ChefService chefService;
 
     private final ConversionService conversionService;
-
+    
+    @InitBinder
+    private void bindValidator(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(new ChefDtoValidator());
+    }
+    
     @GetMapping
     public ResponseEntity<List<ChefDto>> getAllChefs() {
         List<ChefDto> chefDtoList = chefService.getAll().stream()

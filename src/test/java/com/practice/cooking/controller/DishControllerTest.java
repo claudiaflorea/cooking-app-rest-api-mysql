@@ -66,6 +66,14 @@ public class DishControllerTest {
     }
 
     @Test
+    public void testGetWithInvalidPath() throws Exception {
+        String url = "/api";
+
+        mockMvc.perform(get(url, "/??"))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void addDishTest() throws Exception {
         String url = "/api/dishes";
 

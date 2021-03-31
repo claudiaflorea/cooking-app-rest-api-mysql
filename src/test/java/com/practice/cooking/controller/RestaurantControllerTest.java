@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.practice.cooking.model.Restaurant;
 import com.practice.cooking.service.RestaurantService;
+import com.practice.cooking.utils.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.stubbing.Answer;
@@ -38,7 +39,7 @@ public class RestaurantControllerTest {
     @MockBean
     private RestaurantService restaurantService;
 
-    Restaurant restaurant = new Restaurant(RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_STARS, null, null);
+    Restaurant restaurant = new Restaurant(RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_STARS, TestUtils.getDishList(), TestUtils.getChefList());
 
     @Test
     public void testGetRestaurantByIdWithValidParameters() throws Exception {
@@ -60,6 +61,14 @@ public class RestaurantControllerTest {
 
         mockMvc.perform(get(url, "/??"))
             .andExpect(status().is5xxServerError());
+    }
+
+    @Test
+    public void testGetWithInvalidPath() throws Exception {
+        String url = "/api";
+
+        mockMvc.perform(get(url, "/??"))
+            .andExpect(status().isNotFound());
     }
     
     @Test

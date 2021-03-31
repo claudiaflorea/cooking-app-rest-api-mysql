@@ -10,14 +10,17 @@ import com.practice.cooking.dto.DishDto;
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Dish;
 import com.practice.cooking.service.DishService;
+import com.practice.cooking.validator.DishDtoValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,6 +37,11 @@ public class DishController {
     private final DishService dishService;
 
     private final ConversionService conversionService;
+    
+    @InitBinder
+    private void bindValidator(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(new DishDtoValidator()); 
+    }
 
     @GetMapping()
     public ResponseEntity<List<DishDto>> getAllDishes() {

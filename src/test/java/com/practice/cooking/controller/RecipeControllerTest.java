@@ -69,6 +69,14 @@ public class RecipeControllerTest {
     }
 
     @Test
+    public void testGetWithInvalidPath() throws Exception {
+        String url = "/api";
+
+        mockMvc.perform(get(url, "/??"))
+            .andExpect(status().isNotFound());
+    }
+    
+    @Test
     public void addRecipeTest() throws Exception {
         String url = "/api/recipes";
 

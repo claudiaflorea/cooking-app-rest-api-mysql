@@ -82,6 +82,14 @@ public class IngredientControllerTest {
     }
 
     @Test
+    public void testGetWithInvalidPath() throws Exception {
+        String url = "/api";
+
+        mockMvc.perform(get(url, "/??"))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void updateIngredientTest() throws Exception {
         String url = "/api/ingredients/{id}";
         ingredient.setName(INGREDIENT_NAME_UPDATED);

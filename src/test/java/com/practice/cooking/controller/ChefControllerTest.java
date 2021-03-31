@@ -51,11 +51,20 @@ public class ChefControllerTest {
     }
 
     @Test
-    public void testGetChefByIdWithInvalidPath() throws Exception {
-        String url = "/api";
+    public void testGetChefByIdWithInvalidParameters() throws Exception {
+        String url = "/api/chefs/{id}";
+        when(chefService.getById(CHEF_ID)).thenReturn(chef);
 
         mockMvc.perform(get(url, "/??"))
             .andExpect(status().is5xxServerError());
+    }
+    
+    @Test
+    public void testGetWithInvalidPath() throws Exception {
+        String url = "/api";
+
+        mockMvc.perform(get(url, "/??"))
+            .andExpect(status().isNotFound());
     }
 
     @Test

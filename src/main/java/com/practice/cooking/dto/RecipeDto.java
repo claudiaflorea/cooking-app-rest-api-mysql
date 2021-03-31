@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 import com.practice.cooking.model.Difficulty;
@@ -22,12 +24,14 @@ import lombok.NoArgsConstructor;
 public class RecipeDto {
 
     private Long                id;
-    @Size(max = 20, min = 2)
+    //@Size(max = 30, min = 3)
+    //@Pattern(regexp = "^[A-Z]")
     private String              name;
     private Difficulty          difficulty;
-    @Valid
+    //@Valid
     private List<IngredientDto> ingredients;
+    //@Positive
     private Integer             cookingTime;
-    @NotNull(message = "Please enter recipeType")
+    //@NotNull
     private RecipeType          recipeType;
 }

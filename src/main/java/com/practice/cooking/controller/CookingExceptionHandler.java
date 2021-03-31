@@ -1,7 +1,6 @@
 package com.practice.cooking.controller;
 
 import java.util.Date;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 import com.practice.cooking.exception.BadRequestException;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
 public class CookingExceptionHandler {
@@ -29,7 +27,7 @@ public class CookingExceptionHandler {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), e.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
-
+    
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> invalidArgumentsRequest(MethodArgumentNotValidException e, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), getMethodArgumentNotValidExceptionDetails(e), request.getDescription(false));
