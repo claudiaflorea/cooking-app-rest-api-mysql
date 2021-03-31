@@ -38,9 +38,11 @@ public class DishController {
 
     private final ConversionService conversionService;
     
+    private final DishDtoValidator dishDtoValidator;
+    
     @InitBinder
-    private void bindValidator(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(new DishDtoValidator()); 
+    public void bindValidator(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(dishDtoValidator); 
     }
 
     @GetMapping()

@@ -37,10 +37,12 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
     private final ConversionService conversionService;
+    
+    private final RestaurantDtoValidator restaurantDtoValidator;
 
     @InitBinder
-    private void bindValidator(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(new RestaurantDtoValidator());
+    public void bindValidator(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(restaurantDtoValidator);
     }
 
     @GetMapping()

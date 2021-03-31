@@ -37,10 +37,12 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     private final ConversionService conversionService;
+    
+    private final RecipeDtoValidator recipeDtoValidator;
 
     @InitBinder
-    private void bindValidator(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(new RecipeDtoValidator());
+    public void bindValidator(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(recipeDtoValidator);
     }
 
     @GetMapping()

@@ -38,9 +38,11 @@ public class ChefController {
 
     private final ConversionService conversionService;
     
+    private final ChefDtoValidator chefDtoValidator;
+    
     @InitBinder
-    private void bindValidator(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(new ChefDtoValidator());
+    public void bindValidator(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(chefDtoValidator);
     }
     
     @GetMapping

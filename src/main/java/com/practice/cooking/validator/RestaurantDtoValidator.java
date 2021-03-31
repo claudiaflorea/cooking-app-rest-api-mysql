@@ -3,12 +3,20 @@ package com.practice.cooking.validator;
 import com.practice.cooking.dto.RestaurantDto;
 import com.practice.cooking.exception.BadRequestException;
 import com.practice.cooking.utils.CustomValidationUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.SmartValidator;
 
 @Component
 public class RestaurantDtoValidator implements SmartValidator {
+
+    private CustomValidationUtils customValidationUtils;
+
+    @Autowired
+    public void setCustomValidationUtils(CustomValidationUtils customValidationUtils) {
+        this.customValidationUtils = customValidationUtils;
+    }
 
     @Override
     public void validate(Object target, Errors errors, Object... validationHints) {
@@ -17,7 +25,7 @@ public class RestaurantDtoValidator implements SmartValidator {
             restaurantDto.getChefs().stream()
                 .forEach(
                     chefDto -> {
-                        CustomValidationUtils.validateChef(chefDto, errors);
+                        customValidationUtils.validateChef(chefDto, errors);
                     }
                 );
         }
@@ -26,12 +34,12 @@ public class RestaurantDtoValidator implements SmartValidator {
             restaurantDto.getDishes().stream()
                 .forEach(
                     dishDto -> {
-                        CustomValidationUtils.validateDish(dishDto, errors);
+                        customValidationUtils.validateDish(dishDto, errors);
                     }
                 );
         }
-        
-       CustomValidationUtils.validateRestaurant(restaurantDto, errors);
+
+        customValidationUtils.validateRestaurant(restaurantDto, errors);
     }
 
     @Override
