@@ -35,7 +35,7 @@ public class RestaurantJobScheduler {
     
     // yearly upgrade restaurants level with 1 star
     @Scheduled(cron = "0 0 0 1 1 ?")
-    public void upgradingRestaurant() {
+    public void upgradeRestaurantByStarsNumber() {
         restaurantService.getAll().stream()
             .filter(restaurant -> restaurant.getStars() < 5)
             .forEach(updatedRestaurant -> {

@@ -35,8 +35,9 @@ public class DishJobScheduler {
     
     // at the begining of every hour of the day, updates dishes name in case they are not compliant to their recipe names (if they have a recipe)
     @Scheduled(cron = "0 0 * * * *")
-    public void updateDishNameAccordingly() {
+    public void updateDishNameByRecipeName() {
         dishService.getAll().stream()
+            .filter(d -> d.getRecipe() != null)
             .filter(dish -> dish.getName() != dish.getRecipe().getName())
             .forEach(updatedDish -> {
                 updatedDish.setName(updatedDish.getRecipe() == null ? updatedDish.getRecipe().getName() : updatedDish.getName());

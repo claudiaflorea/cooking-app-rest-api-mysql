@@ -20,9 +20,9 @@ public class ChefJobScheduler {
 
     private final ChefService chefService;
 
-    @Scheduled(fixedDelay = 20000, initialDelay = 20000)
+    @Scheduled(fixedDelay = 2000, initialDelay = 2000)
     public void displayChefs() {
-        System.out.println("Displaying all chefs in DB every 2 minutes......");
+        System.out.println("Displaying all chefs in DB every 2 seconds......");
         chefService.getAll().stream()
             .forEach(chef -> System.out.println(chef));
         System.out.println("Total number of chefs: " + chefService.getAll().stream().count());
@@ -37,7 +37,7 @@ public class ChefJobScheduler {
     }
     
     @Scheduled(cron = "* */10 * * * *")
-    //every 10 minutes, check if there are any chefs in DB with naame set without "Chef " prefixand aupdates the records
+    //every 10 minutes, check if there are any chefs in DB with naae set without "Chef " prefix and updates the records
     public void updateChefNames() {
         chefService.getAll().stream()
             .filter(chef -> !chef.getName().startsWith("Chef."))

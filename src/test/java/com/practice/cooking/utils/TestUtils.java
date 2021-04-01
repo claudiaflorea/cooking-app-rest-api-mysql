@@ -38,11 +38,11 @@ public class TestUtils {
 
     public static List<Recipe> getRecipeList() {
         List<Recipe> recipes = new ArrayList<>();
-        recipes.add(new Recipe(1L, "Apple Pie", Difficulty.EASY, getApplePieIngredients(), 1, RecipeType.DESSERT));
+        recipes.add(new Recipe(1L, "Apple Pie", Difficulty.EASY, getApplePieIngredients(), 4, RecipeType.DESSERT));
         recipes.add(new Recipe(2L, "Risotto", Difficulty.MEDIUM, getRisottoIngredients(), 1, RecipeType.SIDE));
-        recipes.add(new Recipe(3L, "Onion soup", Difficulty.MEDIUM, null, 1, RecipeType.MAIN_COURSE));
-        recipes.add(new Recipe(4L, "Creme brulee", Difficulty.HARD, null, 1, RecipeType.DESSERT));
-        recipes.add(new Recipe(5L, "Fois-gras", Difficulty.HARD, null, 1, RecipeType.ANTRE));
+        recipes.add(new Recipe(3L, "Onion soup", Difficulty.MEDIUM, null, 2, RecipeType.MAIN_COURSE));
+        recipes.add(new Recipe(4L, "Creme brulee", Difficulty.HARD, null, 3, RecipeType.DESSERT));
+        recipes.add(new Recipe(5L, "Fois-gras", Difficulty.HARD, null, 5, RecipeType.ANTRE));
 
         return recipes;
     }
