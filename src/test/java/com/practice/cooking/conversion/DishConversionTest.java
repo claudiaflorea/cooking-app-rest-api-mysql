@@ -4,6 +4,7 @@ import static com.practice.cooking.utils.TestUtils.getRecipeList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.practice.cooking.dto.DishDto;
+import com.practice.cooking.dto.RecipeDto;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.Dish;
 import com.practice.cooking.model.RecipeType;
@@ -38,7 +39,7 @@ public class DishConversionTest {
 
     @Test
     public void testDishDtoToEntityConversion() {
-        DishDto dishDto = new DishDto(DISH_ID, DISH_NAME, getRecipeList().get(1));
+        DishDto dishDto = new DishDto(DISH_ID, DISH_NAME, conversionService.convert(getRecipeList().get(1), RecipeDto.class));
         Dish dish = conversionService.convert(dishDto, Dish.class);
         assertAll("Dish mapped object ",
             () -> assertEquals(DISH_ID, dish.getId()),

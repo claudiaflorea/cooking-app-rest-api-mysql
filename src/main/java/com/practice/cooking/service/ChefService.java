@@ -8,8 +8,8 @@ import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Chef;
 import com.practice.cooking.repository.ChefRepository;
 import com.practice.cooking.utils.DatabaseSequenceGenerator;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
