@@ -21,10 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 class CookingApplicationIntegrationTests {
 
     @Test
-    void contextLoads() {
-    }
-
-    @Test
     public void testRestaurant() {
         Restaurant restaurant = this.getRestaurant();
         assertEquals(restaurant.getId().toString(), "9");

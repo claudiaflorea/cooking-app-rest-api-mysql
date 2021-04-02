@@ -20,7 +20,9 @@ public class DishEntityToDtoConverter implements Converter<Dish, DishDto> {
         }
         dishDto.setId(source.getId());
         dishDto.setName(source.getName());
-        dishDto.setRecipe(recipeEntityToDtoConverter.convert(source.getRecipe()));
+        if (source.getRecipe() != null) {
+            dishDto.setRecipe(recipeEntityToDtoConverter.convert(source.getRecipe()));
+        }
         return dishDto;
     }
 }

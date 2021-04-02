@@ -20,9 +20,9 @@ public class ChefJobScheduler {
 
     private final ChefService chefService;
 
-    @Scheduled(fixedDelay = 2000, initialDelay = 2000)
+    @Scheduled(fixedDelay = 120000, initialDelay = 20000)
     public void displayChefs() {
-        System.out.println("Displaying all chefs in DB every 2 seconds......");
+        System.out.println("Displaying all chefs in DB every 2 minutes after starting in 2 seconds after the app is started......");
         chefService.getAll().stream()
             .forEach(chef -> System.out.println(chef));
         System.out.println("Total number of chefs: " + chefService.getAll().stream().count());

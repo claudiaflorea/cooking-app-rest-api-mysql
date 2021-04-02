@@ -37,7 +37,7 @@ public class DishService {
 
     public Dish add(Dish dish) {
         dish.setId(sequenceGenerator.generateSequence(Dish.SEQUENCE_NAME));
-        if (dish.getRecipe() != null) {
+        if (dish.getRecipe() != null && dish.getRecipe().getId() != null) {
             recipeService.add(dish.getRecipe());
         }
         return dishRepository.save(dish);

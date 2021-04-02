@@ -8,10 +8,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.practice.cooking.dto.RecipeDto;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.Recipe;
 import com.practice.cooking.model.RecipeType;
 import com.practice.cooking.service.RecipeService;
+import com.practice.cooking.validator.RecipeDtoValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.stubbing.Answer;
@@ -42,6 +44,9 @@ public class RecipeControllerTest {
     @MockBean
     private RecipeService recipeService;
 
+    @MockBean
+    private RecipeDtoValidator recipeDtoValidator;
+    
     Recipe recipe = new Recipe(RECIPE_ID, RECIPE_NAME, Difficulty.MEDIUM, null, 1, RecipeType.MAIN_COURSE);
 
     @Test
@@ -79,7 +84,7 @@ public class RecipeControllerTest {
     @Test
     public void addRecipeTest() throws Exception {
         String url = "/api/recipes";
-
+        when(recipeDtoValidator.supports(RecipeDto.class)).thenReturn(true);
         when(recipeService.add(recipe)).thenAnswer(
             (Answer<Recipe>) invocation -> invocation.getArgument(0)
         );
@@ -95,7 +100,7 @@ public class RecipeControllerTest {
     public void updateRecipeTest() throws Exception {
         String url = "/api/recipes/{id}";
         recipe.setName(RECIPE_NAME_UPDATED);
-
+        when(recipeDtoValidator.supports(RecipeDto.class)).thenReturn(true);
         mockMvc.perform(put(url, RECIPE_ID)
             .content(om.writeValueAsString(recipe))
             .contentType(MediaType.APPLICATION_JSON_VALUE)

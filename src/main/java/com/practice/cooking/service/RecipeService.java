@@ -39,7 +39,7 @@ public class RecipeService {
         recipe.setId(sequenceGenerator.generateSequence(Recipe.SEQUENCE_NAME));
         if (recipe.getIngredients() != null) {
             for (Ingredient ingredient: recipe.getIngredients()) {
-                if (ingredient != null) {
+                if (ingredient != null && ingredient.getId() != null) {
                     ingredientService.add(ingredient);
                 }
             }

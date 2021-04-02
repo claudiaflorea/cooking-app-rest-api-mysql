@@ -8,8 +8,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.practice.cooking.dto.ChefDto;
 import com.practice.cooking.model.Chef;
 import com.practice.cooking.service.ChefService;
+import com.practice.cooking.validator.ChefDtoValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.stubbing.Answer;
@@ -26,7 +28,7 @@ public class ChefControllerTest {
 
     public static final long   CHEF_ID           = 14L;
     public static final String CHEF_NAME         = "Luigi";
-    public static final String CHEF_NAME_UPDATED = "Sam";
+    public static final String CHEF_NAME_UPDATED = "Samuel";
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,6 +38,9 @@ public class ChefControllerTest {
 
     @MockBean
     private ChefService chefService;
+    
+    @MockBean
+    private ChefDtoValidator chefDtoValidator;
 
     Chef chef = new Chef(CHEF_ID, CHEF_NAME);
 
@@ -70,7 +75,7 @@ public class ChefControllerTest {
     @Test
     public void addChefTest() throws Exception {
         String url = "/api/chefs";
-
+        when(chefDtoValidator.supports(ChefDto.class)).thenReturn(true);
         when(chefService.add(chef)).thenAnswer(
             (Answer<Chef>) invocation -> invocation.getArgument(0)
         );
@@ -87,6 +92,7 @@ public class ChefControllerTest {
         String url = "/api/chefs/{id}";
         Chef chef = new Chef();
         chef.setName(CHEF_NAME_UPDATED);
+        when(chefDtoValidator.supports(ChefDto.class)).thenReturn(true);
 
         mockMvc.perform(put(url, CHEF_ID)
             .content(om.writeValueAsString(chef))

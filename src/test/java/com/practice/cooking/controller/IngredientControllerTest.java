@@ -8,9 +8,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Unit;
 import com.practice.cooking.service.IngredientService;
+import com.practice.cooking.validator.IngredientDtoValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.stubbing.Answer;
@@ -39,6 +41,9 @@ public class IngredientControllerTest {
 
     @MockBean
     private IngredientService ingredientService;
+    
+    @MockBean
+    private IngredientDtoValidator ingredientDtoValidator;
 
     Ingredient ingredient = new Ingredient(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
 
@@ -60,7 +65,7 @@ public class IngredientControllerTest {
     @Test
     public void addIngredientTest() throws Exception {
         String url = "/api/ingredients";
-
+        when(ingredientDtoValidator.supports(IngredientDto.class)).thenReturn(true);
         when(ingredientService.add(ingredient)).thenAnswer(
             (Answer<Ingredient>) invocation -> invocation.getArgument(0)
         );
@@ -93,7 +98,8 @@ public class IngredientControllerTest {
     public void updateIngredientTest() throws Exception {
         String url = "/api/ingredients/{id}";
         ingredient.setName(INGREDIENT_NAME_UPDATED);
-
+        when(ingredientDtoValidator.supports(IngredientDto.class)).thenReturn(true);
+        
         mockMvc.perform(put(url, INGREDIENT_ID)
             .content(om.writeValueAsString(ingredient))
             .contentType(MediaType.APPLICATION_JSON_VALUE)

@@ -22,7 +22,6 @@ public class RestaurantDtoToEntityConverter implements Converter<RestaurantDto, 
         if (source.getId() != null) {
             restaurant.setId(source.getId());
         }
-        restaurant.setId(source.getId());
         restaurant.setName(source.getName());
         restaurant.setStars(source.getStars());
         if (source.getChefs() != null) {

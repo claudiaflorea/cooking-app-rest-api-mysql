@@ -8,9 +8,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.practice.cooking.dto.RestaurantDto;
 import com.practice.cooking.model.Restaurant;
 import com.practice.cooking.service.RestaurantService;
 import com.practice.cooking.utils.TestUtils;
+import com.practice.cooking.validator.RestaurantDtoValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.stubbing.Answer;
@@ -38,8 +40,11 @@ public class RestaurantControllerTest {
 
     @MockBean
     private RestaurantService restaurantService;
+    
+    @MockBean
+    private RestaurantDtoValidator restaurantDtoValidator;
 
-    Restaurant restaurant = new Restaurant(RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_STARS, TestUtils.getDishList(), TestUtils.getChefList());
+    Restaurant restaurant = new Restaurant(RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_STARS, TestUtils.getDishList().subList(0, 2), TestUtils.getChefList());
 
     @Test
     public void testGetRestaurantByIdWithValidParameters() throws Exception {
@@ -74,7 +79,8 @@ public class RestaurantControllerTest {
     @Test
     public void addRestaurantTest() throws Exception {
         String url = "/api/restaurants";
-
+        
+        when(restaurantDtoValidator.supports(RestaurantDto.class)).thenReturn(true);
         when(restaurantService.add(restaurant)).thenAnswer(
             (Answer<Restaurant>) invocation -> invocation.getArgument(0)
         );
@@ -90,6 +96,7 @@ public class RestaurantControllerTest {
     public void updateRestaurantTest() throws Exception {
         String url = "/api/restaurants/{id}";
         restaurant.setName(RESTAURANT_NAME_UPDATED);
+        when(restaurantDtoValidator.supports(RestaurantDto.class)).thenReturn(true);
 
         mockMvc.perform(put(url, RESTAURANT_ID)
             .content(om.writeValueAsString(restaurant))

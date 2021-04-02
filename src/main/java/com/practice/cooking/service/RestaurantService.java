@@ -41,12 +41,12 @@ public class RestaurantService {
     public Restaurant add(Restaurant restaurant) {
         restaurant.setId(sequenceGenerator.generateSequence(Restaurant.SEQUENCE_NAME));
         for(Chef chef : restaurant.getChefs()) {
-            if (chef != null) {
+            if (chef != null && chef.getId() != null) {
                 chefService.add(chef);
             }
         }
         for(Dish dish : restaurant.getDishes()) {
-            if (dish != null) {
+            if (dish != null && dish.getId() != null) {
                 dishService.add(dish);
             }
         }

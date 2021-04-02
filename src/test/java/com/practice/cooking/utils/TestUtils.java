@@ -29,9 +29,9 @@ public class TestUtils {
         List<Dish> dishes = new ArrayList<>();
         dishes.add(new Dish(10L, "Apple pie", getRecipeList().get(0)));
         dishes.add(new Dish(11L, "Risotto", getRecipeList().get(1)));
-        dishes.add(new Dish(12L, "Mac'n'cheese"));
-        dishes.add(new Dish(13L, "Brownie"));
-        dishes.add(new Dish(14L, "Coleslaw"));
+        dishes.add(new Dish(12L, "Mac'n'cheese", null));
+        dishes.add(new Dish(13L, "Brownie", null));
+        dishes.add(new Dish(14L, "Coleslaw", null));
 
         return dishes;
     }

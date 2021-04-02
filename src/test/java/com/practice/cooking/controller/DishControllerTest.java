@@ -8,11 +8,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.practice.cooking.dto.DishDto;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.Dish;
 import com.practice.cooking.model.Recipe;
 import com.practice.cooking.model.RecipeType;
 import com.practice.cooking.service.DishService;
+import com.practice.cooking.validator.DishDtoValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.stubbing.Answer;
@@ -39,6 +41,9 @@ public class DishControllerTest {
 
     @MockBean
     private DishService dishService;
+    
+    @MockBean
+    private DishDtoValidator dishDtoValidator;
 
     Recipe recipe = new Recipe(DISH_ID, DISH_NAME, Difficulty.MEDIUM, null, 1, RecipeType.MAIN_COURSE);
     Dish   dish   = new Dish(DISH_ID, DISH_NAME, recipe);
@@ -46,7 +51,7 @@ public class DishControllerTest {
     @Test
     public void testGetDishByIdWithValidParameters() throws Exception {
         String url = "/api/dishes/{id}";
-
+        
         when(dishService.getById(DISH_ID)).thenReturn(dish);
 
         mockMvc.perform(get(url, 10))
@@ -76,7 +81,7 @@ public class DishControllerTest {
     @Test
     public void addDishTest() throws Exception {
         String url = "/api/dishes";
-
+        when(dishDtoValidator.supports(DishDto.class)).thenReturn(true);
         when(dishService.add(dish)).thenAnswer(
             (Answer<Dish>) invocation -> invocation.getArgument(0)
         );
@@ -91,8 +96,8 @@ public class DishControllerTest {
     @Test
     public void updateDishTest() throws Exception {
         String url = "/api/dishes/{id}";
-        Dish dish = new Dish();
         dish.setName(DISH_NAME_UPDATED);
+        when(dishDtoValidator.supports(DishDto.class)).thenReturn(true);
 
         mockMvc.perform(put(url, DISH_ID)
             .content(om.writeValueAsString(dish))
