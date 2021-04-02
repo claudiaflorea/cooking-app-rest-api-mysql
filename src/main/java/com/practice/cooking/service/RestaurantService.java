@@ -71,5 +71,13 @@ public class RestaurantService {
         recipeMap.put("Recipe with id " + id + " is deleted ", Boolean.TRUE);
         return recipeMap;
     }
+    
+    public List<Restaurant> getAllByName(String name) {
+        return restaurantRepository.findAllByName(name);
+    }
+    
+    public List<Restaurant> getAllVegetarianRestaurants() {
+        return restaurantRepository.findAllByDishesNotContainingMeat();
+    }
 
 }

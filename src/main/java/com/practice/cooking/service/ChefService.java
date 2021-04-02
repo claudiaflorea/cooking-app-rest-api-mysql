@@ -50,5 +50,13 @@ public class ChefService {
         chefMap.put("Chef with id " + id + " is deleted ", Boolean.TRUE);
         return chefMap;
     }
+    
+    public List<Chef> getAllByName(String name) {
+        return chefRepository.findAllByName(name);
+    }
+    
+    public List<Chef> getAllByNameStartingWithChefPrefix() {
+        return chefRepository.findAllByNameStartingWithChefPrefix();
+    }
 
 }

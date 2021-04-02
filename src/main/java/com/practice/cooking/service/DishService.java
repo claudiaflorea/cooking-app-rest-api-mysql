@@ -58,4 +58,13 @@ public class DishService {
         dishMap.put("Dish with id " + id + " is deleted ", Boolean.TRUE);
         return dishMap;
     }
+    
+    public List<Dish> getAllByName(String name) {
+        return dishRepository.findAllByName(name);
+    }
+ 
+    public List<Dish> getDishesWithLiquidIngredients() {
+        return dishRepository.findAllByRecipeContainingLiquidIngredients();
+    }
+    
 }

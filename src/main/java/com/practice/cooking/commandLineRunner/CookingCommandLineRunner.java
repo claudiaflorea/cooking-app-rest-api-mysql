@@ -1,5 +1,6 @@
 package com.practice.cooking.commandLineRunner;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.practice.cooking.dto.ChefDto;
@@ -46,30 +47,24 @@ public class CookingCommandLineRunner implements CommandLineRunner {
     public void run(String... args) {
 
         //Adding a new record in Chef collection if there isn't any record with that name in the DB
-        Long chefCounter = chefService.getAll().stream()
-            .filter(chef -> chef.getName().equals(CHEF_NAME)).count();
-        if (chefCounter == 0) {
+        if (chefService.getAllByName(CHEF_NAME).size() == 0) {
             ChefDto chefDto = new ChefDto();
             chefDto.setName(CHEF_NAME);
-            chefService.add(conversionService.convert(chefDto, Chef.class));
+            chefService.add(Objects.requireNonNull(conversionService.convert(chefDto, Chef.class)));
         }
 
         //Adding a new record in Ingredient collection if there isn't any record with that name in the DB
-        Long avocadoCounter = ingredientService.getAll().stream()
-            .filter(ingredient -> ingredient.getName().equals(AVOCADO_INGREDIENT))
-            .count();
+        Integer avocadoCounter = ingredientService.getAllByName(AVOCADO_INGREDIENT).size();
         if (avocadoCounter == 0) {
             IngredientDto ingredientDto = new IngredientDto();
             ingredientDto.setName(AVOCADO_INGREDIENT);
             ingredientDto.setUnit(Unit.PIECE);
             ingredientDto.setQuantity(2);
-            ingredientService.add(conversionService.convert(ingredientDto, Ingredient.class));
+            ingredientService.add(Objects.requireNonNull(conversionService.convert(ingredientDto, Ingredient.class)));
         }
 
         //Adding a new record in Recipe collection if there isn't any record with that name in the DB
-        Long guacamoleRecipeCounter = recipeService.getAll().stream()
-            .filter(recipe -> recipe.getName().equals(GUACAMOLE_RECIPE))
-            .count();
+        Integer guacamoleRecipeCounter = recipeService.getAllByName(GUACAMOLE_RECIPE).size();
         if (guacamoleRecipeCounter == 0) {
             RecipeDto recipeDto = new RecipeDto();
             recipeDto.setName(GUACAMOLE_RECIPE);
@@ -79,47 +74,42 @@ public class CookingCommandLineRunner implements CommandLineRunner {
             recipeDto.setIngredients(
                 avocadoCounter > 0
                     ?
-                    ingredientService.getAll().stream()
-                        .filter(ingredient -> ingredient.getName().equals(AVOCADO_INGREDIENT))
+                    ingredientService.getAllByName(AVOCADO_INGREDIENT).stream()
                         .map(i -> conversionService.convert(i, IngredientDto.class))
                         .collect(Collectors.toList())
                     : null
             );
-            recipeService.add(conversionService.convert(recipeDto, Recipe.class));
+            recipeService.add(Objects.requireNonNull(conversionService.convert(recipeDto, Recipe.class)));
         }
 
         //Adding a new record in Dish collection if there isn't any record with that name in the DB
-        Long guacamoleDishCounter = dishService.getAll().stream()
-            .filter(dish -> dish.getName().equals(GUACAMOLE_RECIPE))
-            .count();
+        Integer guacamoleDishCounter = dishService.getAllByName(GUACAMOLE_RECIPE).size();
         if (guacamoleDishCounter == 0) {
             DishDto dishDto = new DishDto();
             dishDto.setName(GUACAMOLE_RECIPE);
             dishDto.setRecipe(
                 guacamoleRecipeCounter > 0
                     ?
-                    recipeService.getAll().stream()
-                        .filter(recipe -> recipe.getName().equals(GUACAMOLE_RECIPE))
+                    recipeService.getAllRecipesThatContainAvocado().stream()
                         .map(r -> conversionService.convert(r, RecipeDto.class))
                         .collect(Collectors.toList()).get(0)
                     :
                     null
             );
-            dishService.add(conversionService.convert(dishDto, Dish.class));
+            dishService.add(Objects.requireNonNull(conversionService.convert(dishDto, Dish.class)));
         }
 
         //Adding a new record in Restaurant collection if there isn't any record with that name in the DB
-        Long restaurantCounter = restaurantService.getAll().stream()
-            .filter(restaurant -> restaurant.getName().equals(RESTAURANT_NAME))
-            .count();
-        if (restaurantCounter== 0) {
+        Integer restaurantCounter = restaurantService.getAllByName(RESTAURANT_NAME).size();
+        if (restaurantCounter == 0) {
             RestaurantDto restaurantDto = new RestaurantDto();
             restaurantDto.setName(RESTAURANT_NAME);
             restaurantDto.setStars(4);
             restaurantDto.setChefs(
-                chefCounter > 0
+                chefService.getAllByName(CHEF_NAME).size() > 0
                     ?
-                    chefService.getAll().stream().filter(chef -> chef.getName().equals(CHEF_NAME))
+                    chefService.getAllByName(CHEF_NAME)
+                        .stream()
                         .map(c -> conversionService.convert(c, ChefDto.class))
                         .collect(Collectors.toList())
                     :
@@ -128,15 +118,39 @@ public class CookingCommandLineRunner implements CommandLineRunner {
             restaurantDto.setDishes(
                 guacamoleDishCounter > 0
                     ?
-                    dishService.getAll().stream().filter(dish -> dish.getName().equals(GUACAMOLE_RECIPE))
+                    dishService.getAllByName(GUACAMOLE_RECIPE).stream()
                         .map(d -> conversionService.convert(d, DishDto.class))
                         .collect(Collectors.toList())
                     :
                     null
             );
-            restaurantService.add(conversionService.convert(restaurantDto, Restaurant.class));
+            restaurantService.add(Objects.requireNonNull(conversionService.convert(restaurantDto, Restaurant.class)));
         }
+        
+        //test recipe repository findAllByRecipeType method
+        recipeService.getAllByRecipeType(RecipeType.ANTRE).stream()
+            .map(recipe -> conversionService.convert(recipe, RecipeDto.class))
+            .forEach(System.out::println);
+        
+        //test restaurant repository method findAllByDishesNotContainingMeat
+        restaurantService.getAllVegetarianRestaurants().stream()
+            .map(restaurant -> conversionService.convert(restaurant, RestaurantDto.class))
+            .forEach(System.out::println);
 
+        //test restaurant repository method findAllByRecipeContainingLiquidIngredients
+        dishService.getDishesWithLiquidIngredients().stream()
+            .map(dish -> conversionService.convert(dish, DishDto.class))
+            .forEach(System.out::println);
+        
+        //test chef repository method findAllByNameStartingWithChefPrefix
+        chefService.getAllByNameStartingWithChefPrefix().stream()
+            .map(chef -> conversionService.convert(chef, ChefDto.class))
+            .forEach(System.out::println);
+        
+        //test ingredient repository method findAllByHeavierThan1Kg
+        ingredientService.getAllHeavierThan1Kg().stream()
+            .map(ingredient -> conversionService.convert(ingredient, IngredientDto.class))
+            .forEach(System.out::println);
     }
-
+    
 }

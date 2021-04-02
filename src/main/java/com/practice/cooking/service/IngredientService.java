@@ -52,4 +52,12 @@ public class IngredientService {
         ingredientMap.put("Ingredient with id " + id + " is deleted ", Boolean.TRUE);
         return ingredientMap;
     }
+    
+    public List<Ingredient> getAllByName(String name) {
+        return ingredientRepository.findAllByName(name);
+    }
+    
+    public List<Ingredient> getAllHeavierThan1Kg() {
+        return ingredientRepository.findAllByHeavierThan1Kg();
+    }
 }

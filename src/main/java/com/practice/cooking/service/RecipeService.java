@@ -7,6 +7,7 @@ import java.util.Map;
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Recipe;
+import com.practice.cooking.model.RecipeType;
 import com.practice.cooking.repository.IngredientRepository;
 import com.practice.cooking.repository.RecipeRepository;
 import com.practice.cooking.utils.DatabaseSequenceGenerator;
@@ -64,5 +65,17 @@ public class RecipeService {
         Map<String, Boolean> recipeMap = new HashMap<>();
         recipeMap.put("Recipe with id " + id + " is deleted ", Boolean.TRUE);
         return recipeMap;
+    }
+    
+    public List<Recipe> getAllByName(String name) {
+        return recipeRepository.findAllByName(name);
+    }
+    
+    public List<Recipe> getAllByRecipeType(RecipeType recipeType) {
+        return recipeRepository.findAllByRecipeType(recipeType);
+    }
+    
+    public List<Recipe> getAllRecipesThatContainAvocado() {
+        return recipeRepository.findAllByIngredientsContainingAvocado();
     }
 }
