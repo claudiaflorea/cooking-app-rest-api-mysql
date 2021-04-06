@@ -8,12 +8,8 @@ import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Recipe;
 import com.practice.cooking.model.RecipeType;
-import com.practice.cooking.repository.IngredientRepository;
 import com.practice.cooking.repository.RecipeRepository;
-import com.practice.cooking.utils.DatabaseSequenceGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,12 +18,8 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
 
-    private final MongoOperations mongoOperations;
-
-    private final DatabaseSequenceGenerator sequenceGenerator;
-    
     private final IngredientService ingredientService;
-    
+
     public List<Recipe> getAll() {
         return recipeRepository.findAll();
     }
@@ -37,9 +29,8 @@ public class RecipeService {
     }
 
     public Recipe add(Recipe recipe) {
-        recipe.setId(sequenceGenerator.generateSequence(Recipe.SEQUENCE_NAME));
         if (recipe.getIngredients() != null) {
-            for (Ingredient ingredient: recipe.getIngredients()) {
+            for (Ingredient ingredient : recipe.getIngredients()) {
                 if (ingredient != null && ingredient.getId() != null) {
                     ingredientService.add(ingredient);
                 }
@@ -66,16 +57,16 @@ public class RecipeService {
         recipeMap.put("Recipe with id " + id + " is deleted ", Boolean.TRUE);
         return recipeMap;
     }
-    
+
     public List<Recipe> getAllByName(String name) {
         return recipeRepository.findAllByName(name);
     }
-    
+
     public List<Recipe> getAllByRecipeType(RecipeType recipeType) {
         return recipeRepository.findAllByRecipeType(recipeType);
     }
-    
-    public List<Recipe> getAllRecipesThatContainAvocado() {
-        return recipeRepository.findAllByIngredientsContainingAvocado();
-    }
+
+//    public List<Recipe> getAllRecipesThatContainAvocado() {
+//        return recipeRepository.findAllByIngredientsContainingAvocado();
+//    }
 }

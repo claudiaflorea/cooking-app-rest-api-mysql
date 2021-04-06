@@ -2,9 +2,11 @@ package com.practice.cooking.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Unit;
 import com.practice.cooking.repository.IngredientRepository;
@@ -15,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @SpringJUnitConfig(classes = IngredientServiceTest.IngredientServiceTestConfig.class)
@@ -24,15 +25,12 @@ public class IngredientServiceTest {
     @Mock
     private IngredientRepository ingredientRepository;
 
-    @Mock
-    private MongoOperations mongoOperations;
-
     @InjectMocks
     private IngredientService ingredientService;
 
     @Test
     public void testGetAllIngredients() {
-        Mockito.when(ingredientRepository.findAll()).thenReturn(TestUtils.getApplePieIngredients());
+        when(ingredientRepository.findAll()).thenReturn(TestUtils.getApplePieIngredients().stream().collect(Collectors.toList()));
 
         List<Ingredient> ingredients = ingredientService.getAll();
 
@@ -40,7 +38,7 @@ public class IngredientServiceTest {
     }
 
     private void checkInitialIngredientList(List<Ingredient> ingredients) {
-        assertEquals(ingredients.size(), 8);
+        assertEquals(ingredients.size(), 7);
         assertAll("List of ingredients",
             () -> assertEquals("Apple", ingredients.get(0).getName()),
             () -> assertEquals("Flour", ingredients.get(1).getName()),
@@ -48,15 +46,15 @@ public class IngredientServiceTest {
             () -> assertEquals("Yeast", ingredients.get(3).getName()),
             () -> assertEquals("Sugar", ingredients.get(4).getName()),
             () -> assertEquals("Melted Butter", ingredients.get(5).getName()),
-            () -> assertEquals("Vegetable oil", ingredients.get(6).getName()),
-            () -> assertEquals("Water", ingredients.get(7).getName())
+            () -> assertEquals("Vegetable oil", ingredients.get(6).getName())
             );
     }
 
     @Test
     public void testSaveAndGetIngredientById() {
-        Ingredient newAddedIngredient = new Ingredient(6L, "Paprika", 0.001, Unit.KG);
-        Mockito.when(ingredientRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedIngredient));
+        Ingredient newAddedIngredient = TestUtils.createIngredient("Paprika", 0.001, Unit.KG);
+        newAddedIngredient.setId(6L);
+        when(ingredientRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedIngredient));
 
         ingredientRepository.save(newAddedIngredient);
         Ingredient retrievedIngredient = ingredientService.getById(6L);
@@ -68,10 +66,10 @@ public class IngredientServiceTest {
 
     @Test
     public void testDeleteIngredient() {
-        Mockito.when(ingredientRepository.findAll()).thenReturn(TestUtils.getApplePieIngredients());
+        when(ingredientRepository.findAll()).thenReturn(TestUtils.getApplePieIngredients().stream().collect(Collectors.toList()));
 
         List<Ingredient> ingredients = ingredientService.getAll();
-        Mockito.when(ingredientRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(ingredients.get(0)));
+        when(ingredientRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(ingredients.get(0)));
 
         checkInitialIngredientList(ingredients);
         ingredientService.delete(ingredients.get(0).getId());
@@ -84,11 +82,6 @@ public class IngredientServiceTest {
         @Bean
         public IngredientRepository ingredientRepository() {
             return Mockito.mock(IngredientRepository.class);
-        }
-
-        @Bean
-        public MongoOperations mongoOperations() {
-            return Mockito.mock(MongoOperations.class);
         }
 
     }

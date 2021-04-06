@@ -1,5 +1,7 @@
 package com.practice.cooking.controller;
 
+import java.util.stream.Collectors;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -44,7 +46,7 @@ public class RestaurantControllerTest {
     @MockBean
     private RestaurantDtoValidator restaurantDtoValidator;
 
-    Restaurant restaurant = new Restaurant(RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_STARS, TestUtils.getDishList().subList(0, 2), TestUtils.getChefList());
+    Restaurant restaurant = new Restaurant(RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_STARS, TestUtils.getDishList().stream().limit(2).collect(Collectors.toSet()), TestUtils.getChefList());
 
     @Test
     public void testGetRestaurantByIdWithValidParameters() throws Exception {

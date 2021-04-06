@@ -12,6 +12,7 @@ import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Unit;
 import com.practice.cooking.service.IngredientService;
+import com.practice.cooking.utils.TestUtils;
 import com.practice.cooking.validator.IngredientDtoValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +46,7 @@ public class IngredientControllerTest {
     @MockBean
     private IngredientDtoValidator ingredientDtoValidator;
 
-    Ingredient ingredient = new Ingredient(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
+    Ingredient ingredient = TestUtils.createIngredientWithId(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
 
     @Test
     public void testGetIngredientByIdWithValidParameters() throws Exception {

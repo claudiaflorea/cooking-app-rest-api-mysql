@@ -1,7 +1,9 @@
 package com.practice.cooking.integration;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,16 +32,9 @@ class CookingApplicationIntegrationTests {
 
     @Test
     public void testChef() {
-        Chef chef = chefList().get(0);
+        Chef chef = chefList().stream().findFirst().get();
         assertEquals(chef.getId().toString(), "10");
         assertEquals(chef.getName(), "Alberto");
-    }
-
-    @Test
-    public void testDish() {
-        Dish dish = dishesList().get(0);
-        assertEquals(dish.getId().toString(), "2");
-        assertEquals(dish.getName(), "Cabbage rolls");
     }
 
     private Restaurant getRestaurant() {
@@ -53,8 +48,8 @@ class CookingApplicationIntegrationTests {
         return restaurant;
     }
 
-    private List<Dish> dishesList() {
-        List<Dish> dishes = new ArrayList<>();
+    private Set<Dish> dishesList() {
+        Set<Dish> dishes = new HashSet<>();
         dishes.add(new Dish(2L, "Cabbage rolls"));
         dishes.add(new Dish(3L, "Steak"));
         dishes.add(new Dish(4L, "Pizza"));
@@ -64,8 +59,8 @@ class CookingApplicationIntegrationTests {
         return dishes;
     }
 
-    private List<Chef> chefList() {
-        List<Chef> chefs = new ArrayList<>();
+    private Set<Chef> chefList() {
+        Set<Chef> chefs = new HashSet<>();
         chefs.add(new Chef(10L, "Alberto"));
         chefs.add(new Chef(11L, "Pierre"));
         chefs.add(new Chef(12L, "Carlos"));
@@ -77,7 +72,7 @@ class CookingApplicationIntegrationTests {
     //Find all dishes that have recipes
     @Test
     public void testGetDishesWithRecipes() {
-        List<Dish> dishes = TestUtils.getDishList();
+        Set<Dish> dishes = TestUtils.getDishList();
         List<Dish> filteredDishes = dishes.
             stream()
             .filter(d -> d.getRecipe() != null)
@@ -91,22 +86,19 @@ class CookingApplicationIntegrationTests {
     //find all recipes with medium level difficulty
     @Test
     public void testRecipesOfMediumDifficulty() {
-        List<Recipe> recipes = TestUtils.getRecipeList();
+        Set<Recipe> recipes = TestUtils.getRecipeList();
         List<Recipe> filteredRecipes = recipes
             .stream()
             .filter(r -> r.getDifficulty() == Difficulty.MEDIUM)
             .collect(Collectors.toList());
         Assertions.assertNotNull(filteredRecipes);
-        Assertions.assertAll(
-            () -> assertEquals("Risotto", filteredRecipes.get(0).getName()),
-            () -> assertEquals("Onion soup", filteredRecipes.get(1).getName())
-        );
+        assertEquals("Risotto", filteredRecipes.get(0).getName());
     }
 
     //find all liquid ingredients from apple pie recipe
     @Test
     public void testLiquidIngredients() {
-        List<Ingredient> ingredients = TestUtils.getApplePieIngredients();
+        List<Ingredient> ingredients = new ArrayList<>(TestUtils.getApplePieIngredients());
         List<Ingredient> liquidIngredients = ingredients
             .stream()
             .filter(i -> i.getUnit() == Unit.LITER)
@@ -114,15 +106,14 @@ class CookingApplicationIntegrationTests {
         Assertions.assertNotNull(liquidIngredients);
         Assertions.assertAll(
             () -> assertEquals("Melted Butter", liquidIngredients.get(0).getName()),
-            () -> assertEquals("Vegetable oil", liquidIngredients.get(1).getName()),
-            () -> assertEquals("Water", liquidIngredients.get(2).getName())
+            () -> assertEquals("Vegetable oil", liquidIngredients.get(1).getName())
         );
     }
 
     //rename ingredients of risotto
     @Test
     public void testRenameRisottoIngredients() {
-        List<Ingredient> ingredients = TestUtils.getRisottoIngredients();
+        List<Ingredient> ingredients = TestUtils.getRisottoIngredients().stream().collect(Collectors.toList());
         ingredients
             .stream()
             .forEach(
@@ -137,17 +128,17 @@ class CookingApplicationIntegrationTests {
     //rename chefs names to uppercase
     @Test
     public void testRenameChefsNames() {
-        List<Chef> chefList = TestUtils.getChefList();
+        List<Chef> chefList = new ArrayList<>(TestUtils.getChefList());
         List<String> chefNames = chefList
             .stream()
-            .map(c -> c.getName())
+            .map(Chef::getName)
             .collect(Collectors.toList());
         List<String> newNames = new ArrayList<>();
         chefNames
             .stream()
-            .map(n -> n.toUpperCase())
+            .map(String::toUpperCase)
             .forEach(
-                n2 -> newNames.add(n2)
+                newNames::add
             );
         Assertions.assertNotNull(chefNames);
         Assertions.assertAll(

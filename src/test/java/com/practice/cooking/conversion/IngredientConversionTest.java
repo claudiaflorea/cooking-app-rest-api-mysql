@@ -6,6 +6,7 @@ import com.practice.cooking.converter.IngredientEntityToDtoConverter;
 import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Unit;
+import com.practice.cooking.utils.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +25,8 @@ public class IngredientConversionTest {
 
     @Test
     public void testDishToDtoConversion() {
-        Ingredient ingredient = new Ingredient(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
+        Ingredient ingredient = TestUtils.createIngredient(INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
+        ingredient.setId(INGREDIENT_ID);
         IngredientDto ingredientDto = conversionService.convert(ingredient, IngredientDto.class);
 
         assertAll("IngredientDto mapped object",

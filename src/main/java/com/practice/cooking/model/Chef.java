@@ -1,28 +1,47 @@
 package com.practice.cooking.model;
 
+import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.Setter;
 
-@Document(collection = "Chef")
-@Data
-@AllArgsConstructor
+@Entity
+@Table(name = "chefs")
+@Getter
+@Setter
 @NoArgsConstructor
-@EqualsAndHashCode
+@AllArgsConstructor
+@EqualsAndHashCode(of = {"id"})
 @Builder
 public class Chef implements Comparable<Chef> {
 
-    @Transient
-    public static final String SEQUENCE_NAME = "chef_seq";
-
     @Id
-    private Long   id;
-    private String name;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "c_id")
+    private Long            id;
+    
+    @Column(name = "c_name")
+    private String          name;
+
+    public Chef(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    @OneToMany(mappedBy = "chefs", fetch = FetchType.LAZY)
+    private Set<Restaurant> restaurants;
 
     @Override
     public int compareTo(Chef o) {

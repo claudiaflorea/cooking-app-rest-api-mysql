@@ -1,31 +1,59 @@
 package com.practice.cooking.model;
 
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
-@Document(collection = "Ingredient")
-@Data
+@Entity
+@Table(name = "ingredients")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"id"})
 @Builder
 public class Ingredient implements Comparable<Ingredient> {
 
-    @Transient
-    public static final String SEQUENCE_NAME = "ingredient_seq";
-
     @Id
-    private Long   id;
-    private String name;
-    private double quantity;
-    private Unit   unit;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "i_id")
+    private Long        id;
+    
+    @Column(name = "i_name")
+    private String      name;
 
+    @Column(name = "i_quantity")
+    private double      quantity;
+
+    @Column(name = "i_unit")
+    private Unit        unit;
+
+    @Column(name = "i_r_id", updatable = false, insertable = false)
+    private Long recipeId;
+    
+    @JoinColumn(name = "i_r_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Recipe recipe;
+    
     @Override
     public int compareTo(Ingredient o) {
         try {

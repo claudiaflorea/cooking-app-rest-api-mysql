@@ -2,9 +2,11 @@ package com.practice.cooking.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 import com.practice.cooking.model.Dish;
 import com.practice.cooking.repository.DishRepository;
 import com.practice.cooking.utils.TestUtils;
@@ -14,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @SpringJUnitConfig(classes = DishServiceTest.DishServiceTestConfig.class)
@@ -23,15 +24,12 @@ public class DishServiceTest {
     @Mock
     private DishRepository dishRepository;
 
-    @Mock
-    private MongoOperations mongoOperations;
-
     @InjectMocks
     private DishService dishService;
 
     @Test
     public void testGetAllDishes() {
-        Mockito.when(dishRepository.findAll()).thenReturn(TestUtils.getDishList());
+        when(dishRepository.findAll()).thenReturn(TestUtils.getDishList().stream().collect(Collectors.toList()));
 
         List<Dish> dishes = dishService.getAll();
 
@@ -52,7 +50,7 @@ public class DishServiceTest {
     @Test
     public void testSaveAndGetDishById() {
         Dish newAddedDish = new Dish(6L, "Bolognese");
-        Mockito.when(dishRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedDish));
+        when(dishRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedDish));
 
         dishRepository.save(newAddedDish);
         Dish retrievedDish = (Dish) dishService.getById(6L);
@@ -64,10 +62,10 @@ public class DishServiceTest {
 
     @Test
     public void testDeleteChef() {
-        Mockito.when(dishRepository.findAll()).thenReturn(TestUtils.getDishList());
+        when(dishRepository.findAll()).thenReturn(TestUtils.getDishList().stream().collect(Collectors.toList()));
 
         List<Dish> dishes = dishService.getAll();
-        Mockito.when(dishRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(dishes.get(0)));
+        when(dishRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(dishes.get(0)));
 
         checkInitialDishList(dishes);
         dishService.delete(dishes.get(0).getId());
@@ -80,11 +78,6 @@ public class DishServiceTest {
         @Bean
         public DishRepository dishRepository() {
             return Mockito.mock(DishRepository.class);
-        }
-
-        @Bean
-        public MongoOperations mongoOperations() {
-            return Mockito.mock(MongoOperations.class);
         }
     }
 }

@@ -29,7 +29,7 @@ public class RestaurantEntityToDtoConverter implements Converter<Restaurant, Res
             restaurantDto.setChefs(
                 source.getChefs().stream()
                     .map(chef -> chefConverter.convert(chef))
-                    .collect(Collectors.toList())
+                    .collect(Collectors.toSet())
             );
         }
         if (source.getDishes() != null) {
@@ -37,7 +37,7 @@ public class RestaurantEntityToDtoConverter implements Converter<Restaurant, Res
                 source.getDishes()
                     .stream()
                     .map(dish -> dishConverter.convert(dish))
-                    .collect(Collectors.toList())
+                    .collect(Collectors.toSet())
             );
         }
         return restaurantDto;

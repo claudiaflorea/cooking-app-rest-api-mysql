@@ -1,34 +1,52 @@
 package com.practice.cooking.model;
 
-import java.util.List;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.Setter;
 
-@Document(collection = "Recipe")
-@Data
+@Entity
+@Table(name = "recipes")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"id"})
 @Builder
 public class Recipe implements Comparable<Recipe> {
 
-    @Transient
-    public static final String SEQUENCE_NAME = "recipe_seq";
-
     @Id
-    private Long             id;
-    private String           name;
-    private Difficulty       difficulty;
-    private List<Ingredient> ingredients;
-    private Integer          cookingTime;
-    private RecipeType       recipeType;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "r_id")
+    private Long            id;
+
+    @Column(name = "r_name")
+    private String          name;
+    
+    @Column(name = "r_difficulty")
+    private Difficulty      difficulty;
+    
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL)
+    private Set<Ingredient> ingredients;
+    
+    @Column(name = "r_cooking_time")
+    private Integer         cookingTime;
+
+    @Column(name = "r_recipe_type")
+    private RecipeType      recipeType;
 
     @Override
     public int compareTo(Recipe o) {

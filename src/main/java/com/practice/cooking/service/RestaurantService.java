@@ -9,11 +9,7 @@ import com.practice.cooking.model.Chef;
 import com.practice.cooking.model.Dish;
 import com.practice.cooking.model.Restaurant;
 import com.practice.cooking.repository.RestaurantRepository;
-import com.practice.cooking.utils.DatabaseSequenceGenerator;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,13 +18,9 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
 
-    private final MongoOperations mongoOperations;
-
     private final ChefService chefService;
 
     private final DishService dishService;
-
-    private final DatabaseSequenceGenerator sequenceGenerator;
 
     public List<Restaurant> getAll() {
         return restaurantRepository.findAll();
@@ -39,7 +31,6 @@ public class RestaurantService {
     }
 
     public Restaurant add(Restaurant restaurant) {
-        restaurant.setId(sequenceGenerator.generateSequence(Restaurant.SEQUENCE_NAME));
         for(Chef chef : restaurant.getChefs()) {
             if (chef != null && chef.getId() != null) {
                 chefService.add(chef);
@@ -76,8 +67,8 @@ public class RestaurantService {
         return restaurantRepository.findAllByName(name);
     }
     
-    public List<Restaurant> getAllVegetarianRestaurants() {
-        return restaurantRepository.findAllByDishesNotContainingMeat();
-    }
+//    public List<Restaurant> getAllVegetarianRestaurants() {
+//        return restaurantRepository.findAllByDishesNotContainingMeat();
+//    }
 
 }

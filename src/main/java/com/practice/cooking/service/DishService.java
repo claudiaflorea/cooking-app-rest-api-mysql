@@ -6,13 +6,8 @@ import java.util.Map;
 
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Dish;
-import com.practice.cooking.model.Recipe;
 import com.practice.cooking.repository.DishRepository;
-import com.practice.cooking.repository.RecipeRepository;
-import com.practice.cooking.utils.DatabaseSequenceGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,10 +15,6 @@ import org.springframework.stereotype.Service;
 public class DishService {
 
     private final DishRepository dishRepository;
-
-    private final MongoOperations mongoOperations;
-
-    private final DatabaseSequenceGenerator sequenceGenerator;
 
     private final RecipeService recipeService;
     
@@ -36,7 +27,6 @@ public class DishService {
     }
 
     public Dish add(Dish dish) {
-        dish.setId(sequenceGenerator.generateSequence(Dish.SEQUENCE_NAME));
         if (dish.getRecipe() != null && dish.getRecipe().getId() != null) {
             recipeService.add(dish.getRecipe());
         }
@@ -63,8 +53,8 @@ public class DishService {
         return dishRepository.findAllByName(name);
     }
  
-    public List<Dish> getDishesWithLiquidIngredients() {
-        return dishRepository.findAllByRecipeContainingLiquidIngredients();
-    }
+//    public List<Dish> getDishesWithLiquidIngredients() {
+//        return dishRepository.findAllByRecipeContainingLiquidIngredients();
+//    }
     
 }

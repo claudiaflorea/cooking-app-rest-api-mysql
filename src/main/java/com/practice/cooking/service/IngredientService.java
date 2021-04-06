@@ -7,10 +7,7 @@ import java.util.Map;
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.repository.IngredientRepository;
-import com.practice.cooking.utils.DatabaseSequenceGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,10 +16,6 @@ public class IngredientService {
 
     private final IngredientRepository ingredientRepository;
 
-    private final MongoOperations mongoOperations;
-
-    private final DatabaseSequenceGenerator sequenceGenerator;
-    
     public List<Ingredient> getAll() {
         return ingredientRepository.findAll();
     }
@@ -32,7 +25,6 @@ public class IngredientService {
     }
 
     public Ingredient add(Ingredient ingredient) {
-        ingredient.setId(sequenceGenerator.generateSequence(Ingredient.SEQUENCE_NAME));
         return ingredientRepository.save(ingredient);
     }
 
@@ -57,7 +49,7 @@ public class IngredientService {
         return ingredientRepository.findAllByName(name);
     }
     
-    public List<Ingredient> getAllHeavierThan1Kg() {
-        return ingredientRepository.findAllByHeavierThan1Kg();
-    }
+//    public List<Ingredient> getAllHeavierThan1Kg() {
+//        return ingredientRepository.findAllByHeavierThan1Kg();
+//    }
 }

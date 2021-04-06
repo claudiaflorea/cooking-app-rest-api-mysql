@@ -1,7 +1,9 @@
 package com.practice.cooking.conversion;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.practice.cooking.utils.TestUtils.getChefList;
 import static com.practice.cooking.utils.TestUtils.getDishList;
@@ -41,32 +43,31 @@ public class RestaurantConversionTest {
             () -> assertEquals(RESTAURANT_ID, restaurantDto.getId()),
             () -> assertEquals(RESTAURANT_NAME, restaurantDto.getName()),
             () -> assertEquals(STARS, restaurantDto.getStars()),
-            () -> assertEquals("Apple pie", restaurantDto.getDishes().get(0).getName()),
-            () -> assertEquals("Eugene", restaurantDto.getChefs().get(0).getName())
+            () -> assertEquals("Apple pie", restaurantDto.getDishes().stream().sorted().findFirst().get().getName()),
+            () -> assertEquals("Eugene", restaurantDto.getChefs().stream().sorted().findFirst().get().getName())
             );
     }
 
     @Test
     public void testRestaurantDtoToEntityConversion() {
-        List<DishDto> dishDtoList = new ArrayList<>();
+        Set<DishDto> dishDtoList = new HashSet<>();
         for (Dish dish : getDishList()) {
             dishDtoList.add(conversionService.convert(dish, DishDto.class));
         }
 
-        List<ChefDto> chefDtoList = new ArrayList<>();
+        Set<ChefDto> chefDtoList = new HashSet<>();
         for (Chef chef : getChefList()) {
             chefDtoList.add(conversionService.convert(chef, ChefDto.class));
         }
         
         RestaurantDto restaurantDto = new RestaurantDto(RESTAURANT_ID, RESTAURANT_NAME, STARS, dishDtoList, chefDtoList);
-        Restaurant restaurant = conversionService.convert(restaurantDto, Restaurant.class);
 
         assertAll("Restaurant mapped object",
             () -> assertEquals(RESTAURANT_ID, restaurantDto.getId()),
             () -> assertEquals(RESTAURANT_NAME, restaurantDto.getName()),
             () -> assertEquals(STARS, restaurantDto.getStars()),
-            () -> assertEquals("Apple pie", restaurantDto.getDishes().get(0).getName()),
-            () -> assertEquals("Eugene", restaurantDto.getChefs().get(0).getName())
+            () -> assertEquals("Apple pie", restaurantDto.getDishes().stream().sorted().findFirst().get().getName()),
+            () -> assertEquals("Eugene", restaurantDto.getChefs().stream().sorted().findFirst().get().getName())
         );
     }
 }

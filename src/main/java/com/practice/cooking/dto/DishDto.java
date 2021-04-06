@@ -11,12 +11,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class DishDto {
+public class DishDto implements Comparable<DishDto> {
 
     private Long   id;
-    //@Size(max = 30, min = 3)
-    //@Pattern(regexp = "^[A-Z]")
     private String name;
-    //@Valid
     private RecipeDto recipe;
+
+    @Override
+    public int compareTo(DishDto o) {
+        try {
+            if (o.getId() > this.getId()) {
+                return -1;
+            } else if (o.getId() == this.getId()) {
+                return 0;
+            } else {
+                return 1;
+            }
+        } catch (NullPointerException e) {
+            System.out.println(e);
+        }
+        return 0;
+    }
 }

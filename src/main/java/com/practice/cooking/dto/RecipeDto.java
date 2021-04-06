@@ -1,12 +1,6 @@
 package com.practice.cooking.dto;
 
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import java.util.Set;
 
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.RecipeType;
@@ -21,17 +15,28 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class RecipeDto {
+public class RecipeDto implements Comparable<RecipeDto> {
 
-    private Long                id;
-    //@Size(max = 30, min = 3)
-    //@Pattern(regexp = "^[A-Z]")
-    private String              name;
-    private Difficulty          difficulty;
-    //@Valid
-    private List<IngredientDto> ingredients;
-    //@Positive
-    private Integer             cookingTime;
-    //@NotNull
-    private RecipeType          recipeType;
+    private Long               id;
+    private String             name;
+    private Difficulty         difficulty;
+    private Set<IngredientDto> ingredients;
+    private Integer            cookingTime;
+    private RecipeType         recipeType;
+
+    @Override
+    public int compareTo(RecipeDto o) {
+        try {
+            if (o.getId() > this.getId()) {
+                return -1;
+            } else if (o.getId() == this.getId()) {
+                return 0;
+            } else {
+                return 1;
+            }
+        } catch (NullPointerException e) {
+            System.out.println(e);
+        }
+        return 0;
+    }
 }

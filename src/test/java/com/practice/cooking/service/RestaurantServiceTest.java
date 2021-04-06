@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 import com.practice.cooking.model.Restaurant;
 import com.practice.cooking.repository.RestaurantRepository;
 import com.practice.cooking.utils.TestUtils;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @SpringJUnitConfig(classes = RestaurantServiceTest.RestaurantServiceTestConfig.class)
@@ -23,15 +23,12 @@ public class RestaurantServiceTest {
     @Mock
     private RestaurantRepository restaurantRepository;
 
-    @Mock
-    private MongoOperations mongoOperations;
-
     @InjectMocks
     private RestaurantService restaurantService;
 
     @Test
     public void testGetAllRestaurants() {
-        Mockito.when(restaurantRepository.findAll()).thenReturn(TestUtils.getRestaurantList());
+        when(restaurantRepository.findAll()).thenReturn(TestUtils.getRestaurantList());
 
         List<Restaurant> restaurants = restaurantService.getAll();
 
@@ -49,7 +46,7 @@ public class RestaurantServiceTest {
     @Test
     public void testSaveAndGetRestaurantById() {
         Restaurant newAddedRestaurant = new Restaurant(6L, "Yum", 4, TestUtils.getDishList(), TestUtils.getChefList());
-        Mockito.when(restaurantRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedRestaurant));
+        when(restaurantRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedRestaurant));
 
         restaurantRepository.save(newAddedRestaurant);
         Restaurant retrievedRestaurant = restaurantService.getById(6L);
@@ -61,10 +58,10 @@ public class RestaurantServiceTest {
 
     @Test
     public void testDeleteRestaurant() {
-        Mockito.when(restaurantRepository.findAll()).thenReturn(TestUtils.getRestaurantList());
+        when(restaurantRepository.findAll()).thenReturn(TestUtils.getRestaurantList());
 
         List<Restaurant> restaurants = restaurantService.getAll();
-        Mockito.when(restaurantRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(restaurants.get(0)));
+        when(restaurantRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(restaurants.get(0)));
 
         checkInitialRestaurantsList(restaurants);
         restaurantService.delete(restaurants.get(0).getId());
@@ -77,11 +74,6 @@ public class RestaurantServiceTest {
         @Bean
         public RestaurantRepository restaurantRepository() {
             return Mockito.mock(RestaurantRepository.class);
-        }
-
-        @Bean
-        public MongoOperations mongoOperations() {
-            return Mockito.mock(MongoOperations.class);
         }
 
     }

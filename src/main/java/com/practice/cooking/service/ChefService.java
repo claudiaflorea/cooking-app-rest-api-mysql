@@ -7,10 +7,7 @@ import java.util.Map;
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Chef;
 import com.practice.cooking.repository.ChefRepository;
-import com.practice.cooking.utils.DatabaseSequenceGenerator;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,10 +15,6 @@ import org.springframework.stereotype.Service;
 public class ChefService {
 
     private final ChefRepository chefRepository;
-
-    private final MongoOperations mongoOperations;
-
-    private final DatabaseSequenceGenerator sequenceGenerator;
 
     public List<Chef> getAll() {
         return chefRepository.findAll();
@@ -32,7 +25,6 @@ public class ChefService {
     }
 
     public Chef add(Chef chef) {
-        chef.setId(sequenceGenerator.generateSequence(Chef.SEQUENCE_NAME));
         return chefRepository.save(chef);
     }
 
@@ -55,8 +47,8 @@ public class ChefService {
         return chefRepository.findAllByName(name);
     }
     
-    public List<Chef> getAllByNameStartingWithChefPrefix() {
-        return chefRepository.findAllByNameStartingWithChefPrefix();
-    }
+//    public List<Chef> getAllByNameStartingWithChefPrefix() {
+//        return chefRepository.findAllByNameStartingWithChefPrefix();
+//    }
 
 }

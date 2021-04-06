@@ -1,26 +1,19 @@
 package com.practice.cooking.dto;
 
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Range;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class RestaurantDto {
+public class RestaurantDto implements Comparable<RestaurantDto> {
 
     private Long          id;
     //@Size(max = 20, min = 3)
@@ -29,7 +22,23 @@ public class RestaurantDto {
     //@Range(min = 1, max = 5)
     private Integer       stars;
     //@Valid
-    private List<DishDto> dishes;
+    private Set<DishDto> dishes;
     //@Valid
-    private List<ChefDto> chefs;
+    private Set<ChefDto> chefs;
+
+    @Override
+    public int compareTo(RestaurantDto o) {
+        try {
+            if (o.getId() > this.getId()) {
+                return -1;
+            } else if (o.getId() == this.getId()) {
+                return 0;
+            } else {
+                return 1;
+            }
+        } catch (NullPointerException e) {
+            System.out.println(e);
+        }
+        return 0;
+    }
 }

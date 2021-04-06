@@ -29,7 +29,7 @@ public class RecipeDtoToEntityConverter implements Converter<RecipeDto, Recipe> 
             recipe.setIngredients(
                 source.getIngredients().stream()
                     .map(ingredientDto -> ingredientConverter.convert(ingredientDto))
-                    .collect(Collectors.toList())
+                    .collect(Collectors.toSet())
             );
         }
         return recipe;

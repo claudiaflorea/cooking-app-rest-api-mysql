@@ -1,5 +1,8 @@
 package com.practice.cooking.conversion;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import static com.practice.cooking.utils.TestUtils.getRecipeList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -7,6 +10,7 @@ import com.practice.cooking.dto.DishDto;
 import com.practice.cooking.dto.RecipeDto;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.Dish;
+import com.practice.cooking.model.Recipe;
 import com.practice.cooking.model.RecipeType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +28,7 @@ public class DishConversionTest {
     
     @Test
     public void testDishToDtoConversion() {
-        Dish dish = new Dish(DISH_ID, DISH_NAME, getRecipeList().get(1));
+        Dish dish = new Dish(DISH_ID, DISH_NAME, new ArrayList<>(getRecipeList()).get(1));
         DishDto dishDto = conversionService.convert(dish, DishDto.class);
         assertAll("DishDto mapped object ",
             () -> assertEquals(DISH_ID, dishDto.getId()),
@@ -33,13 +37,13 @@ public class DishConversionTest {
             () -> assertEquals(Difficulty.MEDIUM, dishDto.getRecipe().getDifficulty()),
             () -> assertEquals(1, dishDto.getRecipe().getCookingTime().intValue()),
             () -> assertEquals(RecipeType.SIDE, dishDto.getRecipe().getRecipeType()),
-            () -> assertEquals("Rice", dishDto.getRecipe().getIngredients().get(0).getName())
+            () -> assertEquals("Rice", dishDto.getRecipe().getIngredients().stream().sorted().findFirst().get().getName())
             );
     }
 
     @Test
     public void testDishDtoToEntityConversion() {
-        DishDto dishDto = new DishDto(DISH_ID, DISH_NAME, conversionService.convert(getRecipeList().get(1), RecipeDto.class));
+        DishDto dishDto = new DishDto(DISH_ID, DISH_NAME, conversionService.convert(new ArrayList<>(getRecipeList()).get(1), RecipeDto.class));
         Dish dish = conversionService.convert(dishDto, Dish.class);
         assertAll("Dish mapped object ",
             () -> assertEquals(DISH_ID, dish.getId()),
@@ -48,7 +52,7 @@ public class DishConversionTest {
             () -> assertEquals(Difficulty.MEDIUM, dish.getRecipe().getDifficulty()),
             () -> assertEquals(1, dish.getRecipe().getCookingTime().intValue()),
             () -> assertEquals(RecipeType.SIDE, dish.getRecipe().getRecipeType()),
-            () -> assertEquals("Rice", dish.getRecipe().getIngredients().get(0).getName())
+            () -> assertEquals("Rice", dish.getRecipe().getIngredients().stream().sorted().findFirst().get().getName())
         );
     }
 }

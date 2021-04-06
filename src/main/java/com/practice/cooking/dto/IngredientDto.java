@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class IngredientDto {
+public class IngredientDto implements Comparable<IngredientDto> {
 
     private Long   id;
     //@Size(max = 30, min = 3)
@@ -25,4 +25,20 @@ public class IngredientDto {
     private double quantity;
     //@NotNull
     private Unit   unit;
+
+    @Override
+    public int compareTo(IngredientDto o) {
+        try {
+            if (o.getId() > this.getId()) {
+                return -1;
+            } else if (o.getId() == this.getId()) {
+                return 0;
+            } else {
+                return 1;
+            }
+        } catch (NullPointerException e) {
+            System.out.println(e);
+        }
+        return 0;
+    }
 }

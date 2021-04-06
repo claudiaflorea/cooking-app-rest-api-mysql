@@ -2,6 +2,8 @@ package com.practice.cooking.conversion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static com.practice.cooking.utils.TestUtils.getRisottoIngredients;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -45,13 +47,13 @@ public class RecipeConversionTest {
             () -> assertEquals(RECIPE_DIFFICULTY, recipeDto.getDifficulty()),
             () -> assertEquals(RECIPE_COOKING_TIME, recipeDto.getCookingTime()),
             () -> assertEquals(RECIPE_TYPE, recipeDto.getRecipeType()),
-            () -> assertEquals("Rice", recipeDto.getIngredients().get(0).getName())
+            () -> assertEquals("Rice", recipeDto.getIngredients().stream().sorted().findFirst().get().getName())
         );
     }
 
     @Test
     public void testRecipeDtoRoEntityConversion() {
-        List<IngredientDto> ingredientDtoList = new ArrayList<>();
+        Set<IngredientDto> ingredientDtoList = new TreeSet<>();
         for (Ingredient ingredient : getRisottoIngredients()) {
             ingredientDtoList.add(conversionService.convert(ingredient, IngredientDto.class));
         }
@@ -66,7 +68,7 @@ public class RecipeConversionTest {
             () -> assertEquals(RECIPE_DIFFICULTY, recipe.getDifficulty()),
             () -> assertEquals(RECIPE_COOKING_TIME, recipe.getCookingTime()),
             () -> assertEquals(RECIPE_TYPE, recipe.getRecipeType()),
-            () -> assertEquals("Rice", recipe.getIngredients().get(0).getName())
+            () -> assertEquals("Rice", recipe.getIngredients().stream().sorted().findFirst().get().getName())
         );
     }
 

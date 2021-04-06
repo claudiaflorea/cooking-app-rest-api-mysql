@@ -1,10 +1,14 @@
 package com.practice.cooking.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.Recipe;
 import com.practice.cooking.model.RecipeType;
@@ -16,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @SpringJUnitConfig(classes = RecipeServiceTest.RecipeServiceTestConfig.class)
@@ -24,16 +27,13 @@ public class RecipeServiceTest {
 
     @Mock
     private RecipeRepository recipeRepository;
-
-    @Mock
-    private MongoOperations mongoOperations;
-
+   
     @InjectMocks
     private RecipeService recipeService;
 
     @Test
     public void testGetAllRecipes() {
-        Mockito.when(recipeRepository.findAll()).thenReturn(TestUtils.getRecipeList());
+        when(recipeRepository.findAll()).thenReturn(new ArrayList<>(TestUtils.getRecipeList()));
 
         List<Recipe> recipes = recipeService.getAll();
 
@@ -41,20 +41,18 @@ public class RecipeServiceTest {
     }
 
     private void checkInitialRecipesList(List<Recipe> recipes) {
-        assertEquals(recipes.size(), 5);
+        assertEquals(recipes.size(), 3);
         assertAll("List of recipes",
-            () -> assertEquals("Apple Pie", recipes.get(0).getName()),
+            () -> assertEquals("Guacamole", recipes.get(0).getName()),
             () -> assertEquals("Risotto", recipes.get(1).getName()),
-            () -> assertEquals("Onion soup", recipes.get(2).getName()),
-            () -> assertEquals("Creme brulee", recipes.get(3).getName()),
-            () -> assertEquals("Fois-gras", recipes.get(4).getName())
+            () -> assertEquals("Apple Pie", recipes.get(2).getName())
         );
     }
 
     @Test
     public void testSaveAndGetRecipeById() {
         Recipe newAddedRecipe = new Recipe(6L, "Risotto", Difficulty.MEDIUM, TestUtils.getRisottoIngredients(), 1, RecipeType.SIDE);
-        Mockito.when(recipeRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedRecipe));
+        when(recipeRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedRecipe));
 
         recipeRepository.save(newAddedRecipe);
         Recipe retrievedRecipe = recipeService.getById(6L);
@@ -66,10 +64,10 @@ public class RecipeServiceTest {
 
     @Test
     public void testDeleteRecipe() {
-        Mockito.when(recipeRepository.findAll()).thenReturn(TestUtils.getRecipeList());
+        when(recipeRepository.findAll()).thenReturn(new ArrayList<>(TestUtils.getRecipeList()));
 
         List<Recipe> recipes = recipeService.getAll();
-        Mockito.when(recipeRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(recipes.get(0)));
+        when(recipeRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(recipes.get(0)));
 
         checkInitialRecipesList(recipes);
         recipeService.delete(recipes.get(0).getId());
@@ -82,11 +80,6 @@ public class RecipeServiceTest {
         @Bean
         public RecipeRepository recipeRepository() {
             return Mockito.mock(RecipeRepository.class);
-        }
-
-        @Bean
-        public MongoOperations mongoOperations() {
-            return Mockito.mock(MongoOperations.class);
         }
 
     }

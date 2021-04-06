@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize
 public enum RecipeType {
     
-    DESSERT(1L), MAIN_COURSE(2L), SIDE(3L), ANTRE(4L) ;
+    DESSERT, MAIN_COURSE, SIDE, ANTRE;
 
-    RecipeType(long id) {}
 }
