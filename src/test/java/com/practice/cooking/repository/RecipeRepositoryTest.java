@@ -85,7 +85,6 @@ public class RecipeRepositoryTest {
         risottoIngredients.add(createIngredient(PEPPER, 0.001, Unit.KG, risotto));
         risottoIngredients.add(createIngredient(BUTTER, 0.1, Unit.KG, risotto));
         ingredientRepository.saveAll(risottoIngredients);
-
     }
 
     @AfterEach

@@ -101,18 +101,18 @@ public class TestUtils {
         return chef;
     }
     
-    public static RestaurantToChef createRestaurantToChefLink(Restaurant restaurant, Set<Chef> chefs) {
+    public static RestaurantToChef createRestaurantToChefLink(Restaurant restaurant, Chef chef) {
         RestaurantToChef restaurantToChef = new RestaurantToChef();
         restaurantToChef.setRestaurant(restaurant);
-        restaurant.setChefs(chefs);
+        restaurantToChef.setChef(chef);
         
         return restaurantToChef;
     }
 
-    public static RestaurantToDish createRestaurantToDishLink(Restaurant restaurant, Set<Dish> dishes) {
+    public static RestaurantToDish createRestaurantToDishLink(Restaurant restaurant, Dish dish) {
         RestaurantToDish restaurantToDish = new RestaurantToDish();
         restaurantToDish.setRestaurant(restaurant);
-        restaurant.setDishes(dishes);
+        restaurantToDish.setDish(dish);
 
         return restaurantToDish;
     }

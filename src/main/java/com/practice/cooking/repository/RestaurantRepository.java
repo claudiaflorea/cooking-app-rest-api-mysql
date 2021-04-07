@@ -12,7 +12,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     
     List<Restaurant> findAllByName(String name);
    
-    @Query(value = "SELECT r FROM Restaurant r " +
+    @Query(value = "SELECT DISTINCT r FROM Restaurant r " +
         "LEFT JOIN FETCH r.dishes d " +
         "LEFT JOIN FETCH d.recipe re " +
         "LEFT JOIN FETCH re.ingredients i " +

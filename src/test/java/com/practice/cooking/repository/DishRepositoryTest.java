@@ -1,5 +1,6 @@
 package com.practice.cooking.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -67,7 +68,7 @@ public class DishRepositoryTest {
         Recipe applePie2 = createRecipe(APPLE_PIE, Difficulty.EASY, 4, RecipeType.DESSERT);
         recipeRepository.saveAll(asList(applePie, risotto, guacamole, applePie2));
 
-        Set<Ingredient> applePieIngredients = new TreeSet<>();
+        List<Ingredient> applePieIngredients = new ArrayList<>();
         applePieIngredients.add(createIngredient(APPLE, 5, Unit.KG, applePie));
         applePieIngredients.add(createIngredient(FLOUR, 2, Unit.KG, applePie));
         applePieIngredients.add(createIngredient(CINNAMON, 0.001, Unit.KG, applePie));
@@ -78,13 +79,13 @@ public class DishRepositoryTest {
         applePieIngredients.add(createIngredient(WATER, 0.005, Unit.LITER, applePie));
         ingredientRepository.saveAll(applePieIngredients);
 
-        Set<Ingredient> guacamoleIngredients = new TreeSet<>();
+        List<Ingredient> guacamoleIngredients = new ArrayList<>();
         guacamoleIngredients.add(createIngredient(AVOCADO, 2, Unit.PIECE, guacamole));
         guacamoleIngredients.add(createIngredient(GARLIC, 2, Unit.KG, guacamole));
         guacamoleIngredients.add(createIngredient(OLIVE_OIL, 0.001, Unit.LITER, guacamole));
         ingredientRepository.saveAll(guacamoleIngredients);
 
-        Set<Ingredient> risottoIngredients = new TreeSet<>();
+        List<Ingredient> risottoIngredients = new ArrayList<>();
         risottoIngredients.add(createIngredient(RICE, 1, Unit.KG, risotto));
         risottoIngredients.add(createIngredient(SALT, 0.001, Unit.KG, risotto));
         risottoIngredients.add(createIngredient(PEPPER, 0.001, Unit.KG, risotto));

@@ -46,47 +46,47 @@ public class RestaurantRepositoryTest {
     private static final String CHEF_STAN     = "Chef. Stan";
     private static final String APPLE_PIE     = "Apple pie";
     public static final  String GUACAMOLE     = "Guacamole";
-    private static final String RISOTTO     = "Risotto";
-    private static final String APPLE = "Apple";
-    private static final String FLOUR = "Flour";
-    private static final String CINNAMON = "Cinnamon";
-    private static final String YEAST = "Yeast";
-    private static final String SUGAR = "Sugar";
+    private static final String RISOTTO       = "Risotto";
+    private static final String APPLE         = "Apple";
+    private static final String FLOUR         = "Flour";
+    private static final String CINNAMON      = "Cinnamon";
+    private static final String YEAST         = "Yeast";
+    private static final String SUGAR         = "Sugar";
     private static final String MELTED_BUTTER = "Melted Butter";
     private static final String VEGETABLE_OIL = "Vegetable oil";
-    private static final String WATER = "Water";
-    private static final String AVOCADO = "Avocado";
-    private static final String GARLIC = "Garlic";
-    private static final String OLIVE_OIL = "Olive oil";
-    private static final String RICE = "Rice";
-    private static final String SALT = "Salt";
-    private static final String PEPPER = "Pepper";
-    private static final String BUTTER = "Butter";
+    private static final String WATER         = "Water";
+    private static final String AVOCADO       = "Avocado";
+    private static final String GARLIC        = "Garlic";
+    private static final String OLIVE_OIL     = "Olive oil";
+    private static final String RICE          = "Rice";
+    private static final String SALT          = "Salt";
+    private static final String PEPPER        = "Pepper";
+    private static final String BUTTER        = "Butter";
 
     @Autowired
     private RestaurantRepository restaurantRepository;
-    
+
     @Autowired
     private RestaurantToChefRepository restaurantToChefRepository;
 
     @Autowired
     private RestaurantToDishRepository restaurantToDishRepository;
-    
+
     @Autowired
     private ChefRepository chefRepository;
-    
+
     @Autowired
     private RecipeRepository recipeRepository;
-    
+
     @Autowired
     private IngredientRepository ingredientRepository;
-    
+
     @Autowired
     private DishRepository dishRepository;
 
     @BeforeEach
     void init() {
-        
+
         Chef chefEugene = createChef(CHEF_EUGENE);
         Chef chefStan = createChef(CHEF_STAN);
         chefRepository.saveAll(asList(chefEugene, chefStan));
@@ -97,7 +97,7 @@ public class RestaurantRepositoryTest {
         Recipe applePie2 = createRecipe(APPLE_PIE, Difficulty.EASY, 4, RecipeType.DESSERT);
         recipeRepository.saveAll(asList(applePie, risotto, guacamole, applePie2));
 
-        Set<Ingredient> applePieIngredients = new TreeSet<>();
+        List<Ingredient> applePieIngredients = new ArrayList<>();
         applePieIngredients.add(createIngredient(APPLE, 5, Unit.KG, applePie));
         applePieIngredients.add(createIngredient(FLOUR, 2, Unit.KG, applePie));
         applePieIngredients.add(createIngredient(CINNAMON, 0.001, Unit.KG, applePie));
@@ -108,22 +108,22 @@ public class RestaurantRepositoryTest {
         applePieIngredients.add(createIngredient(WATER, 0.005, Unit.LITER, applePie));
         ingredientRepository.saveAll(applePieIngredients);
 
-        Set<Ingredient> guacamoleIngredients = new TreeSet<>();
+        List<Ingredient> guacamoleIngredients = new ArrayList<>();
         guacamoleIngredients.add(createIngredient(AVOCADO, 2, Unit.PIECE, guacamole));
         guacamoleIngredients.add(createIngredient(GARLIC, 2, Unit.KG, guacamole));
         guacamoleIngredients.add(createIngredient(OLIVE_OIL, 0.001, Unit.LITER, guacamole));
         ingredientRepository.saveAll(guacamoleIngredients);
 
-        Set<Ingredient> risottoIngredients = new TreeSet<>();
+        List<Ingredient> risottoIngredients = new ArrayList<>();
         risottoIngredients.add(createIngredient(RICE, 1, Unit.KG, risotto));
         risottoIngredients.add(createIngredient(SALT, 0.001, Unit.KG, risotto));
         risottoIngredients.add(createIngredient(PEPPER, 0.001, Unit.KG, risotto));
         risottoIngredients.add(createIngredient(BUTTER, 0.1, Unit.KG, risotto));
         ingredientRepository.saveAll(risottoIngredients);
 
-        Dish applePieDish  = createDish(APPLE_PIE, applePie);
-        Dish risottoDish  = createDish(RISOTTO, risotto);
-        Dish guacamoleDish  = createDish(GUACAMOLE, guacamole);
+        Dish applePieDish = createDish(APPLE_PIE, applePie);
+        Dish risottoDish = createDish(RISOTTO, risotto);
+        Dish guacamoleDish = createDish(GUACAMOLE, guacamole);
         dishRepository.saveAll(asList(applePieDish, risottoDish, guacamoleDish));
 
         List<Restaurant> restaurants = new ArrayList<>();
@@ -131,27 +131,27 @@ public class RestaurantRepositoryTest {
         restaurants.add(createRestaurant(BON_APPETIT, 3));
         restaurantRepository.saveAll(restaurants);
 
-        RestaurantToChef restaurantToChef1 = createRestaurantToChefLink(restaurants.get(0), asSet(chefEugene));
-        RestaurantToChef restaurantToChef2 = createRestaurantToChefLink(restaurants.get(1), asSet(chefStan));
+        RestaurantToChef restaurantToChef1 = createRestaurantToChefLink(restaurants.get(0), chefEugene);
+        RestaurantToChef restaurantToChef2 = createRestaurantToChefLink(restaurants.get(1), chefStan);
         restaurantToChefRepository.saveAll(asList(restaurantToChef1, restaurantToChef2));
 
-        RestaurantToDish restaurantToDish1 = createRestaurantToDishLink(restaurants.get(0), asSet(applePieDish, risottoDish));
-        RestaurantToDish restaurantToDish2 = createRestaurantToDishLink(restaurants.get(1), asSet(guacamoleDish));
+        RestaurantToDish restaurantToDish1 = createRestaurantToDishLink(restaurants.get(0), applePieDish);
+        RestaurantToDish restaurantToDish2 = createRestaurantToDishLink(restaurants.get(1), guacamoleDish);
         restaurantToDishRepository.saveAll(asList(restaurantToDish1, restaurantToDish2));
-        
+
     }
 
     @AfterEach
     void after() {
+        restaurantToChefRepository.deleteAll();
+        restaurantToDishRepository.deleteAll();
+        restaurantRepository.deleteAll();
         chefRepository.deleteAll();
         dishRepository.deleteAll();
         ingredientRepository.deleteAll();
-        recipeRepository.deleteAll();
-        restaurantRepository.deleteAll();
-        restaurantToChefRepository.deleteAll();
-        restaurantToDishRepository.deleteAll();
+        recipeRepository.deleteAll();    
     }
-    
+
     @Test
     public void testGetRestaurantsByName() {
 

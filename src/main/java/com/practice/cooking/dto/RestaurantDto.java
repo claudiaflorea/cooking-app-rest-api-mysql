@@ -16,14 +16,9 @@ import lombok.NoArgsConstructor;
 public class RestaurantDto implements Comparable<RestaurantDto> {
 
     private Long          id;
-    //@Size(max = 20, min = 3)
-    //@Pattern(regexp = "^[A-Z]")
     private String        name;
-    //@Range(min = 1, max = 5)
     private Integer       stars;
-    //@Valid
     private Set<DishDto> dishes;
-    //@Valid
     private Set<ChefDto> chefs;
 
     @Override
