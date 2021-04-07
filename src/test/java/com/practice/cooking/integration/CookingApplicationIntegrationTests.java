@@ -4,8 +4,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import static com.practice.cooking.utils.TestUtils.createDish;
+import static com.practice.cooking.utils.TestUtils.getApplePieIngredients;
+import static com.practice.cooking.utils.TestUtils.getChefList;
+import static com.practice.cooking.utils.TestUtils.getDishList;
+import static com.practice.cooking.utils.TestUtils.getRecipeList;
+import static com.practice.cooking.utils.TestUtils.getRisottoIngredients;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.practice.cooking.model.Chef;
 import com.practice.cooking.model.Difficulty;
@@ -14,7 +21,6 @@ import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Recipe;
 import com.practice.cooking.model.Restaurant;
 import com.practice.cooking.model.Unit;
-import com.practice.cooking.utils.TestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,12 +55,12 @@ class CookingApplicationIntegrationTests {
     }
 
     private Set<Dish> dishesList() {
-        Set<Dish> dishes = new HashSet<>();
-        dishes.add(new Dish(2L, "Cabbage rolls"));
-        dishes.add(new Dish(3L, "Steak"));
-        dishes.add(new Dish(4L, "Pizza"));
-        dishes.add(new Dish(5L, "Tiramisu"));
-        dishes.add(new Dish(6L, "Omlet"));
+        Set<Dish> dishes = new TreeSet<>();
+        dishes.add(createDish("Cabbage rolls", null));
+        dishes.add(createDish("Steak", null));
+        dishes.add(createDish("Pizza", null));
+        dishes.add(createDish("Tiramisu", null));
+        dishes.add(createDish("Omlet", null));
 
         return dishes;
     }
@@ -72,7 +78,7 @@ class CookingApplicationIntegrationTests {
     //Find all dishes that have recipes
     @Test
     public void testGetDishesWithRecipes() {
-        Set<Dish> dishes = TestUtils.getDishList();
+        List<Dish> dishes = getDishList();
         List<Dish> filteredDishes = dishes.
             stream()
             .filter(d -> d.getRecipe() != null)
@@ -86,7 +92,7 @@ class CookingApplicationIntegrationTests {
     //find all recipes with medium level difficulty
     @Test
     public void testRecipesOfMediumDifficulty() {
-        Set<Recipe> recipes = TestUtils.getRecipeList();
+        List<Recipe> recipes = getRecipeList();
         List<Recipe> filteredRecipes = recipes
             .stream()
             .filter(r -> r.getDifficulty() == Difficulty.MEDIUM)
@@ -98,7 +104,7 @@ class CookingApplicationIntegrationTests {
     //find all liquid ingredients from apple pie recipe
     @Test
     public void testLiquidIngredients() {
-        List<Ingredient> ingredients = new ArrayList<>(TestUtils.getApplePieIngredients());
+        List<Ingredient> ingredients = getApplePieIngredients();
         List<Ingredient> liquidIngredients = ingredients
             .stream()
             .filter(i -> i.getUnit() == Unit.LITER)
@@ -113,7 +119,7 @@ class CookingApplicationIntegrationTests {
     //rename ingredients of risotto
     @Test
     public void testRenameRisottoIngredients() {
-        List<Ingredient> ingredients = TestUtils.getRisottoIngredients().stream().collect(Collectors.toList());
+        List<Ingredient> ingredients = new ArrayList<>(getRisottoIngredients());
         ingredients
             .stream()
             .forEach(
@@ -128,7 +134,7 @@ class CookingApplicationIntegrationTests {
     //rename chefs names to uppercase
     @Test
     public void testRenameChefsNames() {
-        List<Chef> chefList = new ArrayList<>(TestUtils.getChefList());
+        List<Chef> chefList = new ArrayList<>(getChefList());
         List<String> chefNames = chefList
             .stream()
             .map(Chef::getName)

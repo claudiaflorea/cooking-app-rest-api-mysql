@@ -2,15 +2,16 @@ package com.practice.cooking.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import static com.practice.cooking.utils.TestUtils.createIngredientWithId;
+import static com.practice.cooking.utils.TestUtils.createSimpleIngredient;
+import static com.practice.cooking.utils.TestUtils.getApplePieIngredients;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Unit;
 import com.practice.cooking.repository.IngredientRepository;
-import com.practice.cooking.utils.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -30,7 +31,7 @@ public class IngredientServiceTest {
 
     @Test
     public void testGetAllIngredients() {
-        when(ingredientRepository.findAll()).thenReturn(TestUtils.getApplePieIngredients().stream().collect(Collectors.toList()));
+        when(ingredientRepository.findAll()).thenReturn(getApplePieIngredients());
 
         List<Ingredient> ingredients = ingredientService.getAll();
 
@@ -38,7 +39,7 @@ public class IngredientServiceTest {
     }
 
     private void checkInitialIngredientList(List<Ingredient> ingredients) {
-        assertEquals(ingredients.size(), 7);
+        assertEquals(ingredients.size(), 8);
         assertAll("List of ingredients",
             () -> assertEquals("Apple", ingredients.get(0).getName()),
             () -> assertEquals("Flour", ingredients.get(1).getName()),
@@ -46,14 +47,14 @@ public class IngredientServiceTest {
             () -> assertEquals("Yeast", ingredients.get(3).getName()),
             () -> assertEquals("Sugar", ingredients.get(4).getName()),
             () -> assertEquals("Melted Butter", ingredients.get(5).getName()),
-            () -> assertEquals("Vegetable oil", ingredients.get(6).getName())
-            );
+            () -> assertEquals("Vegetable oil", ingredients.get(6).getName()),
+            () -> assertEquals("Water", ingredients.get(7).getName())
+        );
     }
 
     @Test
     public void testSaveAndGetIngredientById() {
-        Ingredient newAddedIngredient = TestUtils.createIngredient("Paprika", 0.001, Unit.KG);
-        newAddedIngredient.setId(6L);
+        Ingredient newAddedIngredient = createIngredientWithId(6L, "Paprika", 0.001, Unit.KG);
         when(ingredientRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedIngredient));
 
         ingredientRepository.save(newAddedIngredient);
@@ -66,14 +67,13 @@ public class IngredientServiceTest {
 
     @Test
     public void testDeleteIngredient() {
-        when(ingredientRepository.findAll()).thenReturn(TestUtils.getApplePieIngredients().stream().collect(Collectors.toList()));
+        Ingredient ingredient = createSimpleIngredient("Test ingredient", 1, Unit.PIECE);
+        ingredient.setId(1L);
 
-        List<Ingredient> ingredients = ingredientService.getAll();
-        when(ingredientRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(ingredients.get(0)));
+        when(ingredientRepository.findById(1L)).thenReturn(Optional.ofNullable(ingredient));
 
-        checkInitialIngredientList(ingredients);
-        ingredientService.delete(ingredients.get(0).getId());
-        Mockito.verify(ingredientRepository, Mockito.atLeastOnce()).delete(ingredients.get(0));
+        ingredientService.delete(ingredient.getId());
+        Mockito.verify(ingredientRepository, Mockito.atLeastOnce()).delete(ingredient);
     }
 
     @Configuration

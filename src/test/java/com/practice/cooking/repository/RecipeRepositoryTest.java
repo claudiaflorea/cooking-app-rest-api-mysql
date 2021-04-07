@@ -1,6 +1,6 @@
 package com.practice.cooking.repository;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -20,57 +20,80 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("test")
 public class RecipeRepositoryTest {
 
     private static final String APPLE_PIE = "Apple Pie";
-    private static final String RISOTTO = "Risotto";;
-    public static final String GUACAMOLE = "Guacamole";
+    private static final String RISOTTO   = "Risotto";
+    public static final  String GUACAMOLE     = "Guacamole";
+    private static final String APPLE         = "Apple";
+    private static final String FLOUR         = "Flour";
+    private static final String CINNAMON      = "Cinnamon";
+    private static final String YEAST         = "Yeast";
+    private static final String SUGAR         = "Sugar";
+    private static final String MELTED_BUTTER = "Melted Butter";
+    private static final String VEGETABLE_OIL = "Vegetable oil";
+    private static final String WATER         = "Water";
+    private static final String AVOCADO       = "Avocado";
+    private static final String GARLIC        = "Garlic";
+    private static final String OLIVE_OIL     = "Olive oil";
+    private static final String RICE          = "Rice";
+    private static final String SALT          = "Salt";
+    private static final String PEPPER        = "Pepper";
+    private static final String BUTTER        = "Butter";
 
     @Autowired
     private RecipeRepository recipeRepository;
-    
+
+    @Autowired
+    private IngredientRepository ingredientRepository;
+
     @BeforeEach
     void init() {
+
+        Recipe applePie = createRecipe(APPLE_PIE, Difficulty.EASY, 4, RecipeType.DESSERT);
+        Recipe risotto = createRecipe(RISOTTO, Difficulty.MEDIUM, 1, RecipeType.SIDE);
+        Recipe guacamole = createRecipe(GUACAMOLE, Difficulty.EASY, 1, RecipeType.SIDE);
+        Recipe applePie2 = createRecipe(APPLE_PIE, Difficulty.EASY, 4, RecipeType.DESSERT);
+        recipeRepository.saveAll(Arrays.asList(applePie, risotto, guacamole, applePie2));
+
         Set<Ingredient> applePieIngredients = new TreeSet<>();
-        applePieIngredients.add(createIngredient("Apple", 5, Unit.KG));
-        applePieIngredients.add(createIngredient("Flour", 2, Unit.KG));
-        applePieIngredients.add(createIngredient("Cinnamon", 0.001, Unit.KG));
-        applePieIngredients.add(createIngredient( "Yeast", 0.001, Unit.KG));
-        applePieIngredients.add(createIngredient("Sugar", 0.01, Unit.KG));
-        applePieIngredients.add(createIngredient("Melted Butter", 0.01, Unit.LITER));
-        applePieIngredients.add(createIngredient("Vegetable oil", 0.001, Unit.LITER));
-        applePieIngredients.add(createIngredient( "Water", 0.005, Unit.LITER));
+        applePieIngredients.add(createIngredient(APPLE, 5, Unit.KG, applePie));
+        applePieIngredients.add(createIngredient(FLOUR, 2, Unit.KG, applePie));
+        applePieIngredients.add(createIngredient(CINNAMON, 0.001, Unit.KG, applePie));
+        applePieIngredients.add(createIngredient(YEAST, 0.001, Unit.KG, applePie));
+        applePieIngredients.add(createIngredient(SUGAR, 0.01, Unit.KG, applePie));
+        applePieIngredients.add(createIngredient(MELTED_BUTTER, 0.01, Unit.LITER, applePie));
+        applePieIngredients.add(createIngredient(VEGETABLE_OIL, 0.001, Unit.LITER, applePie));
+        applePieIngredients.add(createIngredient(WATER, 0.005, Unit.LITER, applePie));
+        ingredientRepository.saveAll(applePieIngredients);
 
         Set<Ingredient> guacamoleIngredients = new TreeSet<>();
-        guacamoleIngredients.add(createIngredient("Avocado", 2, Unit.PIECE));
-        guacamoleIngredients.add(createIngredient("Garlic", 2, Unit.KG));
-        guacamoleIngredients.add(createIngredient("Olive oil", 0.001, Unit.LITER));
+        guacamoleIngredients.add(createIngredient(AVOCADO, 2, Unit.PIECE, guacamole));
+        guacamoleIngredients.add(createIngredient(GARLIC, 2, Unit.KG, guacamole));
+        guacamoleIngredients.add(createIngredient(OLIVE_OIL, 0.001, Unit.LITER, guacamole));
+        ingredientRepository.saveAll(guacamoleIngredients);
 
         Set<Ingredient> risottoIngredients = new TreeSet<>();
-        risottoIngredients.add(createIngredient("Rice", 1, Unit.KG));
-        risottoIngredients.add(createIngredient("Salt", 0.001, Unit.KG));
-        risottoIngredients.add(createIngredient("Pepper", 0.001, Unit.KG));
-        risottoIngredients.add(createIngredient("Butter", 0.1, Unit.KG));
+        risottoIngredients.add(createIngredient(RICE, 1, Unit.KG, risotto));
+        risottoIngredients.add(createIngredient(SALT, 0.001, Unit.KG, risotto));
+        risottoIngredients.add(createIngredient(PEPPER, 0.001, Unit.KG, risotto));
+        risottoIngredients.add(createIngredient(BUTTER, 0.1, Unit.KG, risotto));
+        ingredientRepository.saveAll(risottoIngredients);
 
-        List<Recipe> recipes = new ArrayList<>();
-        recipes.add(createRecipe(APPLE_PIE, Difficulty.EASY, applePieIngredients, 4, RecipeType.DESSERT));
-        recipes.add(createRecipe(RISOTTO, Difficulty.MEDIUM, risottoIngredients, 1, RecipeType.SIDE));
-        recipes.add(createRecipe(GUACAMOLE, Difficulty.EASY, guacamoleIngredients, 1, RecipeType.SIDE));
-        recipes.add(createRecipe(APPLE_PIE, Difficulty.EASY, applePieIngredients, 4, RecipeType.DESSERT));
-
-        
-        recipeRepository.saveAll(recipes);
     }
-    
+
     @AfterEach
     void after() {
+        ingredientRepository.deleteAll();
         recipeRepository.deleteAll();
     }
-         
+
     @Test
     public void testGetRecipeByName() {
         //when
@@ -82,10 +105,10 @@ public class RecipeRepositoryTest {
         assertThat(result).element(1).returns(APPLE_PIE, from(Recipe::getName));
 
     }
-    
+
     @Test
     public void testGetRecipesWithAvocados() {
-      
+
         //when
         List<Recipe> result = recipeRepository.findAllByIngredientsContainingAvocado();
 

@@ -7,6 +7,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -40,7 +42,7 @@ public class Chef implements Comparable<Chef> {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "chefs", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "chefs", fetch = FetchType.LAZY)
     private Set<Restaurant> restaurants;
 
     @Override

@@ -9,10 +9,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -40,24 +42,13 @@ public class Dish implements Comparable<Dish> {
 
     @Column(name = "d_r_id", insertable = false, updatable = false)
     private Long recipeId;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "d_r_id")
     private Recipe recipe;
 
-    @OneToMany(mappedBy = "dishes", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "dishes", fetch = FetchType.LAZY)
     private Set<Restaurant> restaurants;
-
-    public Dish(Long id, String name, Recipe recipe) {
-        this.id = id;
-        this.name = name;
-        this.recipe = recipe;
-    }
-
-    public Dish(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
     @Override
     public int compareTo(Dish o) {

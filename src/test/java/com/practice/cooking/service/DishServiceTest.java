@@ -1,9 +1,11 @@
 package com.practice.cooking.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import static com.practice.cooking.utils.TestUtils.createDishWithId;
+import static com.practice.cooking.utils.TestUtils.getDishList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -29,7 +31,7 @@ public class DishServiceTest {
 
     @Test
     public void testGetAllDishes() {
-        when(dishRepository.findAll()).thenReturn(TestUtils.getDishList().stream().collect(Collectors.toList()));
+        when(dishRepository.findAll()).thenReturn(new ArrayList<>(getDishList()));
 
         List<Dish> dishes = dishService.getAll();
 
@@ -49,7 +51,7 @@ public class DishServiceTest {
 
     @Test
     public void testSaveAndGetDishById() {
-        Dish newAddedDish = new Dish(6L, "Bolognese");
+        Dish newAddedDish = TestUtils.createDishWithId(6L, "Bolognese", null);
         when(dishRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedDish));
 
         dishRepository.save(newAddedDish);
@@ -61,15 +63,12 @@ public class DishServiceTest {
     }
 
     @Test
-    public void testDeleteChef() {
-        when(dishRepository.findAll()).thenReturn(TestUtils.getDishList().stream().collect(Collectors.toList()));
+    public void testDeleteDish() {
+        Dish dish = createDishWithId(10L, "Test dish", null);
+        when(dishRepository.findById(10L)).thenReturn(Optional.of(dish));
 
-        List<Dish> dishes = dishService.getAll();
-        when(dishRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(dishes.get(0)));
-
-        checkInitialDishList(dishes);
-        dishService.delete(dishes.get(0).getId());
-        Mockito.verify(dishRepository, Mockito.atLeastOnce()).delete(dishes.get(0));
+        dishService.delete(dish.getId());
+        Mockito.verify(dishRepository, Mockito.atLeastOnce()).delete(dish);
     }
 
     @Configuration

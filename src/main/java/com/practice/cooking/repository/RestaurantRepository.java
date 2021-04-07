@@ -13,8 +13,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     List<Restaurant> findAllByName(String name);
    
     @Query(value = "SELECT r FROM Restaurant r " +
-        "LEFT JOIN FETCH Dish d " +
-        "LEFT JOIN FETCH Ingredient i " +
+        "LEFT JOIN FETCH r.dishes d " +
+        "LEFT JOIN FETCH d.recipe re " +
+        "LEFT JOIN FETCH re.ingredients i " +
         "WHERE i.name NOT IN ('Meat', 'Salami', 'Pancheta')")
     List<Restaurant> findAllByDishesNotContainingMeat();
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import static com.practice.cooking.utils.TestUtils.getChefList;
 import static com.practice.cooking.utils.TestUtils.getDishList;
@@ -36,38 +38,38 @@ public class RestaurantConversionTest {
         
     @Test
     public void testRestaurantToDtoConversion() {
-        Restaurant restaurant = new Restaurant(RESTAURANT_ID, RESTAURANT_NAME, STARS, getDishList(), getChefList());
+        Restaurant restaurant = new Restaurant(RESTAURANT_ID, RESTAURANT_NAME, STARS, new HashSet<>(getDishList()), getChefList());
         RestaurantDto restaurantDto = restaurantConverter.convert(restaurant);
 
         assertAll("RestaurantDto mapped object",
             () -> assertEquals(RESTAURANT_ID, restaurantDto.getId()),
             () -> assertEquals(RESTAURANT_NAME, restaurantDto.getName()),
             () -> assertEquals(STARS, restaurantDto.getStars()),
-            () -> assertEquals("Apple pie", restaurantDto.getDishes().stream().sorted().findFirst().get().getName()),
-            () -> assertEquals("Eugene", restaurantDto.getChefs().stream().sorted().findFirst().get().getName())
+            () -> assertEquals("Apple pie", restaurantDto.getDishes().stream().sorted().collect(Collectors.toList()).get(0).getName()),
+            () -> assertEquals("Eugene", restaurantDto.getChefs().stream().sorted().collect(Collectors.toList()).get(0).getName())
             );
     }
 
     @Test
     public void testRestaurantDtoToEntityConversion() {
-        Set<DishDto> dishDtoList = new HashSet<>();
+        List<DishDto> dishDtoList = new ArrayList<>();
         for (Dish dish : getDishList()) {
             dishDtoList.add(conversionService.convert(dish, DishDto.class));
         }
 
-        Set<ChefDto> chefDtoList = new HashSet<>();
+        List<ChefDto> chefDtoList = new ArrayList<>();
         for (Chef chef : getChefList()) {
             chefDtoList.add(conversionService.convert(chef, ChefDto.class));
         }
         
-        RestaurantDto restaurantDto = new RestaurantDto(RESTAURANT_ID, RESTAURANT_NAME, STARS, dishDtoList, chefDtoList);
+        RestaurantDto restaurantDto = new RestaurantDto(RESTAURANT_ID, RESTAURANT_NAME, STARS, new TreeSet<>(dishDtoList), new TreeSet<>(chefDtoList));
 
         assertAll("Restaurant mapped object",
             () -> assertEquals(RESTAURANT_ID, restaurantDto.getId()),
             () -> assertEquals(RESTAURANT_NAME, restaurantDto.getName()),
             () -> assertEquals(STARS, restaurantDto.getStars()),
-            () -> assertEquals("Apple pie", restaurantDto.getDishes().stream().sorted().findFirst().get().getName()),
-            () -> assertEquals("Eugene", restaurantDto.getChefs().stream().sorted().findFirst().get().getName())
+            () -> assertEquals("Apple pie", restaurantDto.getDishes().stream().sorted().collect(Collectors.toList()).get(0).getName()),
+            () -> assertEquals("Eugene", restaurantDto.getChefs().stream().sorted().collect(Collectors.toList()).get(0).getName())
         );
     }
 }

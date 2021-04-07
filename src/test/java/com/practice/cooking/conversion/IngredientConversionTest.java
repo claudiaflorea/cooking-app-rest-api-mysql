@@ -1,5 +1,6 @@
 package com.practice.cooking.conversion;
 
+import static com.practice.cooking.utils.TestUtils.createIngredientWithId;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.practice.cooking.converter.IngredientEntityToDtoConverter;
@@ -25,8 +26,7 @@ public class IngredientConversionTest {
 
     @Test
     public void testDishToDtoConversion() {
-        Ingredient ingredient = TestUtils.createIngredient(INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
-        ingredient.setId(INGREDIENT_ID);
+        Ingredient ingredient = createIngredientWithId(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
         IngredientDto ingredientDto = conversionService.convert(ingredient, IngredientDto.class);
 
         assertAll("IngredientDto mapped object",

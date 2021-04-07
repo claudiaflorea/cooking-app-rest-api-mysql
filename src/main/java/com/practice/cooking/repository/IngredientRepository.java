@@ -12,6 +12,7 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
     
     List<Ingredient> findAllByName(String name);
     
-    @Query(value = "SELECT i FROM Ingredient  i WHERE i.unit = 'KG' AND i.quantity > 1")
+    @Query(value = "SELECT * FROM ingredients WHERE i_quantity > 1 and i_unit = 0 ", nativeQuery = true)
     List<Ingredient> findAllHeavierThan1Kg();
+    
 }

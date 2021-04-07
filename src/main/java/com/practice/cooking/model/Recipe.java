@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -38,8 +39,9 @@ public class Recipe implements Comparable<Recipe> {
     
     @Column(name = "r_difficulty")
     private Difficulty      difficulty;
-    
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL)
+
+    @JsonIgnoreProperties("ingredients")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
     private Set<Ingredient> ingredients;
     
     @Column(name = "r_cooking_time")

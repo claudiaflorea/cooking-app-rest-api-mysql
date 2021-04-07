@@ -1,10 +1,9 @@
 package com.practice.cooking.repository;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
-import static com.practice.cooking.utils.TestUtils.createIngredient;
+import static com.practice.cooking.utils.TestUtils.createSimpleIngredient;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import com.practice.cooking.model.Ingredient;
@@ -15,10 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("test")
 public class IngredientRepositoryTest {
 
     private static final String APPLE         = "Apple";
@@ -32,22 +33,23 @@ public class IngredientRepositoryTest {
 
     @Autowired
     private IngredientRepository ingredientRepository;
-    
+
     @BeforeEach
     void init() {
-        Set<Ingredient> applePieIngredients = new TreeSet<>();
-        applePieIngredients.add(createIngredient(APPLE, 5, Unit.KG));
-        applePieIngredients.add(createIngredient(FLOUR, 2, Unit.KG));
-        applePieIngredients.add(createIngredient(CINNAMON, 0.001, Unit.KG));
-        applePieIngredients.add(createIngredient( YEAST, 0.001, Unit.KG));
-        applePieIngredients.add(createIngredient(SUGAR, 0.01, Unit.KG));
-        applePieIngredients.add(createIngredient(MELTED_BUTTER, 0.01, Unit.LITER));
-        applePieIngredients.add(createIngredient(VEGETABLE_OIL, 0.001, Unit.LITER));
-        applePieIngredients.add(createIngredient( WATER, 0.005, Unit.LITER));
-        
+        List<Ingredient> applePieIngredients = new ArrayList<>();
+        applePieIngredients.add(createSimpleIngredient(APPLE, 5, Unit.KG));
+        applePieIngredients.add(createSimpleIngredient(FLOUR, 2, Unit.KG));
+        applePieIngredients.add(createSimpleIngredient(CINNAMON, 0.001, Unit.KG));
+        applePieIngredients.add(createSimpleIngredient(YEAST, 0.001, Unit.KG));
+        applePieIngredients.add(createSimpleIngredient(SUGAR, 0.01, Unit.KG));
+        applePieIngredients.add(createSimpleIngredient(MELTED_BUTTER, 0.01, Unit.LITER));
+        applePieIngredients.add(createSimpleIngredient(VEGETABLE_OIL, 0.001, Unit.LITER));
+        applePieIngredients.add(createSimpleIngredient(WATER, 0.005, Unit.LITER));
+        applePieIngredients.add(createSimpleIngredient(APPLE, 7, Unit.KG));
+
         ingredientRepository.saveAll(applePieIngredients);
     }
-    
+
     @AfterEach
     void after() {
         ingredientRepository.deleteAll();
@@ -60,8 +62,10 @@ public class IngredientRepositoryTest {
         List<Ingredient> result = ingredientRepository.findAllByName(APPLE);
 
         //then
-        assertThat(result).hasSize(1);
+        assertThat(result).hasSize(2);
         assertThat(result).element(0).returns(APPLE, from(Ingredient::getName));
+        assertThat(result).element(1).returns(APPLE, from(Ingredient::getName));
+
     }
 
     @Test
@@ -70,8 +74,10 @@ public class IngredientRepositoryTest {
         List<Ingredient> result = ingredientRepository.findAllHeavierThan1Kg();
 
         //then
-        assertThat(result).hasSize(2);
+        assertThat(result).hasSize(3);
         assertThat(result).element(0).returns(APPLE, from(Ingredient::getName));
         assertThat(result).element(1).returns(FLOUR, from(Ingredient::getName));
+        assertThat(result).element(2).returns(APPLE, from(Ingredient::getName));
+
     }
 }

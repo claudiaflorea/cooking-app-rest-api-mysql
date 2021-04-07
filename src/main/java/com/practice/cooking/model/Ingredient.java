@@ -49,9 +49,10 @@ public class Ingredient implements Comparable<Ingredient> {
 
     @Column(name = "i_r_id", updatable = false, insertable = false)
     private Long recipeId;
-    
-    @JoinColumn(name = "i_r_id")
+
+    @JsonIgnoreProperties("recipe")
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "i_r_id")
     private Recipe recipe;
     
     @Override

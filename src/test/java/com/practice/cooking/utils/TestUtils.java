@@ -1,9 +1,11 @@
 package com.practice.cooking.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import com.practice.cooking.model.Chef;
 import com.practice.cooking.model.Difficulty;
@@ -12,6 +14,8 @@ import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Recipe;
 import com.practice.cooking.model.RecipeType;
 import com.practice.cooking.model.Restaurant;
+import com.practice.cooking.model.RestaurantToChef;
+import com.practice.cooking.model.RestaurantToDish;
 import com.practice.cooking.model.Unit;
 
 public class TestUtils {
@@ -36,34 +40,34 @@ public class TestUtils {
         return chefs;
     }
 
-    public static Set<Dish> getDishList() {
-        Set<Dish> dishes = new TreeSet<>();
-        dishes.add(new Dish(10L, "Apple pie", getRecipeList().stream().findFirst().get()));
-        dishes.add(new Dish(11L, "Risotto", getRecipeList().stream().iterator().next()));
-        dishes.add(new Dish(12L, "Mac'n'cheese", null));
-        dishes.add(new Dish(13L, "Brownie", null));
-        dishes.add(new Dish(14L, "Coleslaw", null));
+    public static List<Dish> getDishList() {
+        List<Dish> dishes = new ArrayList<>();
+        dishes.add(createDish("Apple pie", getRecipeList().get(0)));
+        dishes.add(createDish("Risotto", getRecipeList().get(1)));
+        dishes.add(createDish("Mac'n'cheese", null));
+        dishes.add(createDish("Brownie", null));
+        dishes.add(createDish("Coleslaw", null));
 
         return dishes;
     }
 
-    public static Set<Recipe> getRecipeList() {
-        Set<Recipe> recipes = new TreeSet<>();
-        recipes.add(new Recipe(1L, "Apple Pie", Difficulty.EASY, getApplePieIngredients(), 4, RecipeType.DESSERT));
-        recipes.add(new Recipe(2L, "Risotto", Difficulty.MEDIUM, getRisottoIngredients(), 1, RecipeType.SIDE));
-        recipes.add(new Recipe(3L, "Guacamole", Difficulty.EASY, getGuacamoleIngredients(), 1, RecipeType.SIDE));
+    public static List<Recipe> getRecipeList() {
+        List<Recipe> recipes = new ArrayList<>();
+        recipes.add(createRecipe("Apple Pie", Difficulty.EASY, 4, RecipeType.DESSERT));
+        recipes.add(createRecipe("Risotto", Difficulty.MEDIUM, 1, RecipeType.SIDE));
+        recipes.add(createRecipe("Guacamole", Difficulty.EASY, 1, RecipeType.SIDE));
 
         return recipes;
     }
 
     public static List<Restaurant> getRestaurantList() {
         List<Restaurant> restaurants = new ArrayList<>();
-        restaurants.add(new Restaurant(6L, "Als Seafood", 5, getDishList(), getChefList()));
-        restaurants.add(new Restaurant(6L, "Bon appetit", 3, getDishList(), getChefList()));
+        restaurants.add(new Restaurant(6L, "Als Seafood", 5, new HashSet<>(getDishList()), getChefList()));
+        restaurants.add(new Restaurant(6L, "Bon appetit", 3, new HashSet<>(getDishList()), getChefList()));
 
         return restaurants;
     }
-    
+
     public static Dish createDish(String name, Recipe recipe) {
         Dish dish = new Dish();
         dish.setName(name);
@@ -72,50 +76,99 @@ public class TestUtils {
         return dish;
     }
 
-    public static Restaurant createRestaurant(String name, Integer stars, Set<Dish> dishes, Set<Chef> chefs) {
+    public static Dish createSimpleDish(String name) {
+        Dish dish = new Dish();
+        dish.setName(name);
+    
+        return dish;
+    }
+
+    public static Dish createDishWithId(Long id, String name, Recipe recipe) {
+        Dish dish = new Dish();
+        dish.setId(id);
+        dish.setName(name);
+        if (recipe != null) {
+            dish.setRecipe(recipe);
+        }
+
+        return dish;
+    }
+    
+    public static Chef createChef(String name) {
+        Chef chef = new Chef();
+        chef.setName(name);
+        
+        return chef;
+    }
+    
+    public static RestaurantToChef createRestaurantToChefLink(Restaurant restaurant, Set<Chef> chefs) {
+        RestaurantToChef restaurantToChef = new RestaurantToChef();
+        restaurantToChef.setRestaurant(restaurant);
+        restaurant.setChefs(chefs);
+        
+        return restaurantToChef;
+    }
+
+    public static RestaurantToDish createRestaurantToDishLink(Restaurant restaurant, Set<Dish> dishes) {
+        RestaurantToDish restaurantToDish = new RestaurantToDish();
+        restaurantToDish.setRestaurant(restaurant);
+        restaurant.setDishes(dishes);
+
+        return restaurantToDish;
+    }
+
+    public static Restaurant createRestaurant(String name, Integer stars) {
         Restaurant restaurant = new Restaurant();
         restaurant.setName(name);
-        restaurant.setChefs(chefs);
-        restaurant.setDishes(dishes);
         restaurant.setStars(stars);
-        
+
         return restaurant;
     }
-     
+
     public static Set<Ingredient> getRisottoIngredients() {
         Set<Ingredient> risottoIngredients = new TreeSet<>();
-        risottoIngredients.add(createIngredient("Rice", 1, Unit.KG));
-        risottoIngredients.add(createIngredient("Salt", 0.001, Unit.KG));
-        risottoIngredients.add(createIngredient("Pepper", 0.001, Unit.KG));
-        risottoIngredients.add(createIngredient("Butter", 0.1, Unit.KG));
+        risottoIngredients.add(createIngredient("Rice", 1, Unit.KG, getRecipeList().get(1)));
+        risottoIngredients.add(createIngredient("Salt", 0.001, Unit.KG, getRecipeList().get(1)));
+        risottoIngredients.add(createIngredient("Pepper", 0.001, Unit.KG, getRecipeList().get(1)));
+        risottoIngredients.add(createIngredient("Butter", 0.1, Unit.KG, getRecipeList().get(1)));
 
         return risottoIngredients;
     }
 
-    public static Set<Ingredient> getApplePieIngredients() {
-        Set<Ingredient> applePieIngredients = new TreeSet<>();
-        applePieIngredients.add(createIngredient(APPLE, 5, Unit.KG));
-        applePieIngredients.add(createIngredient(FLOUR, 2, Unit.KG));
-        applePieIngredients.add(createIngredient(CINNAMON, 0.001, Unit.KG));
-        applePieIngredients.add(createIngredient( YEAST, 0.001, Unit.KG));
-        applePieIngredients.add(createIngredient(SUGAR, 0.01, Unit.KG));
-        applePieIngredients.add(createIngredient(MELTED_BUTTER, 0.01, Unit.LITER));
-        applePieIngredients.add(createIngredient(VEGETABLE_OIL, 0.001, Unit.LITER));
-        applePieIngredients.add(createIngredient( WATER, 0.005, Unit.LITER));
+    public static List<Ingredient> getApplePieIngredients() {
+        List<Ingredient> applePieIngredients = new ArrayList<>();
+        applePieIngredients.add(createIngredient(APPLE, 5, Unit.KG, getRecipeList().get(0)));
+        applePieIngredients.add(createIngredient(FLOUR, 2, Unit.KG, getRecipeList().get(0)));
+        applePieIngredients.add(createIngredient(CINNAMON, 0.001, Unit.KG, getRecipeList().get(0)));
+        applePieIngredients.add(createIngredient(YEAST, 0.001, Unit.KG, getRecipeList().get(0)));
+        applePieIngredients.add(createIngredient(SUGAR, 0.01, Unit.KG, getRecipeList().get(0)));
+        applePieIngredients.add(createIngredient(MELTED_BUTTER, 0.01, Unit.LITER, getRecipeList().get(0)));
+        applePieIngredients.add(createIngredient(VEGETABLE_OIL, 0.001, Unit.LITER, getRecipeList().get(0)));
+        applePieIngredients.add(createIngredient(WATER, 0.005, Unit.LITER, getRecipeList().get(0)));
 
         return applePieIngredients;
     }
 
     public static Set<Ingredient> getGuacamoleIngredients() {
         Set<Ingredient> guacamoleIngredients = new TreeSet<>();
-        guacamoleIngredients.add(createIngredient("Avocado", 2, Unit.PIECE));
-        guacamoleIngredients.add(createIngredient("Garlic", 2, Unit.KG));
-        guacamoleIngredients.add(createIngredient("Olive oil", 0.001, Unit.LITER));
+        guacamoleIngredients.add(createIngredient("Avocado", 2, Unit.PIECE, getRecipeList().get(2)));
+        guacamoleIngredients.add(createIngredient("Garlic", 2, Unit.KG, getRecipeList().get(2)));
+        guacamoleIngredients.add(createIngredient("Olive oil", 0.001, Unit.LITER, getRecipeList().get(2)));
 
         return guacamoleIngredients;
     }
 
-    public static Ingredient createIngredient(String name, double quantity, Unit unit) {
+    public static Ingredient createIngredient(String name, double quantity, Unit unit, Recipe recipe) {
+        Ingredient ingredient = new Ingredient();
+        ingredient.setName(name);
+        ingredient.setUnit(unit);
+        ingredient.setQuantity(quantity);
+        ingredient.setRecipe(recipe);
+
+        return ingredient;
+    }
+
+    public static Ingredient createSimpleIngredient(String name, double quantity, Unit unit) {
         Ingredient ingredient = new Ingredient();
         ingredient.setName(name);
         ingredient.setUnit(unit);
@@ -133,15 +186,14 @@ public class TestUtils {
 
         return ingredient;
     }
-    
-    public static Recipe createRecipe(String name, Difficulty difficulty, Set<Ingredient> ingredients, Integer cookingTime, RecipeType type) {
+
+    public static Recipe createRecipe(String name, Difficulty difficulty, Integer cookingTime, RecipeType type) {
         Recipe recipe = new Recipe();
         recipe.setName(name);
         recipe.setDifficulty(difficulty);
-        recipe.setIngredients(ingredients);
         recipe.setCookingTime(cookingTime);
         recipe.setRecipeType(type);
-        
+
         return recipe;
     }
 }

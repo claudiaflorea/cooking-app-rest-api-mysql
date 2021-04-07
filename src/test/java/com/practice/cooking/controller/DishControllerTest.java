@@ -1,5 +1,6 @@
 package com.practice.cooking.controller;
 
+import static com.practice.cooking.utils.TestUtils.createDishWithId;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -14,6 +15,7 @@ import com.practice.cooking.model.Dish;
 import com.practice.cooking.model.Recipe;
 import com.practice.cooking.model.RecipeType;
 import com.practice.cooking.service.DishService;
+import com.practice.cooking.utils.TestUtils;
 import com.practice.cooking.validator.DishDtoValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +48,7 @@ public class DishControllerTest {
     private DishDtoValidator dishDtoValidator;
 
     Recipe recipe = new Recipe(DISH_ID, DISH_NAME, Difficulty.MEDIUM, null, 1, RecipeType.MAIN_COURSE);
-    Dish   dish   = new Dish(DISH_ID, DISH_NAME, recipe);
+    Dish   dish   = createDishWithId(DISH_ID, DISH_NAME, recipe);
 
     @Test
     public void testGetDishByIdWithValidParameters() throws Exception {

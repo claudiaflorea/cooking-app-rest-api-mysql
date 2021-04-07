@@ -2,7 +2,10 @@ package com.practice.cooking.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static com.practice.cooking.utils.TestUtils.getChefList;
+import static com.practice.cooking.utils.TestUtils.getDishList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -45,7 +48,7 @@ public class RestaurantServiceTest {
 
     @Test
     public void testSaveAndGetRestaurantById() {
-        Restaurant newAddedRestaurant = new Restaurant(6L, "Yum", 4, TestUtils.getDishList(), TestUtils.getChefList());
+        Restaurant newAddedRestaurant = new Restaurant(6L, "Yum", 4, getDishList().stream().collect(Collectors.toSet()), getChefList());
         when(restaurantRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedRestaurant));
 
         restaurantRepository.save(newAddedRestaurant);

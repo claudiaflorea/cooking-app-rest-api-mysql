@@ -16,7 +16,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     List<Recipe> findAllByRecipeType(RecipeType recipeType);
     
     //find all recipes with avocado
-    @Query(value = "SELECT r FROM Recipe r LEFT JOIN FETCH Ingredient i WHERE i.name = 'Avocado' ")
+    @Query(value = "SELECT * FROM recipes r INNER join ingredients i on i.i_r_id = r.r_id WHERE i.i_name = 'Avocado' ", nativeQuery = true)
     List<Recipe> findAllByIngredientsContainingAvocado();
 
 }
