@@ -3,11 +3,14 @@ package com.practice.cooking.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.repository.IngredientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,40 +19,41 @@ public class IngredientService {
 
     private final IngredientRepository ingredientRepository;
 
-    public List<Ingredient> getAll() {
-        return ingredientRepository.findAll();
+    private final ConversionService conversionService;
+
+    public List<IngredientDto> getAll() {
+        return ingredientRepository.findAll().stream().
+            map(ingredient -> conversionService.convert(ingredient, IngredientDto.class))
+            .collect(Collectors.toList());
     }
 
-    public Ingredient getById(Long id) {
-        return ingredientRepository.findById(id).orElseThrow(() -> new NotFoundException("Ingredient not found with id " + id));
+    public IngredientDto getById(Long id) {
+        return ingredientRepository.findById(id)
+            .map(ingredient -> conversionService.convert(ingredient, IngredientDto.class))
+            .orElseThrow(() -> new NotFoundException("Ingredient not found with id " + id));
     }
 
-    public Ingredient add(Ingredient ingredient) {
-        return ingredientRepository.save(ingredient);
+    public IngredientDto add(IngredientDto ingredient) {
+        return conversionService.convert(
+            ingredientRepository.save(conversionService.convert(ingredient, Ingredient.class)), IngredientDto.class
+        );
     }
 
-    public Ingredient update(Long id, Ingredient ingredientDetails) {
-        Ingredient ingredient = getById(id);
+    public IngredientDto update(Long id, IngredientDto ingredientDetails) {
+        IngredientDto ingredient = getById(id);
         ingredient.setName(ingredientDetails.getName());
         ingredient.setUnit(ingredientDetails.getUnit());
         ingredient.setQuantity(ingredientDetails.getQuantity());
-        ingredientRepository.save(ingredient);
+        ingredientRepository.save(conversionService.convert(ingredient, Ingredient.class));
         return ingredient;
     }
     
     public Map<String, Boolean> delete(Long id) {
-        Ingredient ingredient = getById(id);
-        ingredientRepository.delete(ingredient);
+        IngredientDto ingredient = getById(id);
+        ingredientRepository.delete(conversionService.convert(ingredient, Ingredient.class));
         Map<String, Boolean> ingredientMap = new HashMap<>();
         ingredientMap.put("Ingredient with id " + id + " is deleted ", Boolean.TRUE);
         return ingredientMap;
     }
-    
-    public List<Ingredient> getAllByName(String name) {
-        return ingredientRepository.findAllByName(name);
-    }
-    
-//    public List<Ingredient> getAllHeavierThan1Kg() {
-//        return ingredientRepository.findAllByHeavierThan1Kg();
-//    }
+ 
 }

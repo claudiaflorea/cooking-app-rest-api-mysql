@@ -2,83 +2,90 @@ package com.practice.cooking.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import com.practice.cooking.dto.ChefDto;
 import com.practice.cooking.model.Chef;
 import com.practice.cooking.repository.ChefRepository;
-import com.practice.cooking.utils.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.convert.ConversionService;
 
-@SpringJUnitConfig(classes = ChefServiceTest.ChefServiceTestConfig.class)
+@SpringBootTest
 public class ChefServiceTest {
 
+    private static final String EUGENE = "Eugene";
+    private static final String STAN   = "Stan";
+    private static final String BERNIE = "Bernie";
+    private static final String PETER  = "Peter";
+    
     @Mock
     private ChefRepository chefRepository;
+
+    @Mock
+    private ConversionService conversionService;
 
     @InjectMocks
     private ChefService chefService;
 
     @Test
     public void testGetAllChefs() {
-        when(chefRepository.findAll()).thenReturn(TestUtils.getChefList().stream().collect(Collectors.toList()));
+        Chef chef1 = new Chef(1L, EUGENE);
+        Chef chef2 = new Chef(2L, STAN);
+        when(chefRepository.findAll()).thenReturn(asList(chef1, chef2));
+        when(conversionService.convert(chef1, ChefDto.class)).thenReturn(new ChefDto(1L, EUGENE));
+        when(conversionService.convert(chef2, ChefDto.class)).thenReturn(new ChefDto(2L, STAN));
 
-        List<Chef> chefs = chefService.getAll();
+        List<ChefDto> chefs = chefService.getAll();
 
         checkInitialChefList(chefs);
     }
 
-    private void checkInitialChefList(List<Chef> chefs) {
-        assertEquals(chefs.size(), 5);
+    private void checkInitialChefList(List<ChefDto> chefs) {
+        assertEquals(chefs.size(), 2);
         assertAll("List of chefs",
-            () -> assertEquals("Eugene", chefs.get(0).getName()),
-            () -> assertEquals("Stan", chefs.get(1).getName()),
-            () -> assertEquals("Thor", chefs.get(2).getName()),
-            () -> assertEquals("Loki", chefs.get(3).getName()),
-            () -> assertEquals("Vader", chefs.get(4).getName())
+            () -> assertEquals(EUGENE, chefs.get(0).getName()),
+            () -> assertEquals(STAN, chefs.get(1).getName())
         );
     }
 
     @Test
     public void testSaveAndGetChefById() {
-        Chef newAddedChef = new Chef(6L, "Bernie");
+        Chef newAddedChef = new Chef(6L, BERNIE);
         when(chefRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedChef));
+        when(conversionService.convert(newAddedChef, ChefDto.class)).thenReturn(new ChefDto(6L, BERNIE));
+
 
         chefRepository.save(newAddedChef);
-        Chef retrievedChef = chefService.getById(6L);
+        ChefDto retrievedChef = chefService.getById(6L);
 
         //here we verify if the record was saved in the DB, 
         //and also if the getById method works
-        assertEquals(retrievedChef, newAddedChef);
+        assertEquals(retrievedChef.getName(), newAddedChef.getName());
     }
 
     @Test
     public void testDeleteChef() {
-        when(chefRepository.findAll()).thenReturn(TestUtils.getChefList().stream().collect(Collectors.toList()));
+        Chef chef = new Chef();
+        chef.setId(10L);
+        chef.setName(PETER);
+        
+        ChefDto chefDto = new ChefDto();
+        chefDto.setId(10L);
+        chefDto.setName(PETER);
+        
+        when(conversionService.convert(chefDto, Chef.class)).thenReturn(chef);
+        when(conversionService.convert(chef, ChefDto.class)).thenReturn(chefDto);
+        when(chefRepository.findById(10L)).thenReturn(Optional.of(chef));
 
-        List<Chef> chefs = chefService.getAll();
-        when(chefRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(chefs.get(0)));
-
-        checkInitialChefList(chefs);
-        chefService.delete(chefs.get(0).getId());
-        Mockito.verify(chefRepository, Mockito.atLeastOnce()).delete(chefs.get(0));
+        chefService.delete(chef.getId());
+        Mockito.verify(chefRepository, Mockito.atLeastOnce()).delete(chef);
     }
 
-    @Configuration
-    public static class ChefServiceTestConfig {
-
-        @Bean
-        public ChefRepository chefRepository() {
-            return Mockito.mock(ChefRepository.class);
-        }
-
-    }
 }

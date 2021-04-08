@@ -26,7 +26,7 @@ public class IngredientConversionTest {
 
     @Test
     public void testDishToDtoConversion() {
-        Ingredient ingredient = createIngredientWithId(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
+        IngredientDto ingredient = createIngredientWithId(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
         IngredientDto ingredientDto = conversionService.convert(ingredient, IngredientDto.class);
 
         assertAll("IngredientDto mapped object",

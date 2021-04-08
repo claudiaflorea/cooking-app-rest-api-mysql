@@ -2,17 +2,13 @@ package com.practice.cooking.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
 import com.practice.cooking.dto.RecipeDto;
 import com.practice.cooking.exception.NotFoundException;
-import com.practice.cooking.model.Recipe;
 import com.practice.cooking.service.RecipeService;
 import com.practice.cooking.validator.RecipeDtoValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +32,6 @@ public class RecipeController {
 
     private final RecipeService recipeService;
 
-    private final ConversionService conversionService;
-    
     private final RecipeDtoValidator recipeDtoValidator;
 
     @InitBinder
@@ -47,26 +41,24 @@ public class RecipeController {
 
     @GetMapping()
     public ResponseEntity<List<RecipeDto>> getAllRecipes() {
-        List<RecipeDto> recipeDtoList = recipeService.getAll().stream()
-            .map(recipe -> conversionService.convert(recipe, RecipeDto.class))
-            .collect(Collectors.toList());
+        List<RecipeDto> recipeDtoList = recipeService.getAll();
         return new ResponseEntity<>(recipeDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RecipeDto> getRecipeById(@PathVariable(value = "id") Long id) throws NotFoundException {
-        return new ResponseEntity<>(conversionService.convert(recipeService.getById(id), RecipeDto.class), HttpStatus.OK);
+        return new ResponseEntity<>(recipeService.getById(id), HttpStatus.OK);
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<RecipeDto> createRecipe(@Valid @RequestBody RecipeDto recipe) {
-        RecipeDto recipeDto = conversionService.convert(recipeService.add(conversionService.convert(recipe, Recipe.class)), RecipeDto.class);
+        RecipeDto recipeDto = recipeService.add(recipe);
         return new ResponseEntity<>(recipeDto, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<RecipeDto> updateRecipe(@Valid @PathVariable(value = "id") Long id, @RequestBody RecipeDto recipeDetails) throws NotFoundException {
-        RecipeDto recipeDto =  conversionService.convert(recipeService.update(id, conversionService.convert(recipeDetails, Recipe.class)), RecipeDto.class);
+        RecipeDto recipeDto =  recipeService.update(id, recipeDetails);
         return new ResponseEntity<>(recipeDto, HttpStatus.OK);
     }
 

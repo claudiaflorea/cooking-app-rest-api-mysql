@@ -36,8 +36,6 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    private final ConversionService conversionService;
-    
     private final RestaurantDtoValidator restaurantDtoValidator;
 
     @InitBinder
@@ -47,26 +45,24 @@ public class RestaurantController {
 
     @GetMapping()
     public ResponseEntity<List<RestaurantDto>> getAllRestaurants() {
-        List<RestaurantDto> restaurantDtoList = restaurantService.getAll().stream()
-            .map(restaurant -> conversionService.convert(restaurant, RestaurantDto.class))
-            .collect(Collectors.toList());
+        List<RestaurantDto> restaurantDtoList = restaurantService.getAll();
         return new ResponseEntity<>(restaurantDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public RestaurantDto getRestaurantById(@PathVariable(value = "id") Long id) throws NotFoundException {
-        return conversionService.convert(restaurantService.getById(id), RestaurantDto.class);
+    public ResponseEntity<RestaurantDto> getRestaurantById(@PathVariable(value = "id") Long id) throws NotFoundException {
+        return new ResponseEntity<>(restaurantService.getById(id), HttpStatus.OK);
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<RestaurantDto> createRestaurant(@Valid @RequestBody RestaurantDto restaurant) {
-        RestaurantDto restaurantDto = conversionService.convert(restaurantService.add(conversionService.convert(restaurant, Restaurant.class)), RestaurantDto.class);
+        RestaurantDto restaurantDto = restaurantService.add(restaurant);
         return new ResponseEntity<>(restaurantDto, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<RestaurantDto> updateRestaurant(@Valid @PathVariable(value = "id") Long id, @RequestBody RestaurantDto restaurantDetails) throws NotFoundException {
-        RestaurantDto restaurantDto = conversionService.convert(restaurantService.update(id, conversionService.convert(restaurantDetails, Restaurant.class)), RestaurantDto.class);
+        RestaurantDto restaurantDto =restaurantService.update(id,restaurantDetails);
         return new ResponseEntity<>(restaurantDto, HttpStatus.OK);
     }
 

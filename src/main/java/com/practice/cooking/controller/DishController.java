@@ -2,17 +2,13 @@ package com.practice.cooking.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
 import com.practice.cooking.dto.DishDto;
 import com.practice.cooking.exception.NotFoundException;
-import com.practice.cooking.model.Dish;
 import com.practice.cooking.service.DishService;
 import com.practice.cooking.validator.DishDtoValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +32,6 @@ public class DishController {
 
     private final DishService dishService;
 
-    private final ConversionService conversionService;
-    
     private final DishDtoValidator dishDtoValidator;
     
     @InitBinder
@@ -47,27 +41,25 @@ public class DishController {
 
     @GetMapping()
     public ResponseEntity<List<DishDto>> getAllDishes() {
-        List<DishDto> dishDtoList = dishService.getAll().stream()
-            .map(dish -> conversionService.convert(dish, DishDto.class))
-            .collect(Collectors.toList());
+        List<DishDto> dishDtoList = dishService.getAll();
         return new ResponseEntity<>(dishDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DishDto> getDishById(@PathVariable(value = "id") Long id) {
-        DishDto dishDto = conversionService.convert(dishService.getById(id), DishDto.class);
+        DishDto dishDto = dishService.getById(id);
         return new ResponseEntity<>(dishDto, HttpStatus.OK);
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<DishDto> createDish(@Valid @RequestBody DishDto dish) {
-        DishDto dishDto = conversionService.convert(dishService.add(conversionService.convert(dish, Dish.class)), DishDto.class);
+        DishDto dishDto = dishService.add(dish);
         return new ResponseEntity<>(dishDto, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<DishDto> updateDish(@Valid @PathVariable(value = "id") Long id, @RequestBody DishDto dishDetails) throws NotFoundException {
-        DishDto dishDto = conversionService.convert(dishService.update(id, conversionService.convert(dishDetails, Dish.class)), DishDto.class);
+        DishDto dishDto = dishService.update(id,dishDetails);
         return new ResponseEntity<>(dishDto, HttpStatus.OK);
     }
 

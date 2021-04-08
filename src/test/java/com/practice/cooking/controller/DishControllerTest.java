@@ -10,12 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.practice.cooking.dto.DishDto;
+import com.practice.cooking.dto.RecipeDto;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.Dish;
-import com.practice.cooking.model.Recipe;
 import com.practice.cooking.model.RecipeType;
 import com.practice.cooking.service.DishService;
-import com.practice.cooking.utils.TestUtils;
 import com.practice.cooking.validator.DishDtoValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -47,8 +46,8 @@ public class DishControllerTest {
     @MockBean
     private DishDtoValidator dishDtoValidator;
 
-    Recipe recipe = new Recipe(DISH_ID, DISH_NAME, Difficulty.MEDIUM, null, 1, RecipeType.MAIN_COURSE);
-    Dish   dish   = createDishWithId(DISH_ID, DISH_NAME, recipe);
+    RecipeDto recipe = new RecipeDto(DISH_ID, DISH_NAME, Difficulty.MEDIUM, null, 1, RecipeType.MAIN_COURSE);
+    DishDto      dish   = createDishWithId(DISH_ID, DISH_NAME, recipe);
 
     @Test
     public void testGetDishByIdWithValidParameters() throws Exception {
@@ -85,7 +84,7 @@ public class DishControllerTest {
         String url = "/api/dishes";
         when(dishDtoValidator.supports(DishDto.class)).thenReturn(true);
         when(dishService.add(dish)).thenAnswer(
-            (Answer<Dish>) invocation -> invocation.getArgument(0)
+            (Answer<DishDto>) invocation -> invocation.getArgument(0)
         );
 
         mockMvc.perform(post(url)

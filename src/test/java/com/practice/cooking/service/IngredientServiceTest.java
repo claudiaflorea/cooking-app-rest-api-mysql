@@ -3,12 +3,12 @@ package com.practice.cooking.service;
 import java.util.List;
 import java.util.Optional;
 
-import static com.practice.cooking.utils.TestUtils.createIngredientWithId;
 import static com.practice.cooking.utils.TestUtils.createSimpleIngredient;
-import static com.practice.cooking.utils.TestUtils.getApplePieIngredients;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Unit;
 import com.practice.cooking.repository.IngredientRepository;
@@ -16,73 +16,86 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.convert.ConversionService;
 
-@SpringJUnitConfig(classes = IngredientServiceTest.IngredientServiceTestConfig.class)
+@SpringBootTest
 public class IngredientServiceTest {
+
+    private static final String APPLE    = "Apple";
+    private static final String CINNAMON = "Cinnamon";
+    private static final String DOUGH    = "Dough";
+    private static final String PAPRIKA  = "Paprika";
 
     @Mock
     private IngredientRepository ingredientRepository;
+
+    @Mock
+    private ConversionService conversionService;
 
     @InjectMocks
     private IngredientService ingredientService;
 
     @Test
     public void testGetAllIngredients() {
-        when(ingredientRepository.findAll()).thenReturn(getApplePieIngredients());
 
-        List<Ingredient> ingredients = ingredientService.getAll();
+        Ingredient apple = new Ingredient(1L, APPLE, 2, Unit.KG, null, null);
+        Ingredient cinnamon = new Ingredient(2L, CINNAMON, 0.02, Unit.KG, null, null);
+        Ingredient dough = new Ingredient(3L, DOUGH, 0.2, Unit.KG, null, null);
+
+        when(ingredientRepository.findAll()).thenReturn(asList(apple, cinnamon, dough));
+        when(conversionService.convert(apple, IngredientDto.class)).thenReturn(new IngredientDto(1L, APPLE, 2, Unit.KG));
+        when(conversionService.convert(cinnamon, IngredientDto.class)).thenReturn(new IngredientDto(2L, CINNAMON, 0.02, Unit.KG));
+        when(conversionService.convert(dough, IngredientDto.class)).thenReturn(new IngredientDto(3L, DOUGH, 0.2, Unit.KG));
+
+        List<IngredientDto> ingredients = ingredientService.getAll();
 
         checkInitialIngredientList(ingredients);
     }
 
-    private void checkInitialIngredientList(List<Ingredient> ingredients) {
-        assertEquals(ingredients.size(), 8);
+    private void checkInitialIngredientList(List<IngredientDto> ingredients) {
+        assertEquals(ingredients.size(), 3);
         assertAll("List of ingredients",
-            () -> assertEquals("Apple", ingredients.get(0).getName()),
-            () -> assertEquals("Flour", ingredients.get(1).getName()),
-            () -> assertEquals("Cinnamon", ingredients.get(2).getName()),
-            () -> assertEquals("Yeast", ingredients.get(3).getName()),
-            () -> assertEquals("Sugar", ingredients.get(4).getName()),
-            () -> assertEquals("Melted Butter", ingredients.get(5).getName()),
-            () -> assertEquals("Vegetable oil", ingredients.get(6).getName()),
-            () -> assertEquals("Water", ingredients.get(7).getName())
+            () -> assertEquals(APPLE, ingredients.get(0).getName()),
+            () -> assertEquals(CINNAMON, ingredients.get(1).getName()),
+            () -> assertEquals(DOUGH, ingredients.get(2).getName())
         );
     }
 
     @Test
     public void testSaveAndGetIngredientById() {
-        Ingredient newAddedIngredient = createIngredientWithId(6L, "Paprika", 0.001, Unit.KG);
-        when(ingredientRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedIngredient));
+        Ingredient newAddedIngredient = new Ingredient();
+        newAddedIngredient.setId(6L);
+        newAddedIngredient.setName(PAPRIKA);
+        newAddedIngredient.setQuantity(0.01);
+        newAddedIngredient.setUnit(Unit.KG);
+
+        when(conversionService.convert(newAddedIngredient, IngredientDto.class)).thenReturn(new IngredientDto(6L, PAPRIKA, 0.01, Unit.KG));
+        when(ingredientRepository.findById(6L)).thenReturn(Optional.of(newAddedIngredient));
 
         ingredientRepository.save(newAddedIngredient);
-        Ingredient retrievedIngredient = ingredientService.getById(6L);
+        IngredientDto retrievedIngredient = ingredientService.getById(6L);
 
         //here we verify if the record was saved in the DB, 
         //and also if the getById method works
-        assertEquals(retrievedIngredient, newAddedIngredient);
+        assertEquals(retrievedIngredient.getName(), newAddedIngredient.getName());
+        assertEquals(retrievedIngredient.getQuantity(), newAddedIngredient.getQuantity());
+        assertEquals(retrievedIngredient.getUnit(), newAddedIngredient.getUnit());
     }
 
     @Test
     public void testDeleteIngredient() {
-        Ingredient ingredient = createSimpleIngredient("Test ingredient", 1, Unit.PIECE);
+        Ingredient ingredient = createSimpleIngredient(APPLE, 1, Unit.PIECE);
         ingredient.setId(1L);
 
+        IngredientDto ingredientDto = new IngredientDto(1L, APPLE, 1, Unit.PIECE);
+
+        when(conversionService.convert(ingredient, IngredientDto.class)).thenReturn(ingredientDto);
+        when(conversionService.convert(ingredientDto, Ingredient.class)).thenReturn(ingredient);
         when(ingredientRepository.findById(1L)).thenReturn(Optional.ofNullable(ingredient));
 
         ingredientService.delete(ingredient.getId());
         Mockito.verify(ingredientRepository, Mockito.atLeastOnce()).delete(ingredient);
     }
 
-    @Configuration
-    public static class IngredientServiceTestConfig {
-
-        @Bean
-        public IngredientRepository ingredientRepository() {
-            return Mockito.mock(IngredientRepository.class);
-        }
-
-    }
 }

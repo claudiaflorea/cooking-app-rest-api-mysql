@@ -1,5 +1,6 @@
 package com.practice.cooking.controller;
 
+import static com.practice.cooking.utils.TestUtils.createIngredientWithId;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -46,7 +47,7 @@ public class IngredientControllerTest {
     @MockBean
     private IngredientDtoValidator ingredientDtoValidator;
 
-    Ingredient ingredient = TestUtils.createIngredientWithId(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
+    IngredientDto ingredient = createIngredientWithId(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
 
     @Test
     public void testGetIngredientByIdWithValidParameters() throws Exception {
@@ -68,7 +69,7 @@ public class IngredientControllerTest {
         String url = "/api/ingredients";
         when(ingredientDtoValidator.supports(IngredientDto.class)).thenReturn(true);
         when(ingredientService.add(ingredient)).thenAnswer(
-            (Answer<Ingredient>) invocation -> invocation.getArgument(0)
+            (Answer<IngredientDto>) invocation -> invocation.getArgument(0)
         );
 
         mockMvc.perform(post(url)

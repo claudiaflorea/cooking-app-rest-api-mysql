@@ -42,7 +42,7 @@ public class ChefControllerTest {
     @MockBean
     private ChefDtoValidator chefDtoValidator;
 
-    Chef chef = new Chef(CHEF_ID, CHEF_NAME);
+    ChefDto chef = new ChefDto(CHEF_ID, CHEF_NAME);
 
     @Test
     public void testGetChefByIdWithValidParameters() throws Exception {
@@ -77,7 +77,7 @@ public class ChefControllerTest {
         String url = "/api/chefs";
         when(chefDtoValidator.supports(ChefDto.class)).thenReturn(true);
         when(chefService.add(chef)).thenAnswer(
-            (Answer<Chef>) invocation -> invocation.getArgument(0)
+            (Answer<ChefDto>) invocation -> invocation.getArgument(0)
         );
 
         mockMvc.perform(post(url)

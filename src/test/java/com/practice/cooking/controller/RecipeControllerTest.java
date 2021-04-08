@@ -47,7 +47,7 @@ public class RecipeControllerTest {
     @MockBean
     private RecipeDtoValidator recipeDtoValidator;
     
-    Recipe recipe = new Recipe(RECIPE_ID, RECIPE_NAME, Difficulty.MEDIUM, null, 1, RecipeType.MAIN_COURSE);
+    RecipeDto recipe = new RecipeDto(RECIPE_ID, RECIPE_NAME, Difficulty.MEDIUM, null, 1, RecipeType.MAIN_COURSE);
 
     @Test
     public void testGetRecipeByIdWithValidParameters() throws Exception {
@@ -86,7 +86,7 @@ public class RecipeControllerTest {
         String url = "/api/recipes";
         when(recipeDtoValidator.supports(RecipeDto.class)).thenReturn(true);
         when(recipeService.add(recipe)).thenAnswer(
-            (Answer<Recipe>) invocation -> invocation.getArgument(0)
+            (Answer<RecipeDto>) invocation -> invocation.getArgument(0)
         );
 
         mockMvc.perform(post(url)
