@@ -1,0 +1,129 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+    <changeSet author="dev" id="202104090930">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="chefs"/>
+            </not>
+            <not>
+                <tableExists tableName="recipes"/>
+            </not>
+            <not>
+                <tableExists tableName="ingredients"/>
+            </not>
+            <not>
+                <tableExists tableName="dishes"/>
+            </not>
+            <not>
+                <tableExists tableName="restaurants_to_chefs"/>
+            </not>
+            <not>
+                <tableExists tableName="restaurants_to_dishes"/>
+            </not>
+            <not>
+                <tableExists tableName="restaurants"/>
+            </not>
+        </preConditions>
+        
+        <createTable remarks="Used to store chef's information" tableName="chefs">
+            <column name="c_id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="c_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <createTable remarks="Used to store recipes" tableName="recipes">
+            <column name="r_id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="r_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="r_difficulty" type="int" />
+            <column name="r_cooking_time" type="varchar(30)">
+                <constraints nullable="false" />
+            </column>
+            <column name="r_recipe_type" type="int">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <createTable remarks="Used to store ingredients" tableName="ingredients">
+            <column name="i_id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="i_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="i_quantity" type="double" >
+                <constraints nullable="false" />
+            </column>
+            <column name="i_unit" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="i_r_id" type="int" />
+        </createTable>
+
+        <createTable remarks="Used to store dishes" tableName="dishes">
+            <column name="d_id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="d_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="d_r_id" type="int" />
+        </createTable>
+
+        <createTable remarks="Used to store restaurants" tableName="restaurants">
+            <column name="rt_id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="rt_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rt_stars" type="int" />
+        </createTable>
+
+        <createTable remarks="Used to link restaurants to chefs" tableName="restaurants_to_chefs">
+            <column name="rc_id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="rc_rt_id" type="int" />
+            <column name="rc_c_id" type="int" />
+        </createTable>
+
+        <createTable remarks="Used to link restaurants to dishes" tableName="restaurants_to_dishes">
+            <column name="rd_id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="rd_rt_id" type="int" />
+            <column name="rd_d_id" type="int" />
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="ingredients"
+                                 baseColumnNames="i_r_id" constraintName="ingredients_to_recipes_fk"
+                                 referencedTableName="recipes" referencedColumnNames="r_id" />
+        <addForeignKeyConstraint baseTableName="dishes"
+                                 baseColumnNames="d_r_id" constraintName="dishes_to_recipes_fk"
+                                 referencedTableName="recipes" referencedColumnNames="r_id" />
+        <addForeignKeyConstraint baseTableName="restaurants_to_chefs"
+                                 baseColumnNames="rc_rt_id" constraintName="restaurants_to_chefs_to_restaurants_fk"
+                                 referencedTableName="restaurants" referencedColumnNames="rt_id" />
+        <addForeignKeyConstraint baseTableName="restaurants_to_chefs"
+                                 baseColumnNames="rc_c_id" constraintName="restaurants_to_chefs_to_chefs_fk"
+                                 referencedTableName="chefs" referencedColumnNames="c_id" />
+        <addForeignKeyConstraint baseTableName="restaurants_to_dishes"
+                                 baseColumnNames="rd_rt_id" constraintName="restaurants_to_dishes_to_restaurants_fk"
+                                 referencedTableName="restaurants" referencedColumnNames="rt_id" />
+        <addForeignKeyConstraint baseTableName="restaurants_to_dishes"
+                                 baseColumnNames="rd_d_id" constraintName="restaurants_to_dishes_to_dishes_fk"
+                                 referencedTableName="dishes" referencedColumnNames="d_id" />
+    </changeSet>
+</databaseChangeLog>

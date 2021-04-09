@@ -1,0 +1,23 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+    <changeSet author="dev" id="202104091006">
+
+        <preConditions>
+            <tableExists tableName="restaurants_to_dishes"/>
+        </preConditions>
+        
+        <sql>
+            INSERT INTO restaurants_to_dishes VALUES(1, 1, 2);
+            INSERT INTO restaurants_to_dishes VALUES(2, 2, 3);
+            INSERT INTO restaurants_to_dishes VALUES(3, 3, 4);
+            INSERT INTO restaurants_to_dishes VALUES(4, 1, 5);
+            INSERT INTO restaurants_to_dishes VALUES(5, 2, 1);
+        </sql>
+        
+    </changeSet>
+</databaseChangeLog>

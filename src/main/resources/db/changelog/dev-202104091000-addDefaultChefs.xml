@@ -1,0 +1,23 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+    <changeSet author="dev" id="202104091000">
+
+        <preConditions>
+            <tableExists tableName="chefs"/>
+        </preConditions>
+        
+        <sql>
+            INSERT INTO chefs VALUES(1, "Chef. Michael");
+            INSERT INTO chefs VALUES(2, "Chef. Sam");
+            INSERT INTO chefs VALUES(3, "Chef. Robert");
+            INSERT INTO chefs VALUES(4, "Chef. Charlie");
+            INSERT INTO chefs VALUES(5, "Chef. Robin");
+        </sql>
+        
+    </changeSet>
+</databaseChangeLog>

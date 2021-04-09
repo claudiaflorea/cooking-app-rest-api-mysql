@@ -1,0 +1,28 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+    <changeSet author="dev" id="202104091003">
+
+        <preConditions>
+            <tableExists tableName="ingredients"/>
+        </preConditions>
+        
+        <sql>
+            INSERT INTO ingredients VALUES(1, "Egg", 2, 1, 1);
+            INSERT INTO ingredients VALUES(2, "Flour", 1, 0, 2);
+            INSERT INTO ingredients VALUES(3, "Egg", 1, 1, 3);
+            INSERT INTO ingredients VALUES(4, "Egg", 4, 1, 4);
+            INSERT INTO ingredients VALUES(5, "Crab meat", 0.2, 0, 5);
+            INSERT INTO ingredients VALUES(6, "Sugar", 0.1, 0, 2);
+            INSERT INTO ingredients VALUES(7, "Yeast", 0.1, 0, 2);
+            INSERT INTO ingredients VALUES(8, "Milk", 0.3, 2, 2);
+            INSERT INTO ingredients VALUES(9, "Egg", 3, 1, 2);
+            INSERT INTO ingredients VALUES(10, "Sweet cheese", 0.5, 0, 2);
+        </sql>
+        
+    </changeSet>
+</databaseChangeLog>

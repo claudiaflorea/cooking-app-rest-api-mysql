@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import static com.sun.activation.registries.LogSupport.log;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Entity
 @Table(name = "dishes")
 @Getter
@@ -61,7 +64,7 @@ public class Dish implements Comparable<Dish> {
                 return 1;
             }
         } catch (NullPointerException e) {
-            System.out.println(e);
+            log.error(e.getMessage());
         }
         return 0;
     }

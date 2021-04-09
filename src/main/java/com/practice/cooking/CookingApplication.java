@@ -1,17 +1,20 @@
 package com.practice.cooking;
 
+import static com.sun.activation.registries.LogSupport.log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@Slf4j
 @SpringBootApplication
 public class CookingApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CookingApplication.class, args);
 
-        System.out.println("********************************************");
-        System.out.println("RUNNING");
-        System.out.println("********************************************");
+        log.info("********************************************\"" +
+            "RUNNING\"" +
+            "********************************************");
     }
 
 }

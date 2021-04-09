@@ -1,11 +1,14 @@
 package com.practice.cooking.dto;
 
+import static com.sun.activation.registries.LogSupport.log;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,7 +31,7 @@ public class DishDto implements Comparable<DishDto> {
                 return 1;
             }
         } catch (NullPointerException e) {
-            System.out.println(e);
+            log.error(e.getMessage());
         }
         return 0;
     }

@@ -1,0 +1,30 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <include
+        file="changelog/dev-202104090930-createTablesSchema.xml"
+        relativeToChangelogFile="true" />
+    <include
+        file="changelog/dev-202104091000-addDefaultChefs.xml"
+        relativeToChangelogFile="true" />
+    <include
+        file="changelog/dev-202104091001-addDefaultRecipes.xml"
+        relativeToChangelogFile="true" />
+    <include
+        file="changelog/dev-202104091002-addDefaultDishes.xml"
+        relativeToChangelogFile="true" />
+    <include
+        file="changelog/dev-202104091003-addDefaultIngredients.xml"
+        relativeToChangelogFile="true" />
+    <include
+        file="changelog/dev-202104091004-addDefaultRestaurants.xml"
+        relativeToChangelogFile="true" />
+    <include
+        file="changelog/dev-202104091005-addDefaultRestaurantsToChefs.xml"
+        relativeToChangelogFile="true" />
+    <include
+        file="changelog/dev-202104091006-addDefaultRestaurantsToDishes.xml"
+        relativeToChangelogFile="true" />
+</databaseChangeLog>
