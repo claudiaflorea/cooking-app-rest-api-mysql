@@ -1,6 +1,5 @@
 package com.practice.cooking.dto;
 
-import static com.sun.activation.registries.LogSupport.log;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

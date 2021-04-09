@@ -1,8 +1,5 @@
-package com.practice.cooking.conversion;
+package com.practice.cooking.mapper;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import static com.practice.cooking.utils.TestUtils.createDish;
@@ -11,31 +8,34 @@ import static com.practice.cooking.utils.TestUtils.getRisottoIngredients;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.practice.cooking.dto.DishDto;
-import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.Dish;
-import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.RecipeType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.convert.ConversionService;
 
 @SpringBootTest
-public class DishConversionTest {
+public class DishMapperTest {
 
     public static final Long   DISH_ID   = 33L;
     public static final String DISH_NAME = "Risotto";
 
     @Autowired
-    private ConversionService conversionService;
+    private DishDtoToEntityMapper dtoToEntityMapper;
+
+    @Autowired
+    private DishEntityToDtoMapper entityToDtoMapper;
+
+    @Autowired
+    private IngredientEntityToDtoMapper ingredientEntityToDtoMapper;
 
     @Test
     public void testDishToDtoConversion() {
         Dish dish = createDish(DISH_NAME, getRecipeList().get(1));
         dish.getRecipe().setIngredients(getRisottoIngredients());
         dish.setId(DISH_ID);
-        DishDto dishDto = conversionService.convert(dish, DishDto.class);
+        DishDto dishDto = entityToDtoMapper.entityToDto(dish);
         assertAll("DishDto mapped object ",
             () -> assertEquals(DISH_ID, dishDto.getId()),
             () -> assertEquals(DISH_NAME, dishDto.getName()),
@@ -49,14 +49,14 @@ public class DishConversionTest {
 
     @Test
     public void testDishDtoToEntityConversion() {
-        DishDto dishDto = conversionService.convert(createDish(DISH_NAME, getRecipeList().get(1)), DishDto.class);
+        DishDto dishDto = entityToDtoMapper.entityToDto(createDish(DISH_NAME, getRecipeList().get(1)));
         dishDto.getRecipe().setIngredients(
             getRisottoIngredients().stream()
-                .map(ingredient -> conversionService.convert(ingredient, IngredientDto.class))
+                .map(ingredient -> ingredientEntityToDtoMapper.entityToDto(ingredient))
                 .collect(Collectors.toSet())
         );
         dishDto.setId(DISH_ID);
-        Dish dish = conversionService.convert(dishDto, Dish.class);
+        Dish dish = dtoToEntityMapper.dtoToEntity(dishDto);
         assertAll("Dish mapped object ",
             () -> assertEquals(DISH_ID, dish.getId()),
             () -> assertEquals(DISH_NAME, dish.getName()),

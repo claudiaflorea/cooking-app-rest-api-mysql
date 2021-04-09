@@ -1,6 +1,5 @@
 package com.practice.cooking;
 
-import static com.sun.activation.registries.LogSupport.log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

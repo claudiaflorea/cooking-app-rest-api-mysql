@@ -1,6 +1,7 @@
 package com.practice.cooking.dto;
 
-import static com.sun.activation.registries.LogSupport.log;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,10 +17,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ChefDto implements Comparable<ChefDto> {
 
-    private Long   id;
-    //@Size(max = 30, min = 3)
-    //@Pattern(regexp = "^[A-Z]")
-    private String name;
+    private Long               id;
+    private String             name;
+    private Set<RestaurantDto> restaurants;
+
+    public ChefDto(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     @Override
     public int compareTo(ChefDto o) {

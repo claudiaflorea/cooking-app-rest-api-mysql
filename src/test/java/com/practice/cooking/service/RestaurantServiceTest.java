@@ -9,15 +9,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import com.practice.cooking.dto.RestaurantDto;
+import com.practice.cooking.mapper.RestaurantDtoToEntityMapper;
+import com.practice.cooking.mapper.RestaurantEntityToDtoMapper;
 import com.practice.cooking.model.Restaurant;
 import com.practice.cooking.repository.RestaurantRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.convert.ConversionService;
 
 @SpringBootTest
 public class RestaurantServiceTest {
@@ -29,7 +29,10 @@ public class RestaurantServiceTest {
     private RestaurantRepository restaurantRepository;
 
     @Mock
-    private ConversionService conversionService;
+    private RestaurantEntityToDtoMapper entityToDtoMapper;
+
+    @Mock
+    private RestaurantDtoToEntityMapper dtoToEntityMapper;
 
     @InjectMocks
     private RestaurantService restaurantService;
@@ -40,8 +43,8 @@ public class RestaurantServiceTest {
         Restaurant bonAppetit = new Restaurant(2L, BON_APPETIT, 2, null, null);
 
         when(restaurantRepository.findAll()).thenReturn(asList(als, bonAppetit));
-        when(conversionService.convert(als, RestaurantDto.class)).thenReturn(new RestaurantDto(1L, ALS_SEAFOOD, 3, null, null));
-        when(conversionService.convert(bonAppetit, RestaurantDto.class)).thenReturn(new RestaurantDto(2L, BON_APPETIT, 2, null, null));
+        when(entityToDtoMapper.entityToDto(als)).thenReturn(new RestaurantDto(1L, ALS_SEAFOOD, 3, null, null));
+        when(entityToDtoMapper.entityToDto(bonAppetit)).thenReturn(new RestaurantDto(2L, BON_APPETIT, 2, null, null));
 
         List<RestaurantDto> restaurants = restaurantService.getAll();
 
@@ -60,7 +63,7 @@ public class RestaurantServiceTest {
     public void testSaveAndGetRestaurantById() {
         Restaurant newAddedRestaurant = new Restaurant(6L, ALS_SEAFOOD, 4, null, null);
 
-        when(conversionService.convert(newAddedRestaurant, RestaurantDto.class)).thenReturn(new RestaurantDto(6L, ALS_SEAFOOD, 4, null, null));
+        when(entityToDtoMapper.entityToDto(newAddedRestaurant)).thenReturn(new RestaurantDto(6L, ALS_SEAFOOD, 4, null, null));
         when(restaurantRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedRestaurant));
 
         restaurantRepository.save(newAddedRestaurant);
@@ -78,8 +81,8 @@ public class RestaurantServiceTest {
         restaurant.setId(1L);
         RestaurantDto restaurantDto = new RestaurantDto(1L, BON_APPETIT, 2, null, null);
 
-        when(conversionService.convert(restaurant, RestaurantDto.class)).thenReturn(restaurantDto);
-        when(conversionService.convert(restaurantDto, Restaurant.class)).thenReturn(restaurant);
+        when(entityToDtoMapper.entityToDto(restaurant)).thenReturn(restaurantDto);
+        when(dtoToEntityMapper.dtoToEntity(restaurantDto)).thenReturn(restaurant);
         when(restaurantRepository.findById(1L)).thenReturn(Optional.ofNullable(restaurant));
 
         restaurantService.delete(restaurant.getId());

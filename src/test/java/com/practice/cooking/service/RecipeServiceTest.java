@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import com.practice.cooking.dto.RecipeDto;
+import com.practice.cooking.mapper.RecipeDtoToEntityMapper;
+import com.practice.cooking.mapper.RecipeEntityToDtoMapper;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.Recipe;
 import com.practice.cooking.model.RecipeType;
@@ -18,7 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.convert.ConversionService;
 
 @SpringBootTest
 public class RecipeServiceTest {
@@ -31,7 +32,10 @@ public class RecipeServiceTest {
     private RecipeRepository recipeRepository;
 
     @Mock
-    private ConversionService conversionService;
+    private RecipeEntityToDtoMapper entityToDtoMapper;
+
+    @Mock
+    private RecipeDtoToEntityMapper dtoToEntityMapper;
 
     @InjectMocks
     private RecipeService recipeService;
@@ -43,9 +47,9 @@ public class RecipeServiceTest {
         Recipe guacamole = new Recipe(3L, GUACAMOLE, Difficulty.EASY, null, 1, RecipeType.SIDE);
 
         when(recipeRepository.findAll()).thenReturn(asList(applePie, risotto, guacamole));
-        when(conversionService.convert(applePie, RecipeDto.class)).thenReturn(new RecipeDto(1L, APPLE_PIE, Difficulty.EASY, null, 4, RecipeType.DESSERT));
-        when(conversionService.convert(risotto, RecipeDto.class)).thenReturn(new RecipeDto(2L, RISOTTO, Difficulty.MEDIUM, null, 1, RecipeType.SIDE));
-        when(conversionService.convert(guacamole, RecipeDto.class)).thenReturn(new RecipeDto(3L, GUACAMOLE, Difficulty.EASY, null, 1, RecipeType.SIDE));
+        when(entityToDtoMapper.entityToDto(applePie)).thenReturn(new RecipeDto(1L, APPLE_PIE, Difficulty.EASY, null, 4, RecipeType.DESSERT));
+        when(entityToDtoMapper.entityToDto(risotto)).thenReturn(new RecipeDto(2L, RISOTTO, Difficulty.MEDIUM, null, 1, RecipeType.SIDE));
+        when(entityToDtoMapper.entityToDto(guacamole)).thenReturn(new RecipeDto(3L, GUACAMOLE, Difficulty.EASY, null, 1, RecipeType.SIDE));
 
         List<RecipeDto> recipes = recipeService.getAll();
 
@@ -65,7 +69,7 @@ public class RecipeServiceTest {
     public void testSaveAndGetRecipeById() {
         Recipe newAddedRecipe = new Recipe(6L, RISOTTO, Difficulty.MEDIUM, null, 1, RecipeType.SIDE);
 
-        when(conversionService.convert(newAddedRecipe, RecipeDto.class)).thenReturn(new RecipeDto(6L, RISOTTO, Difficulty.MEDIUM, null, 1, RecipeType.SIDE));
+        when(entityToDtoMapper.entityToDto(newAddedRecipe)).thenReturn(new RecipeDto(6L, RISOTTO, Difficulty.MEDIUM, null, 1, RecipeType.SIDE));
         when(recipeRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedRecipe));
 
         recipeRepository.save(newAddedRecipe);
@@ -84,8 +88,8 @@ public class RecipeServiceTest {
         recipe.setId(1L);
         RecipeDto recipeDto = new RecipeDto(1L, GUACAMOLE, Difficulty.EASY, null, 1, RecipeType.SIDE);
 
-        when(conversionService.convert(recipe, RecipeDto.class)).thenReturn(recipeDto);
-        when(conversionService.convert(recipeDto, Recipe.class)).thenReturn(recipe);
+        when(entityToDtoMapper.entityToDto(recipe)).thenReturn(recipeDto);
+        when(dtoToEntityMapper.dtoToEntity(recipeDto)).thenReturn(recipe);
 
         when(recipeRepository.findById(1L)).thenReturn(Optional.ofNullable(recipe));
 

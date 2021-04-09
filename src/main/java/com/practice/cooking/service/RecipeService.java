@@ -9,12 +9,10 @@ import java.util.stream.Collectors;
 import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.dto.RecipeDto;
 import com.practice.cooking.exception.NotFoundException;
-import com.practice.cooking.model.Ingredient;
-import com.practice.cooking.model.Recipe;
-import com.practice.cooking.model.RecipeType;
+import com.practice.cooking.mapper.RecipeDtoToEntityMapper;
+import com.practice.cooking.mapper.RecipeEntityToDtoMapper;
 import com.practice.cooking.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,18 +22,21 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
 
     private final IngredientService ingredientService;
+    
+    private final RecipeDtoToEntityMapper dtoToEntityMapper;
 
-    private final ConversionService conversionService;
+    private final RecipeEntityToDtoMapper entityToDtoMapper;
+
 
     public List<RecipeDto> getAll() {
         return recipeRepository.findAll().stream()
-            .map(recipe -> conversionService.convert(recipe, RecipeDto.class))
+            .map(recipe -> entityToDtoMapper.entityToDto(recipe))
             .collect(Collectors.toList());
     }
 
     public RecipeDto getById(Long id) {
         return recipeRepository.findById(id)
-            .map(recipe -> conversionService.convert(recipe, RecipeDto.class))
+            .map(recipe -> entityToDtoMapper.entityToDto(recipe))
             .orElseThrow(() -> new NotFoundException("Recipe not found with id " + id));
     }
 
@@ -47,8 +48,8 @@ public class RecipeService {
                 }
             }
         }
-        return conversionService.convert(
-            recipeRepository.save(Objects.requireNonNull(conversionService.convert(recipe, Recipe.class))), RecipeDto.class
+        return entityToDtoMapper.entityToDto(
+            recipeRepository.save(Objects.requireNonNull(dtoToEntityMapper.dtoToEntity(recipe)))
         );
     }
 
@@ -59,13 +60,13 @@ public class RecipeService {
         recipe.setDifficulty(recipeDetails.getDifficulty());
         recipe.setRecipeType(recipeDetails.getRecipeType());
         recipe.setIngredients(recipeDetails.getIngredients());
-        recipeRepository.save(Objects.requireNonNull(conversionService.convert(recipe, Recipe.class)));
+        recipeRepository.save(Objects.requireNonNull(dtoToEntityMapper.dtoToEntity(recipe)));
         return recipe;
     }
 
     public Map<String, Boolean> delete(Long id) {
         RecipeDto recipe = getById(id);
-        recipeRepository.delete(conversionService.convert(recipe, Recipe.class));
+        recipeRepository.delete(dtoToEntityMapper.dtoToEntity(recipe));
         Map<String, Boolean> recipeMap = new HashMap<>();
         recipeMap.put("Recipe with id " + id + " is deleted ", Boolean.TRUE);
         return recipeMap;

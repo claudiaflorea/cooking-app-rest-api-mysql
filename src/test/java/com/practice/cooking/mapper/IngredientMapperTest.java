@@ -1,20 +1,16 @@
-package com.practice.cooking.conversion;
+package com.practice.cooking.mapper;
 
-import static com.practice.cooking.utils.TestUtils.createIngredientWithId;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.practice.cooking.converter.IngredientEntityToDtoConverter;
 import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Unit;
-import com.practice.cooking.utils.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.convert.ConversionService;
 
 @SpringBootTest
-public class IngredientConversionTest {
+public class IngredientMapperTest {
 
     public static final Long   INGREDIENT_ID       = 12L;
     public static final String INGREDIENT_NAME     = "Cinnamon";
@@ -22,12 +18,16 @@ public class IngredientConversionTest {
     public static final Unit   INGREDIENT_UNIT     = Unit.KG;
 
     @Autowired
-    private ConversionService conversionService;
+    private IngredientEntityToDtoMapper    entityToDtoMapper;
+    
+    @Autowired
+    private IngredientDtoToEntityMapper dtoToEntityMapper;
+    
 
     @Test
     public void testDishToDtoConversion() {
-        IngredientDto ingredient = createIngredientWithId(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
-        IngredientDto ingredientDto = conversionService.convert(ingredient, IngredientDto.class);
+        Ingredient ingredient = new Ingredient(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT, null, null);
+        IngredientDto ingredientDto = entityToDtoMapper.entityToDto(ingredient);
 
         assertAll("IngredientDto mapped object",
             () -> assertEquals(INGREDIENT_ID, ingredientDto.getId()),
@@ -40,7 +40,7 @@ public class IngredientConversionTest {
     @Test
     public void testDishDtoToEntityConversion() {
         IngredientDto ingredientDto = new IngredientDto(INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY, INGREDIENT_UNIT);
-        Ingredient ingredient = conversionService.convert(ingredientDto, Ingredient.class);
+        Ingredient ingredient = dtoToEntityMapper.dtoToEntity(ingredientDto);
 
         assertAll("Ingredient mapped object",
             () -> assertEquals(INGREDIENT_ID, ingredient.getId()),

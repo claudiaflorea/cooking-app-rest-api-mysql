@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import com.practice.cooking.dto.IngredientDto;
+import com.practice.cooking.mapper.IngredientDtoToEntityMapper;
+import com.practice.cooking.mapper.IngredientEntityToDtoMapper;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Unit;
 import com.practice.cooking.repository.IngredientRepository;
@@ -17,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.convert.ConversionService;
 
 @SpringBootTest
 public class IngredientServiceTest {
@@ -31,7 +32,10 @@ public class IngredientServiceTest {
     private IngredientRepository ingredientRepository;
 
     @Mock
-    private ConversionService conversionService;
+    private IngredientEntityToDtoMapper entityToDtoMapper;
+
+    @Mock
+    private IngredientDtoToEntityMapper dtoToEntityMapper;
 
     @InjectMocks
     private IngredientService ingredientService;
@@ -44,9 +48,9 @@ public class IngredientServiceTest {
         Ingredient dough = new Ingredient(3L, DOUGH, 0.2, Unit.KG, null, null);
 
         when(ingredientRepository.findAll()).thenReturn(asList(apple, cinnamon, dough));
-        when(conversionService.convert(apple, IngredientDto.class)).thenReturn(new IngredientDto(1L, APPLE, 2, Unit.KG));
-        when(conversionService.convert(cinnamon, IngredientDto.class)).thenReturn(new IngredientDto(2L, CINNAMON, 0.02, Unit.KG));
-        when(conversionService.convert(dough, IngredientDto.class)).thenReturn(new IngredientDto(3L, DOUGH, 0.2, Unit.KG));
+        when(entityToDtoMapper.entityToDto(apple)).thenReturn(new IngredientDto(1L, APPLE, 2, Unit.KG));
+        when(entityToDtoMapper.entityToDto(cinnamon)).thenReturn(new IngredientDto(2L, CINNAMON, 0.02, Unit.KG));
+        when(entityToDtoMapper.entityToDto(dough)).thenReturn(new IngredientDto(3L, DOUGH, 0.2, Unit.KG));
 
         List<IngredientDto> ingredients = ingredientService.getAll();
 
@@ -70,7 +74,7 @@ public class IngredientServiceTest {
         newAddedIngredient.setQuantity(0.01);
         newAddedIngredient.setUnit(Unit.KG);
 
-        when(conversionService.convert(newAddedIngredient, IngredientDto.class)).thenReturn(new IngredientDto(6L, PAPRIKA, 0.01, Unit.KG));
+        when(entityToDtoMapper.entityToDto(newAddedIngredient)).thenReturn(new IngredientDto(6L, PAPRIKA, 0.01, Unit.KG));
         when(ingredientRepository.findById(6L)).thenReturn(Optional.of(newAddedIngredient));
 
         ingredientRepository.save(newAddedIngredient);
@@ -90,8 +94,8 @@ public class IngredientServiceTest {
 
         IngredientDto ingredientDto = new IngredientDto(1L, APPLE, 1, Unit.PIECE);
 
-        when(conversionService.convert(ingredient, IngredientDto.class)).thenReturn(ingredientDto);
-        when(conversionService.convert(ingredientDto, Ingredient.class)).thenReturn(ingredient);
+        when(entityToDtoMapper.entityToDto(ingredient)).thenReturn(ingredientDto);
+        when(dtoToEntityMapper.dtoToEntity(ingredientDto)).thenReturn(ingredient);
         when(ingredientRepository.findById(1L)).thenReturn(Optional.ofNullable(ingredient));
 
         ingredientService.delete(ingredient.getId());

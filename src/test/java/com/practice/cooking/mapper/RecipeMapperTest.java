@@ -1,14 +1,11 @@
-package com.practice.cooking.conversion;
+package com.practice.cooking.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import static com.practice.cooking.utils.TestUtils.getRisottoIngredients;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.practice.cooking.converter.RecipeEntityToDtoConverter;
 import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.dto.RecipeDto;
 import com.practice.cooking.model.Difficulty;
@@ -18,10 +15,9 @@ import com.practice.cooking.model.RecipeType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.convert.ConversionService;
 
 @SpringBootTest
-public class RecipeConversionTest {
+public class RecipeMapperTest {
 
     public static final Long       RECIPE_ID           = 2L;
     public static final String     RECIPE_NAME         = "Risotto";
@@ -30,15 +26,18 @@ public class RecipeConversionTest {
     public static final RecipeType RECIPE_TYPE         = RecipeType.SIDE;
 
     @Autowired
-    private RecipeEntityToDtoConverter recipeConverter;
-    
+    private RecipeEntityToDtoMapper entityToDtoMapper;
+
     @Autowired
-    private ConversionService conversionService;
+    private RecipeDtoToEntityMapper dtoToEntityMapper;
+
+    @Autowired
+    private IngredientEntityToDtoMapper ingredientEntityToDtoMapper;
 
     @Test
     public void testRecipeToDtoConversion() {
         Recipe recipe = new Recipe(RECIPE_ID, RECIPE_NAME, RECIPE_DIFFICULTY, getRisottoIngredients(), RECIPE_COOKING_TIME, RECIPE_TYPE);
-        RecipeDto recipeDto = recipeConverter.convert(recipe);
+        RecipeDto recipeDto = entityToDtoMapper.entityToDto(recipe);
 
         assertAll(
             "RecipeDto converted object",
@@ -55,11 +54,11 @@ public class RecipeConversionTest {
     public void testRecipeDtoRoEntityConversion() {
         Set<IngredientDto> ingredientDtoList = new TreeSet<>();
         for (Ingredient ingredient : getRisottoIngredients()) {
-            ingredientDtoList.add(conversionService.convert(ingredient, IngredientDto.class));
+            ingredientDtoList.add(ingredientEntityToDtoMapper.entityToDto(ingredient));
         }
         
         RecipeDto recipeDto = new RecipeDto(RECIPE_ID, RECIPE_NAME, RECIPE_DIFFICULTY, ingredientDtoList, RECIPE_COOKING_TIME, RECIPE_TYPE);
-        Recipe recipe = conversionService.convert(recipeDto, Recipe.class);
+        Recipe recipe = dtoToEntityMapper.dtoToEntity(recipeDto);
 
         assertAll(
             "Recipe converted object",

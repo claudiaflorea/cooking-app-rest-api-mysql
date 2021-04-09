@@ -1,6 +1,5 @@
 package com.practice.cooking.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import com.practice.cooking.dto.DishDto;
+import com.practice.cooking.mapper.DishDtoToEntityMapper;
+import com.practice.cooking.mapper.DishEntityToDtoMapper;
 import com.practice.cooking.model.Dish;
 import com.practice.cooking.repository.DishRepository;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.convert.ConversionService;
 
 @SpringBootTest
 public class DishServiceTest {
@@ -29,7 +29,10 @@ public class DishServiceTest {
     private DishRepository dishRepository;
 
     @Mock
-    private ConversionService conversionService;
+    private DishEntityToDtoMapper entityToDtoMapper;
+
+    @Mock
+    private DishDtoToEntityMapper dtoToEntityMapper;
 
     @InjectMocks
     private DishService dishService;
@@ -40,8 +43,8 @@ public class DishServiceTest {
         Dish risotto = new Dish(2L, RISOTTO, null, null, null);
 
         when(dishRepository.findAll()).thenReturn(asList(applePie, risotto));
-        when(conversionService.convert(applePie, DishDto.class)).thenReturn(new DishDto(1L, APPLE_PIE, null));
-        when(conversionService.convert(risotto, DishDto.class)).thenReturn(new DishDto(2L, RISOTTO, null));
+        when(entityToDtoMapper.entityToDto(applePie)).thenReturn(new DishDto(1L, APPLE_PIE, null));
+        when(entityToDtoMapper.entityToDto(risotto)).thenReturn(new DishDto(2L, RISOTTO, null));
 
         List<DishDto> dishes = dishService.getAll();
 
@@ -62,7 +65,7 @@ public class DishServiceTest {
         newAddedDish.setId(6L);
         newAddedDish.setName(BOLOGNESE);
         when(dishRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedDish));
-        when(conversionService.convert(newAddedDish, DishDto.class)).thenReturn(new DishDto(6L, BOLOGNESE, null));
+        when(entityToDtoMapper.entityToDto(newAddedDish)).thenReturn(new DishDto(6L, BOLOGNESE, null));
 
         dishRepository.save(newAddedDish);
         DishDto retrievedDish = dishService.getById(6L);
@@ -82,8 +85,8 @@ public class DishServiceTest {
         dishDto.setId(10L);
         dishDto.setName(BOLOGNESE);
 
-        when(conversionService.convert(dishDto, Dish.class)).thenReturn(dish);
-        when(conversionService.convert(dish, DishDto.class)).thenReturn(dishDto);
+        when(dtoToEntityMapper.dtoToEntity(dishDto)).thenReturn(dish);
+        when(entityToDtoMapper.entityToDto(dish)).thenReturn(dishDto);
         when(dishRepository.findById(10L)).thenReturn(Optional.of(dish));
 
         dishService.delete(dish.getId());

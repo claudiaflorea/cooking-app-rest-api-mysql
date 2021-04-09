@@ -7,13 +7,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.practice.cooking.dto.DishDto;
-import com.practice.cooking.dto.RecipeDto;
 import com.practice.cooking.exception.NotFoundException;
-import com.practice.cooking.model.Dish;
-import com.practice.cooking.model.Recipe;
+import com.practice.cooking.mapper.DishDtoToEntityMapper;
+import com.practice.cooking.mapper.DishEntityToDtoMapper;
 import com.practice.cooking.repository.DishRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,17 +22,19 @@ public class DishService {
 
     private final RecipeService recipeService;
 
-    private final ConversionService conversionService;
+    private final DishDtoToEntityMapper dtoToEntityMapper;
+
+    private final DishEntityToDtoMapper entityToDtoMapper;
     
     public List<DishDto> getAll() {
         return dishRepository.findAll().stream()
-            .map(dish -> conversionService.convert(dish, DishDto.class))
+            .map(dish -> entityToDtoMapper.entityToDto(dish))
             .collect(Collectors.toList());
     }
 
     public DishDto getById(Long id) {
         return dishRepository.findById(id)
-            .map(dish -> conversionService.convert(dish, DishDto.class))
+            .map(dish -> entityToDtoMapper.entityToDto(dish))
             .orElseThrow(() -> new NotFoundException("Dish not found with id " + id));
     }
 
@@ -42,8 +42,8 @@ public class DishService {
         if (dish.getRecipe() != null && dish.getRecipe().getId() != null) {
             recipeService.add(dish.getRecipe());
         }
-        return conversionService.convert(
-            dishRepository.save(Objects.requireNonNull(conversionService.convert(dish, Dish.class))), DishDto.class
+        return entityToDtoMapper.entityToDto(
+            dishRepository.save(Objects.requireNonNull(dtoToEntityMapper.dtoToEntity(dish)))
         );
     }
 
@@ -51,13 +51,13 @@ public class DishService {
         DishDto dish = getById(id);
         dish.setName(chefDetails.getName());
         dish.setRecipe(chefDetails.getRecipe());
-        dishRepository.save(Objects.requireNonNull(conversionService.convert(dish, Dish.class)));
+        dishRepository.save(Objects.requireNonNull(dtoToEntityMapper.dtoToEntity(dish)));
         return dish;
     }
 
     public Map<String, Boolean> delete(Long id) {
         DishDto dish = getById(id);
-        dishRepository.delete(Objects.requireNonNull(conversionService.convert(dish, Dish.class)));
+        dishRepository.delete(Objects.requireNonNull(dtoToEntityMapper.dtoToEntity(dish)));
         Map<String, Boolean> dishMap = new HashMap<>();
         dishMap.put("Dish with id " + id + " is deleted ", Boolean.TRUE);
         return dishMap;

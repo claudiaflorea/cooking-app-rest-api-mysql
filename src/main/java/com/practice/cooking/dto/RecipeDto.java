@@ -2,7 +2,6 @@ package com.practice.cooking.dto;
 
 import java.util.Set;
 
-import static com.sun.activation.registries.LogSupport.log;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.RecipeType;
 import lombok.AllArgsConstructor;

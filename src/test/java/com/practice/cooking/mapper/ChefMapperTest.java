@@ -1,4 +1,4 @@
-package com.practice.cooking.conversion;
+package com.practice.cooking.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -7,21 +7,23 @@ import com.practice.cooking.model.Chef;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.convert.ConversionService;
 
 @SpringBootTest
-public class ChefConversionTest {
+public class ChefMapperTest {
     
     private static final Long CHEF_ID = 5L;
     private static final String CHEF_NAME = "Haily";
         
     @Autowired
-    private ConversionService conversionService;
+    private ChefDtoToEntityMapper dtoToEntityMapper;
+    
+    @Autowired
+    private ChefEntityToDtoMapper entityToDtoMapper;
     
     @Test
     public void testChefToDtoConverter() {
         Chef chef = new Chef(CHEF_ID, CHEF_NAME);
-        ChefDto chefDto = conversionService.convert(chef, ChefDto.class);
+        ChefDto chefDto = entityToDtoMapper.entityToDto(chef);
 
         assertAll(
             "ChefDto mapped object",
@@ -33,7 +35,7 @@ public class ChefConversionTest {
     @Test
     public void testChefDtoToEntityConverter() {
         ChefDto chefDto = new ChefDto(CHEF_ID, CHEF_NAME);
-        Chef chef = conversionService.convert(chefDto, Chef.class);
+        Chef chef = dtoToEntityMapper.dtoToEntity(chefDto);
 
         assertAll(
             "Chef mapped object",

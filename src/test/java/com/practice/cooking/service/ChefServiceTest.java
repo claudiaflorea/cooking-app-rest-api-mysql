@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import com.practice.cooking.dto.ChefDto;
+import com.practice.cooking.mapper.ChefDtoToEntityMapper;
+import com.practice.cooking.mapper.ChefEntityToDtoMapper;
 import com.practice.cooking.model.Chef;
 import com.practice.cooking.repository.ChefRepository;
 import org.junit.jupiter.api.Test;
@@ -15,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.convert.ConversionService;
 
 @SpringBootTest
 public class ChefServiceTest {
@@ -24,12 +25,15 @@ public class ChefServiceTest {
     private static final String STAN   = "Stan";
     private static final String BERNIE = "Bernie";
     private static final String PETER  = "Peter";
-    
+
     @Mock
     private ChefRepository chefRepository;
 
     @Mock
-    private ConversionService conversionService;
+    private ChefEntityToDtoMapper entityToDtoMapper;
+
+    @Mock
+    private ChefDtoToEntityMapper dtoToEntityMapper;
 
     @InjectMocks
     private ChefService chefService;
@@ -39,8 +43,8 @@ public class ChefServiceTest {
         Chef chef1 = new Chef(1L, EUGENE);
         Chef chef2 = new Chef(2L, STAN);
         when(chefRepository.findAll()).thenReturn(asList(chef1, chef2));
-        when(conversionService.convert(chef1, ChefDto.class)).thenReturn(new ChefDto(1L, EUGENE));
-        when(conversionService.convert(chef2, ChefDto.class)).thenReturn(new ChefDto(2L, STAN));
+        when(entityToDtoMapper.entityToDto(chef1)).thenReturn(new ChefDto(1L, EUGENE));
+        when(entityToDtoMapper.entityToDto(chef2)).thenReturn(new ChefDto(2L, STAN));
 
         List<ChefDto> chefs = chefService.getAll();
 
@@ -59,7 +63,7 @@ public class ChefServiceTest {
     public void testSaveAndGetChefById() {
         Chef newAddedChef = new Chef(6L, BERNIE);
         when(chefRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedChef));
-        when(conversionService.convert(newAddedChef, ChefDto.class)).thenReturn(new ChefDto(6L, BERNIE));
+        when(entityToDtoMapper.entityToDto(newAddedChef)).thenReturn(new ChefDto(6L, BERNIE));
 
 
         chefRepository.save(newAddedChef);
@@ -75,13 +79,13 @@ public class ChefServiceTest {
         Chef chef = new Chef();
         chef.setId(10L);
         chef.setName(PETER);
-        
+
         ChefDto chefDto = new ChefDto();
         chefDto.setId(10L);
         chefDto.setName(PETER);
-        
-        when(conversionService.convert(chefDto, Chef.class)).thenReturn(chef);
-        when(conversionService.convert(chef, ChefDto.class)).thenReturn(chefDto);
+
+        when(dtoToEntityMapper.dtoToEntity(chefDto)).thenReturn(chef);
+        when(entityToDtoMapper.entityToDto(chef)).thenReturn(chefDto);
         when(chefRepository.findById(10L)).thenReturn(Optional.of(chef));
 
         chefService.delete(chef.getId());
