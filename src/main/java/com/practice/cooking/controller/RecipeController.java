@@ -50,9 +50,15 @@ public class RecipeController {
         return new ResponseEntity<>(recipeService.getById(id), HttpStatus.OK);
     }
 
+//    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
+//    public ResponseEntity<RecipeDto> createRecipe(@Valid @RequestBody RecipeDto recipe) {
+//        RecipeDto recipeDto = recipeService.add(recipe);
+//        return new ResponseEntity<>(recipeDto, HttpStatus.CREATED);
+//    }
+
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<RecipeDto> createRecipe(@Valid @RequestBody RecipeDto recipe) {
-        RecipeDto recipeDto = recipeService.add(recipe);
+    public ResponseEntity<RecipeDto> createSmoothie(@Valid @RequestBody RecipeDto recipe) {
+        RecipeDto recipeDto = recipeService.createSmoothieRecipe(recipe);
         return new ResponseEntity<>(recipeDto, HttpStatus.CREATED);
     }
 

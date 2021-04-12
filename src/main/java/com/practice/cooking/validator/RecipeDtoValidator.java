@@ -30,7 +30,8 @@ public class RecipeDtoValidator implements SmartValidator {
                 ); 
         }
 
-        customValidationUtils.validateRecipe(recipeDto, errors);
+       // customValidationUtils.validateRecipe(recipeDto, errors);
+        customValidationUtils.validateSmoothieRecipe(recipeDto, errors);
     }
 
     @Override

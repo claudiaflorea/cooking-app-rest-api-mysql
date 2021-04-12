@@ -12,6 +12,8 @@ import com.practice.cooking.mapper.IngredientEntityToDtoMapper;
 import com.practice.cooking.repository.IngredientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +37,7 @@ public class IngredientService {
             .orElseThrow(() -> new NotFoundException("Ingredient not found with id " + id));
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public IngredientDto add(IngredientDto ingredient) {
         return entityToDtoMapper.entityToDto(
             ingredientRepository.save(dtoToEntityMapper.dtoToEntity(ingredient))

@@ -1,5 +1,6 @@
 package com.practice.cooking.service;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import com.practice.cooking.mapper.RecipeEntityToDtoMapper;
 import com.practice.cooking.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +72,20 @@ public class RecipeService {
         Map<String, Boolean> recipeMap = new HashMap<>();
         recipeMap.put("Recipe with id " + id + " is deleted ", Boolean.TRUE);
         return recipeMap;
+    }
+    
+    @Transactional(rollbackFor = { SQLException.class })
+    public RecipeDto createSmoothieRecipe(RecipeDto recipe) {
+        if (recipe.getIngredients() != null) {
+            for (IngredientDto ingredient : recipe.getIngredients()) {
+                if (ingredient != null) {
+                    ingredientService.add(ingredient);
+                }
+            }
+        }
+        return entityToDtoMapper.entityToDto(
+            recipeRepository.save(Objects.requireNonNull(dtoToEntityMapper.dtoToEntity(recipe)))
+        );
     }
 
 }

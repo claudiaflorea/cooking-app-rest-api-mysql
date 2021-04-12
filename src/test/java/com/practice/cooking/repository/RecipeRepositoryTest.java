@@ -1,19 +1,21 @@
 package com.practice.cooking.repository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import javax.persistence.Tuple;
 
 import static com.practice.cooking.utils.TestUtils.createIngredient;
 import static com.practice.cooking.utils.TestUtils.createRecipe;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Recipe;
 import com.practice.cooking.model.RecipeType;
 import com.practice.cooking.model.Unit;
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,7 +64,7 @@ public class RecipeRepositoryTest {
         Recipe applePie2 = createRecipe(APPLE_PIE, Difficulty.EASY, 4, RecipeType.DESSERT);
         recipeRepository.saveAll(Arrays.asList(applePie, risotto, guacamole, applePie2));
 
-        Set<Ingredient> applePieIngredients = new TreeSet<>();
+        List<Ingredient> applePieIngredients = new ArrayList<>();
         applePieIngredients.add(createIngredient(APPLE, 5, Unit.KG, applePie));
         applePieIngredients.add(createIngredient(FLOUR, 2, Unit.KG, applePie));
         applePieIngredients.add(createIngredient(CINNAMON, 0.001, Unit.KG, applePie));
@@ -73,13 +75,13 @@ public class RecipeRepositoryTest {
         applePieIngredients.add(createIngredient(WATER, 0.005, Unit.LITER, applePie));
         ingredientRepository.saveAll(applePieIngredients);
 
-        Set<Ingredient> guacamoleIngredients = new TreeSet<>();
+        List<Ingredient> guacamoleIngredients = new ArrayList<>();
         guacamoleIngredients.add(createIngredient(AVOCADO, 2, Unit.PIECE, guacamole));
         guacamoleIngredients.add(createIngredient(GARLIC, 2, Unit.KG, guacamole));
         guacamoleIngredients.add(createIngredient(OLIVE_OIL, 0.001, Unit.LITER, guacamole));
         ingredientRepository.saveAll(guacamoleIngredients);
 
-        Set<Ingredient> risottoIngredients = new TreeSet<>();
+        List<Ingredient> risottoIngredients = new ArrayList<>();
         risottoIngredients.add(createIngredient(RICE, 1, Unit.KG, risotto));
         risottoIngredients.add(createIngredient(SALT, 0.001, Unit.KG, risotto));
         risottoIngredients.add(createIngredient(PEPPER, 0.001, Unit.KG, risotto));
@@ -115,5 +117,19 @@ public class RecipeRepositoryTest {
         assertThat(result).hasSize(1);
         assertThat(result).element(0).returns(GUACAMOLE, from(Recipe::getName));
 
+    }
+    
+    @Test
+    public void testGetRecipesWithCarbohydrates() {
+        //when
+        List<Tuple> result = recipeRepository.findAllByIngredientsContainingCarbohydrates();
+        
+        //then
+        assertThat(result).hasSize(2);
+        assertEquals(APPLE_PIE, result.get(0).get(1));
+        assertEquals(FLOUR, result.get(0).get(6));
+        assertEquals(RISOTTO, result.get(1).get(1));
+        assertEquals(RICE, result.get(1).get(6));
+              
     }
 }

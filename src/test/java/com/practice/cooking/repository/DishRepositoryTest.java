@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.persistence.Tuple;
+
 import static com.practice.cooking.utils.TestUtils.createDish;
 import static com.practice.cooking.utils.TestUtils.createIngredient;
 import static com.practice.cooking.utils.TestUtils.createRecipe;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.Dish;
 import com.practice.cooking.model.Ingredient;
@@ -127,6 +130,19 @@ public class DishRepositoryTest {
 
         //then
         assertThat(result).hasSize(3);
+    }
+    
+    @Test
+    public void testGetDishesWithFastCooking() {
+        //when
+        List<Tuple> result = dishRepository.findAllByRecipeFastCooking();
+        
+        //then
+        assertThat(result).hasSize(4);
+        assertEquals(APPLE_PIE, result.get(0).get(1));
+        assertEquals(RISOTTO, result.get(1).get(1));
+        assertEquals(GUACAMOLE, result.get(2).get(1));
+        assertEquals(APPLE_PIE, result.get(3).get(1));
     }
 
 }
