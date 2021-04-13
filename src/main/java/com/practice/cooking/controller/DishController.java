@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.practice.cooking.dto.DishDto;
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.service.DishService;
@@ -52,19 +53,19 @@ public class DishController {
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<DishDto> createDish(@Valid @RequestBody DishDto dish) {
+    public ResponseEntity<DishDto> createDish(@Valid @RequestBody DishDto dish) throws JsonProcessingException {
         DishDto dishDto = dishService.add(dish);
         return new ResponseEntity<>(dishDto, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<DishDto> updateDish(@Valid @PathVariable(value = "id") Long id, @RequestBody DishDto dishDetails) throws NotFoundException {
+    public ResponseEntity<DishDto> updateDish(@Valid @PathVariable(value = "id") Long id, @RequestBody DishDto dishDetails) throws NotFoundException, JsonProcessingException {
         DishDto dishDto = dishService.update(id,dishDetails);
         return new ResponseEntity<>(dishDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Boolean>> deleteDish(@PathVariable(value = "id") Long id) throws NotFoundException {
+    public ResponseEntity<Map<String, Boolean>> deleteDish(@PathVariable(value = "id") Long id) throws NotFoundException, JsonProcessingException {
         return new ResponseEntity<>(dishService.delete(id), HttpStatus.ACCEPTED);
     }
 }

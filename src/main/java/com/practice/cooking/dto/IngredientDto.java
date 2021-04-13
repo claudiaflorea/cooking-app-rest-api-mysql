@@ -17,11 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 public class IngredientDto implements Comparable<IngredientDto> {
 
     private Long   id;
-    //@Size(max = 30, min = 3)
-    //@Pattern(regexp = "^[A-Z]")
     private String name;
     private double quantity;
-    //@NotNull
     private Unit   unit;
 
     @Override

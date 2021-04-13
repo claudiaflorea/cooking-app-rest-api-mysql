@@ -8,10 +8,12 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.practice.cooking.dto.RestaurantDto;
 import com.practice.cooking.mapper.RestaurantDtoToEntityMapper;
 import com.practice.cooking.mapper.RestaurantEntityToDtoMapper;
 import com.practice.cooking.model.Restaurant;
+import com.practice.cooking.publisher.Publisher;
 import com.practice.cooking.repository.RestaurantRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,6 +29,9 @@ public class RestaurantServiceTest {
 
     @Mock
     private RestaurantRepository restaurantRepository;
+
+    @Mock
+    private Publisher publisher;
 
     @Mock
     private RestaurantEntityToDtoMapper entityToDtoMapper;
@@ -76,7 +81,7 @@ public class RestaurantServiceTest {
     }
 
     @Test
-    public void testDeleteRestaurant() {
+    public void testDeleteRestaurant() throws JsonProcessingException {
         Restaurant restaurant = createRestaurant(BON_APPETIT, 2);
         restaurant.setId(1L);
         RestaurantDto restaurantDto = new RestaurantDto(1L, BON_APPETIT, 2, null, null);

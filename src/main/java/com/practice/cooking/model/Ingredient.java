@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,8 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 @Table(name = "ingredients")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 @Builder
 public class Ingredient implements Comparable<Ingredient> {
@@ -51,7 +52,9 @@ public class Ingredient implements Comparable<Ingredient> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "i_r_id")
     private Recipe recipe;
-    
+
+    public Ingredient(long id, String name, double v, Unit unit) {}
+
     @Override
     public int compareTo(Ingredient o) {
         try {

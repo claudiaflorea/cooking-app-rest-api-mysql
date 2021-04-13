@@ -7,10 +7,12 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.practice.cooking.dto.ChefDto;
 import com.practice.cooking.mapper.ChefDtoToEntityMapper;
 import com.practice.cooking.mapper.ChefEntityToDtoMapper;
 import com.practice.cooking.model.Chef;
+import com.practice.cooking.publisher.Publisher;
 import com.practice.cooking.repository.ChefRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -28,6 +30,9 @@ public class ChefServiceTest {
 
     @Mock
     private ChefRepository chefRepository;
+
+    @Mock
+    private Publisher publisher;
 
     @Mock
     private ChefEntityToDtoMapper entityToDtoMapper;
@@ -75,7 +80,7 @@ public class ChefServiceTest {
     }
 
     @Test
-    public void testDeleteChef() {
+    public void testDeleteChef() throws JsonProcessingException {
         Chef chef = new Chef();
         chef.setId(10L);
         chef.setName(PETER);

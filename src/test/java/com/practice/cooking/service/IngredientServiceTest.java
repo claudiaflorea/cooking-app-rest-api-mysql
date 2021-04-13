@@ -3,17 +3,22 @@ package com.practice.cooking.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.jms.Queue;
+
 import static com.practice.cooking.utils.TestUtils.createSimpleIngredient;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.mapper.IngredientDtoToEntityMapper;
 import com.practice.cooking.mapper.IngredientEntityToDtoMapper;
 import com.practice.cooking.model.Ingredient;
 import com.practice.cooking.model.Unit;
+import com.practice.cooking.publisher.Publisher;
 import com.practice.cooking.repository.IngredientRepository;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,13 +28,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class IngredientServiceTest {
 
-    private static final String APPLE    = "Apple";
-    private static final String CINNAMON = "Cinnamon";
-    private static final String DOUGH    = "Dough";
-    private static final String PAPRIKA  = "Paprika";
+    private static final String APPLE            = "Apple";
+    private static final String CINNAMON         = "Cinnamon";
+    private static final String DOUGH            = "Dough";
+    private static final String PAPRIKA          = "Paprika";
 
     @Mock
     private IngredientRepository ingredientRepository;
+
+    @Mock
+    private Publisher publisher;
 
     @Mock
     private IngredientEntityToDtoMapper entityToDtoMapper;
@@ -88,7 +96,7 @@ public class IngredientServiceTest {
     }
 
     @Test
-    public void testDeleteIngredient() {
+    public void testDeleteIngredient() throws JsonProcessingException {
         Ingredient ingredient = createSimpleIngredient(APPLE, 1, Unit.PIECE);
         ingredient.setId(1L);
 

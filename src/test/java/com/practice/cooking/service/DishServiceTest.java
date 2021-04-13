@@ -7,10 +7,12 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.practice.cooking.dto.DishDto;
 import com.practice.cooking.mapper.DishDtoToEntityMapper;
 import com.practice.cooking.mapper.DishEntityToDtoMapper;
 import com.practice.cooking.model.Dish;
+import com.practice.cooking.publisher.Publisher;
 import com.practice.cooking.repository.DishRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,6 +29,9 @@ public class DishServiceTest {
 
     @Mock
     private DishRepository dishRepository;
+
+    @Mock
+    private Publisher publisher;
 
     @Mock
     private DishEntityToDtoMapper entityToDtoMapper;
@@ -76,7 +81,7 @@ public class DishServiceTest {
     }
 
     @Test
-    public void testDeleteDish() {
+    public void testDeleteDish() throws JsonProcessingException {
         Dish dish = new Dish();
         dish.setId(10L);
         dish.setName(BOLOGNESE);

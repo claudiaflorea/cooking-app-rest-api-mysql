@@ -8,12 +8,14 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.practice.cooking.dto.RecipeDto;
 import com.practice.cooking.mapper.RecipeDtoToEntityMapper;
 import com.practice.cooking.mapper.RecipeEntityToDtoMapper;
 import com.practice.cooking.model.Difficulty;
 import com.practice.cooking.model.Recipe;
 import com.practice.cooking.model.RecipeType;
+import com.practice.cooking.publisher.Publisher;
 import com.practice.cooking.repository.RecipeRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,6 +32,9 @@ public class RecipeServiceTest {
 
     @Mock
     private RecipeRepository recipeRepository;
+
+    @Mock
+    private Publisher publisher;
 
     @Mock
     private RecipeEntityToDtoMapper entityToDtoMapper;
@@ -83,7 +88,7 @@ public class RecipeServiceTest {
     }
 
     @Test
-    public void testDeleteRecipe() {
+    public void testDeleteRecipe() throws JsonProcessingException {
         Recipe recipe = createRecipe(GUACAMOLE, Difficulty.EASY, 1, RecipeType.SIDE);
         recipe.setId(1L);
         RecipeDto recipeDto = new RecipeDto(1L, GUACAMOLE, Difficulty.EASY, null, 1, RecipeType.SIDE);

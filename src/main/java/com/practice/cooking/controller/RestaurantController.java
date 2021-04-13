@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.practice.cooking.dto.RestaurantDto;
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.model.Restaurant;
@@ -55,19 +56,19 @@ public class RestaurantController {
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<RestaurantDto> createRestaurant(@Valid @RequestBody RestaurantDto restaurant) {
+    public ResponseEntity<RestaurantDto> createRestaurant(@Valid @RequestBody RestaurantDto restaurant) throws JsonProcessingException {
         RestaurantDto restaurantDto = restaurantService.add(restaurant);
         return new ResponseEntity<>(restaurantDto, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<RestaurantDto> updateRestaurant(@Valid @PathVariable(value = "id") Long id, @RequestBody RestaurantDto restaurantDetails) throws NotFoundException {
+    public ResponseEntity<RestaurantDto> updateRestaurant(@Valid @PathVariable(value = "id") Long id, @RequestBody RestaurantDto restaurantDetails) throws NotFoundException, JsonProcessingException {
         RestaurantDto restaurantDto =restaurantService.update(id,restaurantDetails);
         return new ResponseEntity<>(restaurantDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Boolean>> deleteRestaurant(@PathVariable(value = "id") Long id) throws NotFoundException {
+    public ResponseEntity<Map<String, Boolean>> deleteRestaurant(@PathVariable(value = "id") Long id) throws NotFoundException, JsonProcessingException {
         return new ResponseEntity<>(restaurantService.delete(id), HttpStatus.ACCEPTED);
     }
 

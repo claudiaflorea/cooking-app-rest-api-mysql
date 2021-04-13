@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.practice.cooking.dto.ChefDto;
 import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.service.ChefService;
 import com.practice.cooking.validator.ChefDtoValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,19 +53,19 @@ public class ChefController {
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ChefDto> createChef(@Valid @RequestBody ChefDto chefDto) {
+    public ResponseEntity<ChefDto> createChef(@Valid @RequestBody ChefDto chefDto) throws JsonProcessingException {
         ChefDto chef = chefService.add(chefDto);
         return new ResponseEntity<>(chef, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ChefDto> updateChef(@Valid @PathVariable(value = "id") Long id, @RequestBody ChefDto chefDetails) {
+    public ResponseEntity<ChefDto> updateChef(@Valid @PathVariable(value = "id") Long id, @RequestBody ChefDto chefDetails) throws JsonProcessingException {
         ChefDto chefDto = chefService.update(id, chefDetails);
         return new ResponseEntity<>(chefDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Boolean>> deleteChef(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<Map<String, Boolean>> deleteChef(@PathVariable(value = "id") Long id) throws JsonProcessingException {
         return new ResponseEntity<>(chefService.delete(id), HttpStatus.ACCEPTED);
     }
 
