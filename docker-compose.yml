@@ -1,0 +1,91 @@
+version: '3.7'
+
+services:
+    #service 1: definition of mysql database
+    db:
+        image: mysql:8.0.23
+        container_name: cooking
+        environment:
+            - MYSQL_ROOT_PASSWORD=cooking
+            - MYSQL_DATABASE=cooking
+            - MYSQL_USER=phpmyadmin
+            - MYSQL_PASSWORD=cooking
+        ports:
+            - "3306:3306"
+        restart: always
+        volumes:
+            - ./sql:/docker-entrypoint-initdb.d
+        networks:
+            - common-network
+
+
+    #service 2: definition of phpMyAdmin
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        container_name: my-php-myadmin
+        ports:
+            - "8082:80"
+        restart: always
+
+        depends_on:
+            - db
+        environment:
+            SPRING_DATASOURCE_USERNAME: phpmyadmin
+            SPRING_DATASOURCE_PASSWORD: cooking
+
+    #service 3: definition of activemq  
+    activemq:
+        image: webcenter/activemq:latest
+        container_name: activemq
+        hostname: activemq
+        ports:
+            - 8161:8161
+            - 61616:61616
+            - 61613:61613   
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ./data/data/activemq:/data/activemq
+            - ./data/var/log/activemq:/var/log/activemq
+        environment:
+            - ACTIVEMQ_REMOVE_DEFAULT_ACCOUNT="true"
+            - ACTIVEMQ_ADMIN_LOGIN=admin
+            - ACTIVEMQ_ADMIN_PASSWORD=admin
+            - ACTIVEMQ_CONFIG_MINMEMORY=512
+            - ACTIVEMQ_CONFIG_MAXMEMORY=2048
+            - ACTIVEMQ_STATIC_TOPICS=hello_topic;chef_topic;dish_topic;ingredient_topic;recipe_topic;restaurant_topic;virtual_topic
+            - ACTIVEMQ_STATIC_QUEUES=chef_queue;dish_queue;ingredient_queue;recipe_queue;restaurant_queue
+            - ACTIVEMQ_ENABLED_SCHEDULER="true"
+            - ACTIVEMQ_MIN_MEMORY=512
+            - ACTIVEMQ_MAX_MEMORY=2048
+        networks:
+            - common-network
+                
+    #service 4: definition of your spring-boot app 
+    spring-boot: #it is just a name, which will be used only in this file.
+        image: cooking-app               #name of the image after dockerfile executes
+        container_name: cooking-app  #name of the container created from docker image
+        build:
+            context: .                          #docker file path (. means root directory)
+            dockerfile: Dockerfile              #docker file name
+        ports:
+            - "8080:8080"                       #docker containter port with your os port
+        restart: always
+        depends_on: #define dependencies of this app
+            - db                                #dependency name (which is defined with this name 'db' in this file earlier)
+            - activemq
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/cooking?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=FALSE
+            SPRING_ACTIVEMQ_BROKER-URL: tcp://activemq:61616
+        networks:
+            - common-network    
+
+#Docker Networks
+networks:
+    common-network:
+        driver: bridge
+        
+#Volumes
+volumes:
+    dbdata:
+        driver: local        
+   

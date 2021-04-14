@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.1.0.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'com.avast.gradle.docker-compose' version '0.7.1'
 	id 'java'
 }
 
@@ -51,4 +52,8 @@ springBoot {
 			name ='Spring Boot App wth Gradle'
 		}
 	}
+}
+
+dockerCompose {
+	useComposeFiles = ['docker-compose.yml']
 }
