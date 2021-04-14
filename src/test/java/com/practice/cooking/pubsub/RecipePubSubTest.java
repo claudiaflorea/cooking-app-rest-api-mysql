@@ -8,7 +8,6 @@ import javax.jms.Queue;
 import javax.jms.Topic;
 
 import static java.util.Arrays.asList;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -69,23 +68,19 @@ public class RecipePubSubTest {
     @InjectMocks
     private RecipeService recipeService;
 
-    private static final Queue RECIPE_QUEUE     = new ActiveMQQueue("recipe_queue");
-    private static final Topic RECIPE_TOPIC     = new ActiveMQTopic("recipe_topic");
-    private static final Topic INGREDIENT_TOPIC = new ActiveMQTopic("recipe_queue");
+    private static final Queue RECIPE_QUEUE = new ActiveMQQueue("recipe_queue");
+    private static final Topic RECIPE_TOPIC = new ActiveMQTopic("recipe_topic");
 
-    RecipeDto     recipeDto;
-    Recipe        recipe;
-    IngredientDto mayonnaiseDto;
-    IngredientDto redPepperDto;
-    IngredientDto yellowPepperDto;
+    RecipeDto recipeDto;
+    Recipe    recipe;
 
     @BeforeEach
     void init() throws JsonProcessingException {
         //given
         List<IngredientDto> ingredientDtoList = new ArrayList<>();
-        mayonnaiseDto = new IngredientDto(ID, MAYONNAISE, 0.5, Unit.KG);
-        redPepperDto = new IngredientDto(ID, RED_PEPPER, 1, Unit.KG);
-        yellowPepperDto = new IngredientDto(ID, YELLOW_PEPPER, 1, Unit.KG);
+        IngredientDto mayonnaiseDto = new IngredientDto(ID, MAYONNAISE, 0.5, Unit.KG);
+        IngredientDto redPepperDto = new IngredientDto(ID, RED_PEPPER, 1, Unit.KG);
+        IngredientDto yellowPepperDto = new IngredientDto(ID, YELLOW_PEPPER, 1, Unit.KG);
         ingredientDtoList.add(mayonnaiseDto);
         ingredientDtoList.add(redPepperDto);
         ingredientDtoList.add(yellowPepperDto);
@@ -123,9 +118,6 @@ public class RecipePubSubTest {
         //then
         verify(producer, times(1)).sendToConsumerWhenAddingNewRecord(RECIPE_QUEUE, recipeDto);
         verify(producer, times(1)).notifyAllSubscribersWhenAddingRecord(RECIPE_TOPIC, recipeDto);
-        verify(producer, times(1)).notifyAllSubscribersWhenAddingRecord(INGREDIENT_TOPIC, mayonnaiseDto);
-        verify(producer, times(1)).notifyAllSubscribersWhenAddingRecord(INGREDIENT_TOPIC, yellowPepperDto);
-        verify(producer, times(1)).notifyAllSubscribersWhenAddingRecord(INGREDIENT_TOPIC, redPepperDto);
     }
 
     @Test

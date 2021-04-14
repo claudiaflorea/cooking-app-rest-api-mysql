@@ -28,9 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RecipeService {
 
-    private static final Queue RECIPE_QUEUE = new ActiveMQQueue("recipe_queue");
-    private static final Topic RECIPE_TOPIC = new ActiveMQTopic("recipe_topic");
-    private static final Topic INGREDIENT_TOPIC = new ActiveMQTopic("ingredient_topic");
+    private static final Queue RECIPE_QUEUE     = new ActiveMQQueue("recipe_queue");
+    private static final Topic RECIPE_TOPIC     = new ActiveMQTopic("recipe_topic");
 
     private final RecipeRepository recipeRepository;
 
@@ -65,7 +64,6 @@ public class RecipeService {
             for (IngredientDto ingredient : recipe.getIngredients()) {
                 if (ingredient != null && ingredient.getId() != null) {
                     ingredientService.add(ingredient);
-                    publisher.notifyAllSubscribersWhenAddingRecord(INGREDIENT_TOPIC, ingredient);
                 }
             }
         }

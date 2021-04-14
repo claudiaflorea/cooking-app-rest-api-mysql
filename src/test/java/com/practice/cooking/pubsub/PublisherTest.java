@@ -15,7 +15,6 @@ import org.springframework.jms.core.JmsTemplate;
 public class PublisherTest {
 
     private static final Queue  QUEUE   = new ActiveMQQueue("queue");
-    private static final Topic  TOPIC   = new ActiveMQTopic("topic");
     private static final String MESSAGE = "This is a test!";
 
     @Autowired
@@ -28,10 +27,4 @@ public class PublisherTest {
         Assertions.assertThat(jmsTemplate.receiveAndConvert(QUEUE)).isEqualTo(MESSAGE);
     }
 
-    @Test
-    public void testTopic() {
-        jmsTemplate.convertAndSend(TOPIC, MESSAGE);
-        jmsTemplate.setReceiveTimeout(10_000);
-        Assertions.assertThat(jmsTemplate.receiveAndConvert(TOPIC)).isEqualTo(MESSAGE);
-    }
 }
