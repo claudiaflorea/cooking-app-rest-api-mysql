@@ -1,6 +1,9 @@
 # Prepare runtime.
 FROM openjdk:8 
 EXPOSE 8080
+EXPOSE 61616
+EXPOSE 61613
+EXPOSE 8161
 
 # Prepare build workspace.
 FROM gradle:6.8.3 AS sdk
@@ -14,6 +17,8 @@ USER gradle
 COPY build.gradle .
 COPY gradle/wrapper/gradle-wrapper.properties .
 COPY src ./src
+
+RUN rm -rf build
 
 # Build, Test and publish.
 RUN gradle clean bootJar
