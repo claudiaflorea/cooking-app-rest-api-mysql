@@ -1,10 +1,8 @@
 package com.practice.cooking.pubsub;
 
 import javax.jms.Queue;
-import javax.jms.Topic;
 
 import org.apache.activemq.command.ActiveMQQueue;
-import org.apache.activemq.command.ActiveMQTopic;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

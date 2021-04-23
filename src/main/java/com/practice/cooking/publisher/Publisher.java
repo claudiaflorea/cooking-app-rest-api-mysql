@@ -45,7 +45,7 @@ public class Publisher {
         log.info("Producer > Message sent to all subscribers. " + result + " was created.");
     }
 
-    @Scheduled(fixedDelay = 10000, initialDelay = 1000)
+    @Scheduled(fixedDelay = 60000, initialDelay = 1000)
     public void sayHello() {
         Topic topic = new ActiveMQTopic("hello_topic");
         jmsTemplate.convertAndSend(topic, "I just want to say hello!! ");

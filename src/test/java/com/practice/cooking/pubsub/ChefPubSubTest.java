@@ -33,19 +33,19 @@ public class ChefPubSubTest {
     private static final String CHEF_CONNOR = "Chef. Connor";
 
     private static final long ID = 1L;
-    
+
     @Mock
     private ChefRepository repository;
-    
+
     @Mock
     private Publisher producer;
-    
+
     @Mock
     private ChefDtoToEntityMapper dtoToEntityMapper;
 
     @Mock
     private ChefEntityToDtoMapper entityToDtoMapper;
-    
+
     @InjectMocks
     private ChefService chefService;
 
@@ -53,7 +53,7 @@ public class ChefPubSubTest {
     private static final Topic CHEF_TOPIC = new ActiveMQTopic("chef_topic");
 
     ChefDto chefDto;
-    Chef chef;
+    Chef    chef;
 
     @BeforeEach
     void init() throws JsonProcessingException {
@@ -69,7 +69,7 @@ public class ChefPubSubTest {
         //when
         chefService.add(chefDto);
     }
-    
+
     @AfterEach
     void clean() throws JsonProcessingException {
         chefService.delete(ID);
@@ -84,7 +84,7 @@ public class ChefPubSubTest {
 
     @Test
     public void testSendWhenUpdatingNewRecord() throws Exception {
-         //when
+        //when
         chefDto.setName(CHEF_CONNOR);
         chefService.update(chefService.getChefsByName(CHEF_COLLIN).get(0).getId(), chefDto);
 

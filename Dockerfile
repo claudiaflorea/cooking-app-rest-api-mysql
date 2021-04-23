@@ -1,9 +1,6 @@
 # Prepare runtime.
-FROM openjdk:8 
-EXPOSE 8080
-EXPOSE 61616
-EXPOSE 61613
-EXPOSE 8161
+FROM openjdk:11 
+EXPOSE 8080 61616 61613 9900
 
 # Prepare build workspace.
 FROM gradle:6.8.3 AS sdk
@@ -26,9 +23,9 @@ RUN gradle clean bootJar
 RUN ls -l build/libs/
 
 # App image.
-FROM openjdk:8 
-ADD build/libs/cooking-0.0.1-SNAPSHOT.jar ./cooking.jar
-ENTRYPOINT ["java", "-jar", "cooking.jar"]
+FROM openjdk:11 
+ADD /build/libs/cooking-0.0.1-SNAPSHOT.jar ./cooking.jar
 
-CMD ["java","-jar","cooking.jar"]
+CMD ["java", "-jar", "cooking.jar"]
+
 
