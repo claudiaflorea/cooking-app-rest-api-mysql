@@ -1,14 +1,14 @@
 plugins {
-	id 'org.springframework.boot' version '2.1.0.RELEASE'
+	id 'org.springframework.boot' version '2.4.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'com.avast.gradle.docker-compose' version '0.7.1'
 	id 'java'
 }
 
-group = 'com.practice'
+group = 'com.practice.cooking'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '8'
-
+sourceCompatibility = '1.8'
+targetCompatibility= '1.8'
 
 repositories {
 	mavenCentral()
@@ -25,12 +25,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-validation:2.4.1'
+
+	implementation 'mysql:mysql-connector-java'
+
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'org.springframework.boot:spring-boot-starter-activemq:2.4.2'
 	implementation 'org.apache.activemq:activemq-broker:5.16.1'
 	implementation 'org.apache.activemq:activemq-pool:5.16.1'
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+//	implementation 'io.springfox:springfox-boot-starter:2.9.2'
 
-	runtimeOnly 'mysql:mysql-connector-java'
 	compileOnly "org.mapstruct:mapstruct:${mapstructVersion}", "org.projectlombok:lombok:${lombokVersion}"
 	annotationProcessor "org.projectlombok:lombok:${lombokVersion}", "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 	testAnnotationProcessor "org.mapstruct:mapstruct:${mapstructVersion}", "org.projectlombok:lombok:${lombokVersion}"
@@ -43,9 +49,17 @@ dependencies {
 
 }
 
-bootRun {
-	jvmArgs = ["-Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.port=9900 -Dcom.sun.management.jmxremote.rmi.port=9900 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false"]
+bootJar {
+	mainClassName = "com.practice.cooking.CookingApplication"
 }
+
+jar {
+	enabled = false
+}
+
+//bootRun {
+//	jvmArgs = ["-Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.port=9900 -Dcom.sun.management.jmxremote.rmi.port=9900 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false"]
+//}
 
 test {
 	useJUnitPlatform()

@@ -10,14 +10,13 @@ services:
             - MYSQL_DATABASE=cooking
             - MYSQL_USER=phpmyadmin
             - MYSQL_PASSWORD=cooking
-#        ports:
-#            - "3306:3306"
+        ports:
+            - "3306:3306"
         restart: always
         volumes:
             - ./sql:/docker-entrypoint-initdb.d
         networks:
             - common-network
-
 
     #service 2: definition of phpMyAdmin
     phpmyadmin:
@@ -85,10 +84,13 @@ services:
         environment:
             SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/cooking?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=FALSE
             SPRING_ACTIVEMQ_BROKER-URL: tcp://activemq:61616
-        entrypoint: java
-        command: -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.port=9900 -Dcom.sun.management.jmxremote.rmi.port=9900 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false -jar /cooking.jar
+#        entrypoint: java
+#        command: -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.port=9900 -Dcom.sun.management.jmxremote.rmi.port=9900 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false -jar /cooking.jar
         networks:
             - common-network    
+        volumes:
+            - ./local/dir:/home/var/glowroot
+        privileged: true
 
 #Docker Networks
 networks:
@@ -99,6 +101,6 @@ networks:
         
 #Volumes
 volumes:
-    dbdata:
+    localData:
         driver: local        
    

@@ -10,7 +10,6 @@ import com.practice.cooking.exception.NotFoundException;
 import com.practice.cooking.service.ChefService;
 import com.practice.cooking.validator.ChefDtoValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
