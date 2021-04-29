@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "password": "admin",
+      "roles": [
+        "Administrator"
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "name": "Administrator",
+      "permissions": [
+        "agent:transaction",
+        "agent:error",
+        "agent:jvm",
+        "agent:incident",
+        "agent:config",
+        "admin"
+      ]
+    }
+  ],
+  "web": {
+    "port": 4000,
+    "bindAddress": "0.0.0.0",
+    "contextPath": "/",
+    "sessionTimeoutMinutes": 30,
+    "sessionCookieName": "GLOWROOT_SESSION_ID"
+  }
+}
