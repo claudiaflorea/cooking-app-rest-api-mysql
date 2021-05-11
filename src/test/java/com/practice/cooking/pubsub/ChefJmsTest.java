@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.practice.cooking.dto.ChefDto;
 import com.practice.cooking.publisher.Publisher;
 import org.apache.activemq.command.ActiveMQQueue;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +27,14 @@ public class ChefJmsTest extends AbstractActiveMqJmsTest {
     @Autowired
     private Publisher publisher;
 
-    ChefDto chefDto = new ChefDto(1L, "Don");
+    ChefDto chefDto;
+
+    @BeforeEach
+    void setUp() {
+        chefDto = new ChefDto();
+        chefDto.setId(1L);
+        chefDto.setName("Don");
+    }
 
     @Test
     public void testSendMessageToMultipleSubscribersViaQueueWhenAddingChef() throws Exception {

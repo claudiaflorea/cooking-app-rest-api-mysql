@@ -1,15 +1,10 @@
 package com.practice.cooking.model;
 
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -32,18 +27,22 @@ public class Chef implements Comparable<Chef> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "c_id")
-    private Long            id;
-    
+    private Long id;
+
     @Column(name = "c_name")
-    private String          name;
+    private String name;
 
-    public Chef(Long id, String name) {
-        this.id = id;
-        this.name = name;
+//    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "chefs")
+//    @JsonIgnoreProperties("chefs")
+//    private Set<Restaurant> restaurants;
+
+    @Override
+    public String toString() {
+        return "Chef[" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ']';
     }
-
-    @ManyToMany(mappedBy = "chefs", fetch = FetchType.LAZY)
-    private Set<Restaurant> restaurants;
 
     @Override
     public int compareTo(Chef o) {

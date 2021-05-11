@@ -7,24 +7,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 @Builder
+@EqualsAndHashCode
 @Slf4j
 public class ChefDto implements Comparable<ChefDto> {
 
     private Long               id;
     private String             name;
-    private Set<RestaurantDto> restaurants;
-
-    public ChefDto(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
     @Override
     public int compareTo(ChefDto o) {

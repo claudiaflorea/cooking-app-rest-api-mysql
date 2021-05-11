@@ -13,6 +13,8 @@ services:
         ports:
             - "3306:3306"
         restart: always
+        cap_add:
+            - SYS_NICE
         networks:
             - common-network
 
@@ -21,9 +23,10 @@ services:
         image: phpmyadmin/phpmyadmin:latest
         container_name: my-php-myadmin
         restart: always
-
         depends_on:
             - db
+        ports:
+            - "8888:8888"
         environment:
             SPRING_DATASOURCE_USERNAME: phpmyadmin
             SPRING_DATASOURCE_PASSWORD: cooking
@@ -73,17 +76,16 @@ services:
             context: .
             dockerfile: docker/Dockerfile
         ports:
-            - "8080:8080"
-            - "9900:9900"
+            - "127.0.0.1:8080:8080"
+            - "127.0.0.1:4000:4000"
         restart: always
         depends_on: 
-            - db                               
+            - db
+            - phpmyadmin
             - activemq
         environment:
             SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/cooking?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=FALSE
             SPRING_ACTIVEMQ_BROKER-URL: tcp://activemq:61616
-#        entrypoint: java
-#        command: -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.port=9900 -Dcom.sun.management.jmxremote.rmi.port=9900 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false -jar /cooking.jar
         networks:
             - common-network    
         privileged: true
@@ -93,8 +95,6 @@ networks:
     common-network:
         name: cooking-app-default
         external: true
-        driver: bridge
-        
 #Volumes
 volumes:
     localData:

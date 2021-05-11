@@ -4,6 +4,7 @@ import java.util.Arrays;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
+import static com.practice.cooking.utils.TestUtils.createChefDto;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,7 +59,7 @@ public class ChefPubSubTest {
     @BeforeEach
     void init() throws JsonProcessingException {
         //given
-        chefDto = new ChefDto(ID, CHEF_COLLIN);
+        chefDto = createChefDto(ID, CHEF_COLLIN);
         chef = new Chef(ID, CHEF_COLLIN);
         when(repository.save(chef)).thenReturn(chef);
         when(repository.findById(ID)).thenReturn(java.util.Optional.ofNullable(chef));

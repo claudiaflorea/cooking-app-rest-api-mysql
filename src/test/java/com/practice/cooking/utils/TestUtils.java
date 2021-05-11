@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.practice.cooking.dto.ChefDto;
 import com.practice.cooking.dto.DishDto;
 import com.practice.cooking.dto.IngredientDto;
 import com.practice.cooking.dto.RecipeDto;
@@ -217,5 +218,13 @@ public class TestUtils {
         recipe.setRecipeType(type);
 
         return recipe;
+    }
+    
+    public static ChefDto createChefDto(Long id, String name) {
+        ChefDto chefDto = new ChefDto();
+        chefDto.setId(id);
+        chefDto.setName(name);
+        
+        return chefDto;
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
+import static com.practice.cooking.utils.TestUtils.createChefDto;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
@@ -134,7 +135,7 @@ public class RestaurantPubSubTest {
         DishDto dishDto = new DishDto(ID, TARTAR_SAUCE, recipeDto);
         Dish dish = new Dish(ID, TARTAR_SAUCE, ID, recipe, singleton(restaurant));
 
-        chefDto = new ChefDto(ID, CHEF_COLLIN);
+        chefDto = createChefDto(ID, CHEF_COLLIN);
         Chef chef = new Chef(ID, CHEF_COLLIN);
 
         restaurantDto = new RestaurantDto(ID, CASA_GRANDE, 4, singleton(dishDto), singleton(chefDto));

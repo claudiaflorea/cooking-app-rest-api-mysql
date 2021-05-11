@@ -1,5 +1,6 @@
 package com.practice.cooking.mapper;
 
+import static com.practice.cooking.utils.TestUtils.createChefDto;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.practice.cooking.dto.ChefDto;
@@ -34,7 +35,7 @@ public class ChefMapperTest {
     
     @Test
     public void testChefDtoToEntityConverter() {
-        ChefDto chefDto = new ChefDto(CHEF_ID, CHEF_NAME);
+        ChefDto chefDto = createChefDto(CHEF_ID, CHEF_NAME);
         Chef chef = dtoToEntityMapper.dtoToEntity(chefDto);
 
         assertAll(

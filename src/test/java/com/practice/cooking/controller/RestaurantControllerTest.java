@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import static com.practice.cooking.utils.TestUtils.createChefDto;
 import static com.practice.cooking.utils.TestUtils.getChefList;
 import static com.practice.cooking.utils.TestUtils.getDishList;
 import static org.mockito.Mockito.when;
@@ -70,8 +71,8 @@ public class RestaurantControllerTest {
 
     private static Set<ChefDto> getChefSet() {
         Set<ChefDto> chefs = new TreeSet<>();
-        chefs.add(new ChefDto(1L, CHEF_1));
-        chefs.add(new ChefDto(1L, CHEF_2));
+        chefs.add(createChefDto(1L, CHEF_1));
+        chefs.add(createChefDto(1L, CHEF_2));
 
         return chefs;
     }

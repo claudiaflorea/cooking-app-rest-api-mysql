@@ -13,19 +13,19 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Entity
 @Table(name = "restaurants")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
@@ -50,14 +50,24 @@ public class Restaurant implements Comparable<Restaurant> {
         inverseJoinColumns = @JoinColumn(name = "rd_d_id")
     )
     private Set<Dish>  dishes;
-    
-    @ManyToMany(fetch = FetchType.LAZY)
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("chefs")
     @JoinTable(
         name = "restaurants_to_chefs",
         joinColumns = @JoinColumn(name = "rc_rt_id"),
         inverseJoinColumns = @JoinColumn(name = "rc_c_id")
     )
     private Set<Chef> chefs;
+
+    @Override
+    public String toString() {
+        return "Restaurant[" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", stars=" + stars +
+            ']';
+    }
 
     @Override
     public int compareTo(Restaurant o) {

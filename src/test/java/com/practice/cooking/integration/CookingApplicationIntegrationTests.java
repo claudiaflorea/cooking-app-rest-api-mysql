@@ -31,15 +31,15 @@ class CookingApplicationIntegrationTests {
     @Test
     public void testRestaurant() {
         Restaurant restaurant = this.getRestaurant();
-        assertEquals(restaurant.getId().toString(), "9");
+        assertEquals(String.valueOf(restaurant.getId()), "9");
         assertEquals(restaurant.getName(), "Mamma mia");
-        assertEquals(restaurant.getStars().toString(), "5");
+        assertEquals(String.valueOf(restaurant.getStars()), "5");
     }
 
     @Test
     public void testChef() {
         Chef chef = chefList().stream().findFirst().get();
-        assertEquals(chef.getId().toString(), "10");
+        assertEquals(String.valueOf(chef.getId()), "10");
         assertEquals(chef.getName(), "Alberto");
     }
 

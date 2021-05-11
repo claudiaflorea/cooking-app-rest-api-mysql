@@ -3,6 +3,7 @@ package com.practice.cooking.service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.practice.cooking.utils.TestUtils.createChefDto;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,8 +49,8 @@ public class ChefServiceTest {
         Chef chef1 = new Chef(1L, EUGENE);
         Chef chef2 = new Chef(2L, STAN);
         when(chefRepository.findAll()).thenReturn(asList(chef1, chef2));
-        when(entityToDtoMapper.entityToDto(chef1)).thenReturn(new ChefDto(1L, EUGENE));
-        when(entityToDtoMapper.entityToDto(chef2)).thenReturn(new ChefDto(2L, STAN));
+        when(entityToDtoMapper.entityToDto(chef1)).thenReturn(createChefDto(1L, EUGENE));
+        when(entityToDtoMapper.entityToDto(chef2)).thenReturn(createChefDto(2L, STAN));
 
         List<ChefDto> chefs = chefService.getAll();
 
@@ -68,7 +69,7 @@ public class ChefServiceTest {
     public void testSaveAndGetChefById() {
         Chef newAddedChef = new Chef(6L, BERNIE);
         when(chefRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(newAddedChef));
-        when(entityToDtoMapper.entityToDto(newAddedChef)).thenReturn(new ChefDto(6L, BERNIE));
+        when(entityToDtoMapper.entityToDto(newAddedChef)).thenReturn(createChefDto(6L, BERNIE));
 
 
         chefRepository.save(newAddedChef);

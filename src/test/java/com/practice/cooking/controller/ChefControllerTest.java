@@ -12,6 +12,7 @@ import com.practice.cooking.dto.ChefDto;
 import com.practice.cooking.model.Chef;
 import com.practice.cooking.service.ChefService;
 import com.practice.cooking.validator.ChefDtoValidator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.stubbing.Answer;
@@ -42,12 +43,19 @@ public class ChefControllerTest {
     @MockBean
     private ChefDtoValidator chefDtoValidator;
 
-    ChefDto chef = new ChefDto(CHEF_ID, CHEF_NAME);
+    ChefDto chefDto;
+
+    @BeforeEach
+    void setUp() {
+        chefDto = new ChefDto();
+        chefDto.setId(CHEF_ID);
+        chefDto.setName(CHEF_NAME);
+    }
 
     @Test
     public void testGetChefByIdWithValidParameters() throws Exception {
         String url = "/api/chefs/{id}";
-        when(chefService.getById(CHEF_ID)).thenReturn(chef);
+        when(chefService.getById(CHEF_ID)).thenReturn(chefDto);
 
         mockMvc.perform(get(url, 14))
             .andExpect(status().isOk())
@@ -58,7 +66,7 @@ public class ChefControllerTest {
     @Test
     public void testGetChefByIdWithInvalidParameters() throws Exception {
         String url = "/api/chefs/{id}";
-        when(chefService.getById(CHEF_ID)).thenReturn(chef);
+        when(chefService.getById(CHEF_ID)).thenReturn(chefDto);
 
         mockMvc.perform(get(url, "/??"))
             .andExpect(status().is5xxServerError());
@@ -76,12 +84,12 @@ public class ChefControllerTest {
     public void addChefTest() throws Exception {
         String url = "/api/chefs";
         when(chefDtoValidator.supports(ChefDto.class)).thenReturn(true);
-        when(chefService.add(chef)).thenAnswer(
+        when(chefService.add(chefDto)).thenAnswer(
             (Answer<ChefDto>) invocation -> invocation.getArgument(0)
         );
 
         mockMvc.perform(post(url)
-            .content(om.writeValueAsString(chef))
+            .content(om.writeValueAsString(chefDto))
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isCreated());

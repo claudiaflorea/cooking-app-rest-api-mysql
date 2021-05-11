@@ -7,8 +7,6 @@ plugins {
 
 group = 'com.practice.cooking'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
-targetCompatibility= '1.8'
 
 repositories {
 	mavenCentral()
@@ -48,10 +46,15 @@ dependencies {
 	implementation 'au.com.dius:pact-jvm-provider-junit:4.0.10'
 	implementation 'au.com.dius:pact-jvm-consumer-junit:4.0.10'
 
+	runtime files('docker/glowroot/lib/glowroot-embedded-collector.jar', 'lib/glowroot-embedded-collector.jar')
 }
 
 bootJar {
 	mainClassName = "com.practice.cooking.CookingApplication"
+}
+
+bootRun {
+	jvmArgs = ["-javaagent:docker/glowroot/glowroot.jar"]
 }
 
 jar {
