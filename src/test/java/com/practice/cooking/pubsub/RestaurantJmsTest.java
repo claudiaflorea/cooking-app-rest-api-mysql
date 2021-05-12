@@ -19,17 +19,27 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class RestaurantJmsTest extends AbstractActiveMqJmsTest {
 
-    private static final Queue  RESTAURANT_QUEUE = new ActiveMQQueue("restaurant_queue");
+    public static final long RESTAURANT_ID = 1L;
+    private static final Queue RESTAURANT_QUEUE = new ActiveMQQueue("restaurant_queue");
     private static final String MESSAGE_ADDED    = "{\"id\":1,\"name\":\"Casa Grande\",\"stars\":5,\"dishes\":null,\"chefs\":null}";
+    public static final String RESTAURANT_NAME = "Casa Grande";
+    public static final int RESTAURANT_STARS = 5;
     private              String receivedMessage;
 
     @Autowired
     private Publisher publisher;
 
-    RestaurantDto restaurantDto = new RestaurantDto(1L, "Casa Grande", 5, null, null);
+    RestaurantDto restaurantDto = new RestaurantDto();
 
     @Test
     public void testSendMessageToMultipleSubscribersViaQueueWhenAddingRestaurant() throws Exception {
+        
+        restaurantDto.setId(RESTAURANT_ID);
+        restaurantDto.setName(RESTAURANT_NAME);
+        restaurantDto.setStars(RESTAURANT_STARS);
+        restaurantDto.setChefs(null);
+        restaurantDto.setDishes(null);
+        
         for (int i = 0; i < 10; i++) {
             publisher.sendToConsumerWhenAddingNewRecord(RESTAURANT_QUEUE, restaurantDto);
         }
@@ -49,6 +59,13 @@ public class RestaurantJmsTest extends AbstractActiveMqJmsTest {
 
     @Test
     public void testSendMessageToMultipleSubscribersWhenDeletingRestaurant() throws Exception {
+
+        restaurantDto.setId(RESTAURANT_ID);
+        restaurantDto.setName(RESTAURANT_NAME);
+        restaurantDto.setStars(RESTAURANT_STARS);
+        restaurantDto.setChefs(null);
+        restaurantDto.setDishes(null);
+        
         for (int i = 0; i < 10; i++) {
             publisher.sendToConsumerWhenDeletingRecord(RESTAURANT_QUEUE, restaurantDto);
         }

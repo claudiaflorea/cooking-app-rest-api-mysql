@@ -30,8 +30,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles("test")
 public class RecipeRepositoryTest {
 
-    private static final String APPLE_PIE = "Apple Pie";
-    private static final String RISOTTO   = "Risotto";
+    private static final String APPLE_PIE     = "Apple Pie";
+    private static final String RISOTTO       = "Risotto";
     public static final  String GUACAMOLE     = "Guacamole";
     private static final String APPLE         = "Apple";
     private static final String FLOUR         = "Flour";
@@ -118,18 +118,18 @@ public class RecipeRepositoryTest {
         assertThat(result).element(0).returns(GUACAMOLE, from(Recipe::getName));
 
     }
-    
+
     @Test
     public void testGetRecipesWithCarbohydrates() {
         //when
         List<Tuple> result = recipeRepository.findAllByIngredientsContainingCarbohydrates();
-        
+
         //then
         assertThat(result).hasSize(2);
         assertEquals(APPLE_PIE, result.get(0).get(1));
         assertEquals(FLOUR, result.get(0).get(6));
         assertEquals(RISOTTO, result.get(1).get(1));
         assertEquals(RICE, result.get(1).get(6));
-              
+
     }
 }

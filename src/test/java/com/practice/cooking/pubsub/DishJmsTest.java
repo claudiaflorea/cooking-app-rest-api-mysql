@@ -21,15 +21,22 @@ public class DishJmsTest extends AbstractActiveMqJmsTest {
 
     private static final Queue  DISH_QUEUE    = new ActiveMQQueue("dish_queue");
     private static final String MESSAGE_ADDED = "{\"id\":1,\"name\":\"Puree\",\"recipe\":null}";
+    public static final  long   DISH_ID       = 1L;
+    public static final  String DISH_NAME     = "Puree";
     private              String receivedMessage;
 
     @Autowired
     private Publisher publisher;
 
-    DishDto dishDto = new DishDto(1L, "Puree", null);
+    DishDto dishDto = new DishDto();
 
     @Test
     public void testSendMessageToMultipleSubscribersViaQueueWhenAddingDish() throws Exception {
+
+        dishDto.setId(DISH_ID);
+        dishDto.setName(DISH_NAME);
+        dishDto.setRecipe(null);
+
         for (int i = 0; i < 100; i++) {
             publisher.sendToConsumerWhenAddingNewRecord(DISH_QUEUE, dishDto);
         }
@@ -49,6 +56,11 @@ public class DishJmsTest extends AbstractActiveMqJmsTest {
 
     @Test
     public void testSendMessageToMultipleSubscribersWhenDeletingDish() throws Exception {
+
+        dishDto.setId(DISH_ID);
+        dishDto.setName(DISH_NAME);
+        dishDto.setRecipe(null);
+
         for (int i = 0; i < 100; i++) {
             publisher.sendToConsumerWhenDeletingRecord(DISH_QUEUE, dishDto);
         }
@@ -68,7 +80,7 @@ public class DishJmsTest extends AbstractActiveMqJmsTest {
 
     private List<MessageConsumer> messageQueueConsumers(Queue queue, Integer number) throws JMSException {
         List<MessageConsumer> consumers = new ArrayList<>();
-        for (int i = 0; i<number; i++) {
+        for (int i = 0; i < number; i++) {
             consumers.add(session.createConsumer(queue));
         }
         return consumers;

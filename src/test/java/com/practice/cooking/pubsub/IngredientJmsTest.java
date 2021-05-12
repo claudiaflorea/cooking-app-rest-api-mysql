@@ -22,15 +22,25 @@ public class IngredientJmsTest extends AbstractActiveMqJmsTest {
 
     private static final Queue  INGREDIENT_QUEUE = new ActiveMQQueue("ingredient_queue");
     private static final String MESSAGE_ADDED    = "{\"id\":1,\"name\":\"Potato\",\"quantity\":1.0,\"unit\":\"KG\"}";
+    public static final  Long   INGREDIENT_ID    = 1L;
+    public static final  String INGREDIENT_NAME  = "Potato";
+    public static final  Double QUANTITY         = 1.0;
+    public static final  Unit   UNIT             = Unit.KG;
     private              String receivedMessage;
 
     @Autowired
     private Publisher publisher;
 
-    IngredientDto ingredientDto = new IngredientDto(1L, "Potato", 1, Unit.KG);
+    IngredientDto ingredientDto = new IngredientDto();
 
     @Test
     public void testSendMessageToMultipleSubscribersViaQueueWhenAddingIngredient() throws Exception {
+
+        ingredientDto.setId(INGREDIENT_ID);
+        ingredientDto.setName(INGREDIENT_NAME);
+        ingredientDto.setQuantity(QUANTITY);
+        ingredientDto.setUnit(UNIT);
+
         for (int i = 0; i < 10; i++) {
             publisher.sendToConsumerWhenAddingNewRecord(INGREDIENT_QUEUE, ingredientDto);
         }
@@ -50,6 +60,12 @@ public class IngredientJmsTest extends AbstractActiveMqJmsTest {
 
     @Test
     public void testSendMessageToMultipleSubscribersWhenDeletingIngredient() throws Exception {
+
+        ingredientDto.setId(INGREDIENT_ID);
+        ingredientDto.setName(INGREDIENT_NAME);
+        ingredientDto.setQuantity(QUANTITY);
+        ingredientDto.setUnit(UNIT);
+
         for (int i = 0; i < 10; i++) {
             publisher.sendToConsumerWhenDeletingRecord(INGREDIENT_QUEUE, ingredientDto);
         }
@@ -69,7 +85,7 @@ public class IngredientJmsTest extends AbstractActiveMqJmsTest {
 
     private List<MessageConsumer> messageQueueConsumers(Queue queue, Integer number) throws JMSException {
         List<MessageConsumer> consumers = new ArrayList<>();
-        for (int i = 0; i<number; i++) {
+        for (int i = 0; i < number; i++) {
             consumers.add(session.createConsumer(queue));
         }
         return consumers;

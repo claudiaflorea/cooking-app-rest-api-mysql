@@ -21,17 +21,30 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class RecipeJmsTest extends AbstractActiveMqJmsTest {
 
-    private static final Queue  RECIPE_QUEUE  = new ActiveMQQueue("recipe_queue");
-    private static final String MESSAGE_ADDED = "{\"id\":1,\"name\":\"Puree\",\"difficulty\":\"EASY\",\"ingredients\":null,\"cookingTime\":1,\"recipeType\":\"SIDE\"}";
-    private              String receivedMessage;
+    private static final Queue      RECIPE_QUEUE  = new ActiveMQQueue("recipe_queue");
+    private static final String     MESSAGE_ADDED = "{\"id\":1,\"name\":\"Puree\",\"difficulty\":\"EASY\",\"ingredients\":null,\"cookingTime\":1,\"recipeType\":\"SIDE\"}";
+    public static final  long       RECIPE_ID     = 1L;
+    public static final  String     RECIPE_NAME   = "Puree";
+    public static final  Difficulty DIFFICULTY    = Difficulty.EASY;
+    public static final  int        COOKING_TIME  = 1;
+    public static final  RecipeType RECIPE_TYPE   = RecipeType.SIDE;
+    private              String     receivedMessage;
 
     @Autowired
     private Publisher publisher;
 
-    RecipeDto recipeDto = new RecipeDto(1L, "Puree", Difficulty.EASY, null, 1, RecipeType.SIDE);
+    RecipeDto recipeDto = new RecipeDto();
 
     @Test
     public void testSendMessageToMultipleSubscribersViaQueueWhenAddingRecipe() throws Exception {
+        
+        recipeDto.setId(RECIPE_ID);
+        recipeDto.setName(RECIPE_NAME);
+        recipeDto.setDifficulty(DIFFICULTY);
+        recipeDto.setCookingTime(COOKING_TIME);
+        recipeDto.setRecipeType(RECIPE_TYPE);
+        recipeDto.setIngredients(null);
+
         for (int i = 0; i < 10; i++) {
             publisher.sendToConsumerWhenAddingNewRecord(RECIPE_QUEUE, recipeDto);
         }
@@ -51,6 +64,14 @@ public class RecipeJmsTest extends AbstractActiveMqJmsTest {
 
     @Test
     public void testSendMessageToMultipleSubscribersWhenDeletingRecipe() throws Exception {
+
+        recipeDto.setId(RECIPE_ID);
+        recipeDto.setName(RECIPE_NAME);
+        recipeDto.setDifficulty(DIFFICULTY);
+        recipeDto.setCookingTime(COOKING_TIME);
+        recipeDto.setRecipeType(RECIPE_TYPE);
+        recipeDto.setIngredients(null);
+        
         for (int i = 0; i < 10; i++) {
             publisher.sendToConsumerWhenDeletingRecord(RECIPE_QUEUE, recipeDto);
         }
@@ -70,7 +91,7 @@ public class RecipeJmsTest extends AbstractActiveMqJmsTest {
 
     private List<MessageConsumer> messageQueueConsumers(Queue queue, Integer number) throws JMSException {
         List<MessageConsumer> consumers = new ArrayList<>();
-        for (int i = 0; i<number; i++) {
+        for (int i = 0; i < number; i++) {
             consumers.add(session.createConsumer(queue));
         }
         return consumers;

@@ -20,24 +20,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class ChefJmsTest extends AbstractActiveMqJmsTest {
 
-    private static final Queue  CHEF_QUEUE    = new ActiveMQQueue("chef_queue");
-    private static final String MESSAGE_ADDED = "{\"id\":1,\"name\":\"Don\",\"restaurants\":null}";
+    private static final Queue CHEF_QUEUE = new ActiveMQQueue("chef_queue");
+    private static final String MESSAGE_ADDED = "{\"id\":1,\"name\":\"Don\"}";
+    public static final long CHEF_ID = 1L;
+    public static final String CHEF_NAME = "Don";
     private              String receivedMessage;
 
     @Autowired
     private Publisher publisher;
 
-    ChefDto chefDto;
-
-    @BeforeEach
-    void setUp() {
-        chefDto = new ChefDto();
-        chefDto.setId(1L);
-        chefDto.setName("Don");
-    }
-
+    ChefDto chefDto =new ChefDto();
+    
     @Test
     public void testSendMessageToMultipleSubscribersViaQueueWhenAddingChef() throws Exception {
+
+        chefDto.setId(CHEF_ID);
+        chefDto.setName(CHEF_NAME);
+        
         for (int i = 0; i < 100; i++) {
             publisher.sendToConsumerWhenAddingNewRecord(CHEF_QUEUE, chefDto);
         }
@@ -57,6 +56,10 @@ public class ChefJmsTest extends AbstractActiveMqJmsTest {
 
     @Test
     public void testSendMessageToMultipleSubscribersWhenDeletingChef() throws Exception {
+
+        chefDto.setId(CHEF_ID);
+        chefDto.setName(CHEF_NAME);
+        
         for (int i = 0; i < 100; i++) {
             publisher.sendToConsumerWhenDeletingRecord(CHEF_QUEUE, chefDto);
         }
