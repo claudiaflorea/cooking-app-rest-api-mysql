@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                git 'https://github.com/claudiaflorea/cooking-app-rest-api-mysql'
+                sh 'gradle clean bootRun'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh '../gradlew clean build'
+            }
+
+            post {
+                always {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                }
+            }
+        }
+    }
+}

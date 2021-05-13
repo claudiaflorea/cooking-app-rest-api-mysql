@@ -31,7 +31,21 @@ services:
             SPRING_DATASOURCE_USERNAME: phpmyadmin
             SPRING_DATASOURCE_PASSWORD: cooking
 
-    #service 3: definition of activemq  
+    #service 3: definition of CI/CD service  
+    jenkins:
+        image: jenkins/jenkins:lts
+        privileged: true
+        user: root
+        ports:
+            - 8081:8080
+            - 50000:50000
+        container_name: jenkins
+        volumes:
+            - ~/jenkins:/var/jenkins_home
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /usr/local/bin/docker:/usr/local/bin/docker
+
+    #service 4: definition of activemq  
     activemq:
         image: webcenter/activemq:latest
         container_name: activemq
@@ -68,7 +82,7 @@ services:
         networks:
             - common-network
 
-    #service 4: definition of your spring-boot app 
+    #service 5: definition of your spring-boot app 
     spring-boot:
         image: cooking-app       
         container_name: cooking-app 
