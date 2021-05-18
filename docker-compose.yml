@@ -90,7 +90,8 @@ services:
 
     #service 5: definition of your spring-boot app 
     spring-boot:
-        image: cooking-app       
+        image: cooking-app
+        command: boot start
         container_name: cooking-app 
         build:
             context: .
@@ -112,6 +113,18 @@ services:
         networks:
             - common-network    
         privileged: true
+        
+    springboot-app-tests:
+        image: cooking-app
+        command: dockerize -wait tcp://db:3306 -wait tcp://spring-boot:8080 -timeout 10s
+        environment:
+            APP_URL: http://spring-boot:8080
+            APP_DB_HOST: db
+            APP_DB_USER: phpyadmin
+            APP_DB_PASSWORD: cooking
+        depends_on:
+            - db
+            - spring-boot
 
 #Docker Networks
 networks:
