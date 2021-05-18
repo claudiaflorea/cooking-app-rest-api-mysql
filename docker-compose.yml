@@ -26,10 +26,12 @@ services:
         depends_on:
             - db
         ports:
-            - "8888:8888"
+            - "8080:80"
         environment:
             SPRING_DATASOURCE_USERNAME: phpmyadmin
             SPRING_DATASOURCE_PASSWORD: cooking
+        networks:
+            - common-network
 
     #service 3: definition of CI/CD service  
     jenkins:
@@ -40,10 +42,14 @@ services:
             - 8081:8080
             - 50000:50000
         container_name: jenkins
+        links:
+            - db
         volumes:
             - ~/jenkins:/var/jenkins_home
             - /var/run/docker.sock:/var/run/docker.sock
             - /usr/local/bin/docker:/usr/local/bin/docker
+        networks:
+            - common-network
 
     #service 4: definition of activemq  
     activemq:
@@ -93,10 +99,13 @@ services:
             - "127.0.0.1:8080:8080"
             - "127.0.0.1:4000:4000"
         restart: always
+        links:
+            - db
         depends_on: 
             - db
             - phpmyadmin
             - activemq
+            - jenkins
         environment:
             SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/cooking?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=FALSE
             SPRING_ACTIVEMQ_BROKER-URL: tcp://activemq:61616
