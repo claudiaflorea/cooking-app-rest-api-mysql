@@ -37,7 +37,7 @@ services:
     jenkins:
         image: jenkins/jenkins:lts
         privileged: true
-        user: root
+        user: phpmyadmin
         ports:
             - 8081:8080
             - 50000:50000
@@ -91,7 +91,6 @@ services:
     #service 5: definition of your spring-boot app 
     spring-boot:
         image: cooking-app
-        command: boot start
         container_name: cooking-app 
         build:
             context: .
@@ -122,6 +121,8 @@ services:
             APP_DB_HOST: db
             APP_DB_USER: phpyadmin
             APP_DB_PASSWORD: cooking
+        networks:
+            - common-network
         depends_on:
             - db
             - spring-boot
