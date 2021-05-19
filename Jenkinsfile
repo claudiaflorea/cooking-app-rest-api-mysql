@@ -14,7 +14,7 @@ pipeline {
                 DATABASE_URL= 'jdbc:mysql://localhost:3306/cooking'
             }
             steps {
-                sh '''./gradlew build clean'''
+                sh '''./gradlew build clean -i'''
                 echo "The build stage passed..."
             }
        }
