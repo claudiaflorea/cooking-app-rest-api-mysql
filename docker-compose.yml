@@ -53,7 +53,7 @@ services:
             SPRING_DATASOURCE_PASSWORD: cooking
         networks:
             - common-network
-
+                
     #service 3: definition of CI/CD service  
     jenkins:
         image: jenkins/jenkins:lts
@@ -132,6 +132,8 @@ services:
             SPRING_DATASOURCE_USERNAME: phpmyadmin
             SPRING_DATASOURCE_PASSWORD: cooking           
             SPRING_ACTIVEMQ_BROKER-URL: tcp://activemq:61616
+            DB_HOST: 172.18.0.1:3306
+            DB_NAME: cooking
         networks:
             - common-network    
         privileged: true
