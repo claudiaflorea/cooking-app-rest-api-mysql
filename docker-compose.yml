@@ -1,16 +1,37 @@
 version: '3.7'
 
 services:
+    
     #service 1: definition of mysql database
     db:
         image: mysql:8.0.23
         container_name: cooking
         environment:
+            - MYSQL_ROOT_PASSWORD=cooking
             - MYSQL_DATABASE=cooking
             - MYSQL_USER=phpmyadmin
             - MYSQL_PASSWORD=cooking
         ports:
             - "3306:3306"
+        healthcheck:
+            test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+            timeout: 20s
+            retries: 10
+        restart: always
+        cap_add:
+            - SYS_NICE
+        networks:
+            - common-network
+    test-db:
+        image: mysql:8.0.23
+        container_name: cooking_test_db
+        environment:
+            - MYSQL_ROOT_PASSWORD=cooking
+            - MYSQL_DATABASE=cooking_test_db
+            - MYSQL_USER=phpmyadmin
+            - MYSQL_PASSWORD=cooking
+        ports:
+            - "3307:3307"
         restart: always
         cap_add:
             - SYS_NICE
@@ -24,6 +45,7 @@ services:
         restart: always
         depends_on:
             - db
+            - test-db
         ports:
             - "8080:80"
         environment:
@@ -43,6 +65,7 @@ services:
         container_name: jenkins
         links:
             - db
+            - test-db
         volumes:
             - ~/jenkins:/var/jenkins_home
             - /var/run/docker.sock:/var/run/docker.sock
@@ -97,18 +120,18 @@ services:
         ports:
             - "127.0.0.1:8080:8080"
             - "127.0.0.1:4000:4000"
-        restart: always
-        links:
-            - db
+        restart: on-failure
         depends_on: 
             - db
+            - test-db
             - phpmyadmin
             - activemq
             - jenkins
         environment:
             SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/cooking?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=FALSE
+            SPRING_DATASOURCE_USERNAME: phpmyadmin
+            SPRING_DATASOURCE_PASSWORD: cooking           
             SPRING_ACTIVEMQ_BROKER-URL: tcp://activemq:61616
-            MYSQL_URL: jdbc:mysql://db:3306/cooking
         networks:
             - common-network    
         privileged: true
